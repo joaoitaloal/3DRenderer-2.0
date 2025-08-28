@@ -1,0 +1,6 @@
+.vscode
+
+dependencies
+build
+
+*.obj
