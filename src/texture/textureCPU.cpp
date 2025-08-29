@@ -5,7 +5,7 @@ class TextureCPU {
         Texture texture;
         Color* pixels;
 
-        TextureCPU(Image img){
+        TextureCPU(Image &img){
             texture = LoadTextureFromImage(img);
             pixels = LoadImageColors(img);
         }
