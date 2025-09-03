@@ -28,4 +28,6 @@ class Plane {
             p3 = {width + parent->position.x, -height + parent->position.y, 1 + parent->position.z};
             p4 = {-width + parent->position.x, -height + parent->position.y, 1 + parent->position.z};
         }
+
+        Plane() = default;
 };

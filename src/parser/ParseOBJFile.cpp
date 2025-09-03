@@ -80,12 +80,18 @@ Mesh3 ParseOBJFile(const char* fileName){
             face.v2 = vertices[faceIndexes.vertices[1]];
             face.v3 = vertices[faceIndexes.vertices[2]];
 
-            face.vn1 = normals[faceIndexes.v_normals[0]];
+            if(faceIndexes.v_normals[0] != -1)
+                face.vn1 = normals[faceIndexes.v_normals[0]];
+            if(faceIndexes.v_normals[1] != -1)
             face.vn2 = normals[faceIndexes.v_normals[1]];
+            if(faceIndexes.v_normals[2] != -1)
             face.vn3 = normals[faceIndexes.v_normals[2]];
 
-            face.vt1 = v_texture[faceIndexes.v_tex[0]];
+            if(faceIndexes.v_tex[0] != -1)
+                face.vt1 = v_texture[faceIndexes.v_tex[0]];
+            if(faceIndexes.v_tex[1] != -1)
             face.vt2 = v_texture[faceIndexes.v_tex[1]];
+            if(faceIndexes.v_tex[2] != -1)
             face.vt3 = v_texture[faceIndexes.v_tex[2]];
 
             Color color; 
@@ -127,12 +133,18 @@ FaceTriIndexes ParseFace(vector<string> vertices_info){
         if(part.empty()) throw 2;
         face.vertices[i] = std::stoi(part) - 1;
 
-        if (std::getline(stream, part, '/') && !part.empty()) {
-            face.v_tex[i] = std::stoi(part) - 1;
+        if (std::getline(stream, part, '/')) {
+            if(part.empty())
+                face.v_tex[i] = -1;
+            else
+                face.v_tex[i] = std::stoi(part) - 1;
         }
 
-        if (std::getline(stream, part, '/') && !part.empty()) {
-            face.v_normals[i] = std::stoi(part) - 1;
+        if (std::getline(stream, part, '/')) {
+            if(part.empty())
+                face.v_normals[i] = -1;
+            else
+                face.v_normals[i] = std::stoi(part) - 1;
         }
     }
 

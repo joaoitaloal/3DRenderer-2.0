@@ -10,6 +10,13 @@ class View{
     public:
         Vector3 position;
 
+        View(float set_x, float set_y, float set_z){
+            position = {set_x, set_y, set_z};
+
+            cam = {set_x, set_y, set_z, 0, 0, 1};
+            plane = {1, 0.75, &cam};
+        }
+
         View(Camera3 &set_cam, Plane &set_plane)
             : cam(set_cam), plane(set_plane) {
                 position = cam.position;
@@ -43,7 +50,7 @@ class View{
         }
 
         //temp
-        void move(float x, float z, float y){
+        void move(float x, float y, float z){
             cam.position.x += x;
             cam.position.y += y;
             cam.position.z += z;
@@ -52,20 +59,7 @@ class View{
             position.y += y;
             position.z += z;
 
-            plane.p1.x += x;
-            plane.p2.x += x;
-            plane.p3.x += x;
-            plane.p4.x += x;
-
-            plane.p1.y += y;
-            plane.p2.y += y;
-            plane.p3.y += y;
-            plane.p4.y += y;
-
-            plane.p1.z += z;
-            plane.p2.z += z;
-            plane.p3.z += z;
-            plane.p4.z += z;
+            plane.updatePosition();
         }
 
 };
