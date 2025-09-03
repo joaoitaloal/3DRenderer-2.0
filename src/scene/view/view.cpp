@@ -8,8 +8,12 @@ class View{
         Camera3 cam;
         Plane plane;
     public:
+        Vector3 position;
+
         View(Camera3 &set_cam, Plane &set_plane)
-            : cam(set_cam), plane(set_plane) {};
+            : cam(set_cam), plane(set_plane) {
+                position = cam.position;
+            };
 
         void setFov(float fov){
     
@@ -36,6 +40,32 @@ class View{
             Ray ray = {origin, dir};
 
             return ray;
+        }
+
+        //temp
+        void move(float x, float z, float y){
+            cam.position.x += x;
+            cam.position.y += y;
+            cam.position.z += z;
+
+            position.x += x;
+            position.y += y;
+            position.z += z;
+
+            plane.p1.x += x;
+            plane.p2.x += x;
+            plane.p3.x += x;
+            plane.p4.x += x;
+
+            plane.p1.y += y;
+            plane.p2.y += y;
+            plane.p3.y += y;
+            plane.p4.y += y;
+
+            plane.p1.z += z;
+            plane.p2.z += z;
+            plane.p3.z += z;
+            plane.p4.z += z;
         }
 
 };
