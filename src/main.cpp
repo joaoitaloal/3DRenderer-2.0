@@ -3,22 +3,25 @@
 #include <raylib.h>
 #include <chrono>
 
+#define RAYGUI_IMPLEMENTATION
+#include <raygui.h>
+
 #include "texture/texture.h"
-#include "./renderer/renderer.h"
+#include "renderer/renderer.h"
 #include "scene/objects/objects.h"
 #include "parser/parser.h"
 
 /* ToDo:
     - Make rotation code(maybe try to make a Transform class)
         Clearly too dificult for now, spent a long time reading and still dont understand enough to implement it, gonna stick to a fixed camera and single object for now
-    - Parse obj and load the triangles to the scene
-        done, now i want to implement a better parser that does not load the entire file to ram before reading it
-            done too, the method i was using actually did not load the entire file to ram, i was getting an error because of a missing index check while parsing the face lines
     - Implement a better acceleration structure than the bounding box
     - Change the entire thing to a image renderer instead of a live renderer, it can still be a live app with an UI if i manage to implement it
         done, still want to do an ui if possible, ill need to implement threading to make it work correctly though
     - Implement a UI with a text input for a .obj file
+        Probably using RayGUI, i included the .h but im gonna take some time to learn how to use it
     - Implement threading so that the UI is not paused while rendering
+        also thread the rendering probably, to make it faster
+    - Make a Readme
 */
 
 int main(){
@@ -65,13 +68,6 @@ int main(){
 
     std::chrono::duration<double, std::milli> time_elapsed(0);
 
-    /*auto start = std::chrono::high_resolution_clock().now();
-    renderToScreen(tex, view, &mesh, WIDTH, HEIGHT, WIDTH);
-    auto end = std::chrono::high_resolution_clock().now();
-
-    // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
-    std::chrono::duration<double, std::milli> time_elapsed = end - start; */
-
     float speed = 0.5f;
     while(!WindowShouldClose()){
         int fps = GetFPS();
@@ -93,7 +89,7 @@ int main(){
         }
         if(IsKeyDown(KEY_ENTER)){
             auto start = std::chrono::high_resolution_clock().now();
-            renderToScreen(tex, view, &mesh, WIDTH, HEIGHT, 50);
+            tex->renderToScreen(view, &mesh, WIDTH, HEIGHT, 50);
             auto end = std::chrono::high_resolution_clock().now();
 
             // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay

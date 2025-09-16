@@ -1,11 +1,5 @@
 // This function was greatly guided by this page: https://www.scratchapixel.com/lessons/3d-basic-rendering/obj-file-format/obj-file-format.html
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <raylib.h>
-
-#include "../scene/objects/objects.h"
+#include "parser.h"
 
 using namespace std;
 

@@ -1,15 +1,33 @@
-#ifndef CAM_DEF
-#define CAM_DEF
+#ifndef RENDERER_SCENE_H
+#define RENDERER_SCENE_H
 
-#include "camera.cpp"
-class Camera3;
+#include <raylib.h>
 
-#endif
+class Camera3 {
+    public:
+        Vector3 position;
+        Vector3 direction;
 
-#ifndef PLANE_DEF
-#define PLANE_DEF
+        Camera3(float set_pos_x, float set_pos_y, float set_pos_z, float set_dir_x, float set_dir_y, float set_dir_z);
 
-#include "plane.cpp"
-class Plane;
+        Camera3(Vector3 &set_position, Vector3 &set_direction);
 
-#endif
+        Camera3();
+};
+
+class Plane {
+    private:
+        Camera3* parent;
+    public:
+        Vector3 p1; Vector3 p2; Vector3 p3; Vector3 p4;
+        float width; float height;
+
+        // Centered in the origin(0, 0, 0)
+        Plane(float set_width, float set_height, Camera3* set_parent);
+        
+        Plane();
+
+        void updatePosition();
+};
+
+#endif // RENDERER_SCENE_H

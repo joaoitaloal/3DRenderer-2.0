@@ -1,3 +1,5 @@
+# Parei de usar essa makefile, ela provavelmente tá desatualizada e não funcionando!!
+
 ifeq ($(OS), Windows_NT)
     EXE = .exe
 else

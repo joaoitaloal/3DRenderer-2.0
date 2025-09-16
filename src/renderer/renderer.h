@@ -1,15 +1,25 @@
-#ifndef COLOR_RAYCAST
-#define COLOR_RAYCAST
+#ifndef RENDERER_RENDERER_H
+#define RENDERER_RENDERER_H
 
-#include "rayCast.cpp"
-Color rayCast(View view, float origin_x, float origin_y, int WIDTH, int HEIGHT, Mesh3* mesh);
+#include <raylib.h>
+#include <raymath.h>
+#include "../scene/view/view.h"
+#include "../scene/objects/objects.h"
+#include <cstdio>
 
-#endif
+#include "../texture/texture.h"
 
-#ifndef RENDER_SCREEN
-#define RENDER_SCREEN
+/*
+    Should renderToScreen not be a method of TextureCPU?
+    and rayCast a method of view?
+*/
 
-#include "renderScreen.cpp"
-void renderToScreen(TextureCPU* tex, View view, Mesh3* mesh, int WIDTH, int HEIGHT, int anim_speed);
+//Recebe Camera, plano, objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
+//Color rayCast(View view, float origin_x, float origin_y, int WIDTH, int HEIGHT, Mesh3* mesh);
 
-#endif
+//void renderToScreen(TextureCPU* tex, View view, Mesh3* mesh, int WIDTH, int HEIGHT, int anim_speed);
+
+// ToDo
+RayCollision triangleCollisionCheck(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3);
+
+#endif // RENDERER_RENDERER_H
