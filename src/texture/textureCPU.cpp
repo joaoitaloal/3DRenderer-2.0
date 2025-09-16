@@ -63,6 +63,16 @@ Color* TextureCPU::getPixelsRec(Rectangle rec){
     return newPixels;
 }
 
+void TextureCPU::update(View view, Mesh3* mesh, int WIDTH, int HEIGHT){
+    for(int x = 0; x < WIDTH; x++){
+        for(int y = 0; y < HEIGHT; y++){
+            Color color = view.rayCast(x, y, WIDTH, HEIGHT, mesh);
+
+            setPixelColor(x, y, {color.r, color.g, color.b});
+        }
+    }
+}
+
 void TextureCPU::renderToScreen(View view, Mesh3* mesh, int WIDTH, int HEIGHT, int anim_speed){
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){

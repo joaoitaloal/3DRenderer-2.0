@@ -25,6 +25,10 @@ class TextureCPU{
         // Creates a WIDTH*HEIGHT rec using pixels originated at x, y on the texture, top-left origin.
         Color* getPixelsRec(Rectangle rec);
 
+        // Update the texture only
+        void update(View view, Mesh3* mesh, int WIDTH, int HEIGHT);
+
+        // Update directly to the screen
         void renderToScreen(View view, Mesh3* mesh, int WIDTH, int HEIGHT, int anim_speed);
 };
 

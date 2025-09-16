@@ -15,7 +15,7 @@ class View{
     public:
         Vector3 position;
 
-        View(float set_x, float set_y, float set_z);
+        View(float set_x, float set_y, float set_z, float set_plane_width, float set_plane_height);
 
         View(Camera3 &set_cam, Plane &set_plane);
 

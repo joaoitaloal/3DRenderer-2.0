@@ -15,7 +15,7 @@
     - Make rotation code(maybe try to make a Transform class)
         Clearly too dificult for now, spent a long time reading and still dont understand enough to implement it, gonna stick to a fixed camera and single object for now
     - Implement a better acceleration structure than the bounding box
-    - Change the entire thing to a image renderer instead of a live renderer, it can still be a live app with an UI if i manage to implement it
+    - Change the entire thing to an image renderer instead of a live renderer, it can still be a live app with an UI if i manage to implement it
         done, still want to do an ui if possible, ill need to implement threading to make it work correctly though
     - Implement a UI with a text input for a .obj file
         Probably using RayGUI, i included the .h but im gonna take some time to learn how to use it
@@ -25,44 +25,60 @@
 */
 
 int main(){
-    const int WIDTH = 1080;
-    const int HEIGHT = 720;
-    InitWindow(WIDTH, HEIGHT, "Raytracer!!!!!!!!!!!");
+    // Window configuration
+    const int WIN_WIDTH = 1080;
+    const int WIN_HEIGHT = 720;
+    InitWindow(WIN_WIDTH, WIN_HEIGHT, "Raytracer!!!!!!!!!!!");
     SetTargetFPS(60);
+
+    // Rendered image dimensions
+    const int WIDTH = 720; const int HEIGHT = 720;
+    const int img_offset = WIN_WIDTH-WIDTH;
+
+    // UI dimensions
+    const int UI_WIDTH = 360; const int UI_HEIGHT = 720;
+    const int UI_PADDING = 12;
 
     Image init = GenImageColor(WIDTH, HEIGHT, BLACK);
     TextureCPU* tex = new TextureCPU(init);
     UnloadImage(init);
 
+    // Setting UI styles, change this to another file just for organization
+    GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, ColorToInt((Color){ 100, 200, 255, 255 }));
+
+    // UI "states"
+    char obj_file_entry[120] = "models/Cube.obj";
+    bool obj_file_entry_edit = false;
+
+    // Program "states"
+    bool obj_loaded = false;
+
     // Not working :(
     std::string message = "Loading .obj file!";
     BeginDrawing();
     
-    DrawText(message.c_str(), 0, 0, 16, WHITE);
+    DrawText(message.c_str(), 0 + img_offset, 0, 16, WHITE);
 
     EndDrawing();
 
     Mesh3 mesh;
     try{
-        mesh = ParseOBJFile("./models/Cube.obj");
+        mesh = ParseOBJFile((const char*)obj_file_entry);
+        obj_loaded = true;
     }catch(const int err){
+        obj_loaded = false;
         if(err == 1)
             std::cout << "Error while loading .obj file" << '\n';
         else if(err == 2)
             std::cout << "Error while parsing .obj file" << '\n';
-
-
-        delete tex;
-        CloseWindow();
-        exit(err);
     }
 
-    View view = {0, 2, -10};
+    View view = {0, 2, -10, 1, 1};
 
     message = "Loading .obj file and rendering image!";
     BeginDrawing();
     
-    DrawText(message.c_str(), 0, 0, 16, WHITE);
+    DrawText(message.c_str(), 0 + img_offset, 0, 16, WHITE);
 
     EndDrawing();
 
@@ -72,46 +88,81 @@ int main(){
     while(!WindowShouldClose()){
         int fps = GetFPS();
 
-        if(IsKeyDown(KEY_W)){
-            view.move(0, 0, speed);
-        }else if(IsKeyDown(KEY_S)){
-            view.move(0, 0, -speed);
-        }
-        if(IsKeyDown(KEY_A)){
-            view.move(speed, 0, 0);
-        }else if(IsKeyDown(KEY_D)){
-            view.move(-speed, 0, 0);
-        }
-        if(IsKeyDown(KEY_SPACE)){
-            view.move(0, speed, 0);
-        }else if(IsKeyDown(KEY_LEFT_SHIFT)){
-            view.move(0, -speed, 0);
-        }
-        if(IsKeyDown(KEY_ENTER)){
-            auto start = std::chrono::high_resolution_clock().now();
-            tex->renderToScreen(view, &mesh, WIDTH, HEIGHT, 50);
-            auto end = std::chrono::high_resolution_clock().now();
+        // Some screen controls, maybe temporary maybe not, definitely needs some work though
+        if(!obj_file_entry_edit){
+            if(IsKeyDown(KEY_W)){
+                view.move(0, 0, speed);
+            }else if(IsKeyDown(KEY_S)){
+                view.move(0, 0, -speed);
+            }
+            if(IsKeyDown(KEY_A)){
+                view.move(speed, 0, 0);
+            }else if(IsKeyDown(KEY_D)){
+                view.move(-speed, 0, 0);
+            }
+            if(IsKeyDown(KEY_SPACE)){
+                view.move(0, speed, 0);
+            }else if(IsKeyDown(KEY_LEFT_SHIFT)){
+                view.move(0, -speed, 0);
+            }
+            if(IsKeyDown(KEY_ENTER) && obj_loaded){
+                auto start = std::chrono::high_resolution_clock().now();
+                tex->update(view, &mesh, WIDTH, HEIGHT);
+                auto end = std::chrono::high_resolution_clock().now();
 
-            // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
-            time_elapsed = end - start; 
+                // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
+                time_elapsed = end - start; 
+            }
         }
 
         BeginDrawing();
 
-        ClearBackground(BLANK);
+        ClearBackground(BLACK);
 
         UpdateTexture(tex->texture, tex->pixels);
 
-        DrawTexture(tex->texture, 0, 0, WHITE);
+        DrawTexture(tex->texture, 0 + img_offset, 0, WHITE);
 
-        // Debug ui
-        DrawText(std::to_string(fps).insert(0, "fps: ").c_str(), 0, 0, 16, WHITE);
+        // UI
 
-        DrawText(std::to_string(view.position.x).insert(0, "cam X: ").c_str(), 0, 32, 16, WHITE);
-        DrawText(std::to_string(view.position.y).insert(0, "cam Y: ").c_str(), 0, 48, 16, WHITE);
-        DrawText(std::to_string(view.position.z).insert(0, "cam Z: ").c_str(), 0, 64, 16, WHITE);
+        Rectangle ui_bounds = {0, 0, UI_WIDTH, UI_HEIGHT};
+        DrawRectangleRec(ui_bounds, (Color){119, 80, 217, 255});
+        DrawRectangleLinesEx(ui_bounds, 1, (Color){255, 255, 255, 255});
 
-        DrawText(std::to_string(time_elapsed.count()/1000).insert(0, "Time to render: ").append("s").c_str(), 0, HEIGHT - 24, 24, WHITE);
+        GuiLabel((Rectangle){0 + UI_PADDING, 0, 32, 16}, std::to_string(fps).insert(0, "fps: ").c_str());
+
+        if(GuiTextBox((Rectangle){0 + UI_PADDING, 32, 260, 32}, obj_file_entry, 120, obj_file_entry_edit)){
+            obj_file_entry_edit = !obj_file_entry_edit;
+
+            try{
+                mesh = ParseOBJFile((const char*)obj_file_entry);
+                obj_loaded = true;
+            }catch(const int err){
+                obj_loaded = false;
+                if(err == 1)
+                    std::cout << "Error while loading .obj file" << '\n';
+                else if(err == 2)
+                    std::cout << "Error while parsing .obj file" << '\n';
+            }
+        }
+
+        if(GuiButton((Rectangle){UI_WIDTH/2 - 90, UI_HEIGHT - 64 - UI_PADDING, 180, 64}, "Render Image") && obj_loaded){
+            auto start = std::chrono::high_resolution_clock().now();
+            tex->update(view, &mesh, WIDTH, HEIGHT);
+            auto end = std::chrono::high_resolution_clock().now();
+
+            // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
+            time_elapsed = end - start;
+        }
+
+
+        // Render image displays
+
+        DrawText(std::to_string(view.position.x).insert(0, "cam X: ").c_str(), 0 + img_offset + UI_PADDING, 0 + UI_PADDING, 16, WHITE);
+        DrawText(std::to_string(view.position.y).insert(0, "cam Y: ").c_str(), 0 + img_offset + UI_PADDING, 16 + UI_PADDING, 16, WHITE);
+        DrawText(std::to_string(view.position.z).insert(0, "cam Z: ").c_str(), 0 + img_offset + UI_PADDING, 32 + UI_PADDING, 16, WHITE);
+
+        DrawText(std::to_string(time_elapsed.count()/1000).insert(0, "Time to render: ").append("s").c_str(), 0 + img_offset, HEIGHT - 24, 24, WHITE);
 
         EndDrawing();
     }

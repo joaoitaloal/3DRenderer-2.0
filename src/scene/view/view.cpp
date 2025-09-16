@@ -1,10 +1,10 @@
 #include "view.h"
 
-View::View(float set_x, float set_y, float set_z){
+View::View(float set_x, float set_y, float set_z, float set_plane_width, float set_plane_height){
     position = {set_x, set_y, set_z};
 
     cam = {set_x, set_y, set_z, 0, 0, 1};
-    plane = {1, 0.75, &cam};
+    plane = {set_plane_width, set_plane_height, &cam};
 }
 
 View::View(Camera3 &set_cam, Plane &set_plane)
