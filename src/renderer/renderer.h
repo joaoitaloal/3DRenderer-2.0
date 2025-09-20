@@ -22,4 +22,8 @@
 // ToDo
 RayCollision triangleCollisionCheck(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3);
 
+RayCollision meshCollisionCheck(Ray ray, Mesh3* mesh);
+
+bool meshShadowCheck(Ray ray, Mesh3* mesh);
+
 #endif // RENDERER_RENDERER_H

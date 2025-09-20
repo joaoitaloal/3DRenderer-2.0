@@ -57,24 +57,11 @@ Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std:
     RayCollision col;
     col.hit = false;
     for(Mesh3* curMesh : *meshes){
-        RayCollision boxCol = GetRayCollisionBox(ray, curMesh->bbox);
-    
-        if(!boxCol.hit){
-            continue;
-        }
         
-        if(curMesh->faces.size() == 0){
-            continue;
-        }
-        
-        for(FaceTri tri : curMesh->faces){
-            //RayCollision temp = GetRayCollisionTriangle(ray, tri.v1, tri.v2, tri.v3);
-            RayCollision temp = triangleCollisionCheck(ray, tri.v1, tri.v2, tri.v3);
-
-            if(!col.hit || (temp.hit && col.distance > temp.distance)){ 
-                col = temp;
-                mesh = curMesh;
-            }
+        RayCollision temp = meshCollisionCheck(ray, curMesh);
+        if(!col.hit || (temp.hit && col.distance > temp.distance)){
+            col = temp;
+            mesh = curMesh;
         }
     }
 
@@ -83,8 +70,24 @@ Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std:
     }
 
     // Shading
+    float ALI = 20; // temporary constant Ambient Light Intensity
+    color = color + mesh->material.ka*ALI;
+
     for(PointLight light : lights){
-        Vector3 l = Vector3Normalize(light.pos - col.point);
+        Vector3 shadowRayDir = light.pos - col.point;
+        Ray shadowCheckRay = {col.point + shadowRayDir*EPSILON, shadowRayDir};
+
+        RayCollision shadowCol;
+        shadowCol.hit = false;
+        for(Mesh3* shadowMesh : *meshes){
+            if(meshShadowCheck(shadowCheckRay, shadowMesh)){
+                shadowCol.hit = true;
+                
+                return color;
+            }
+        }
+
+        Vector3 l = Vector3Normalize(shadowRayDir);
 
         color = color + light.intensity*mesh->material.kd*max(0, Vector3DotProduct(col.normal, l));
 
@@ -92,9 +95,6 @@ Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std:
         Vector3 h = Vector3Normalize(v+l);
 
         color = color + light.intensity*mesh->material.ks*powf(max(0, Vector3DotProduct(col.normal, h)), 10);
-
-        float ALI = 20; // temporary constant Ambient Light Intensity
-        color = color + mesh->material.ka*ALI;
     }
 
     return color.clampMax();
