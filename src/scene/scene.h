@@ -30,4 +30,9 @@ class Plane {
         void updatePosition();
 };
 
+class Material3{
+    public:
+        float kd; float ks; float ka; // Light intensity coefficients
+};
+
 #endif // RENDERER_SCENE_H

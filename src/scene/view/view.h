@@ -6,6 +6,7 @@
 
 #include <raylib.h>
 #include <raymath.h>
+#include "../../utils/utils.h"
 
 // Camera and plane combined
 class View{
@@ -25,7 +26,7 @@ class View{
         Ray createRay(float alpha, float beta);
 
         // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-        Color rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, Mesh3* mesh);
+        Color3 rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std::vector<Mesh3*>* mesh, std::vector<PointLight> lights);
 
         //temp
         void move(float x, float y, float z);

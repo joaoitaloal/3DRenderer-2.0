@@ -4,6 +4,7 @@
 #include <raylib.h>
 #include "../scene/view/view.h"
 #include "../scene/objects/objects.h"
+#include <vector>
 
 class TextureCPU{
     public:
@@ -14,7 +15,7 @@ class TextureCPU{
         
         ~TextureCPU();
 
-        void setPixelColor(int x, int y, Color color);
+        void setPixelColor(int x, int y, Color3 color);
 
         // Allocs memory, delete later
         // Creates a WIDTH*HEIGHT rec using pixels originated at x, y on the texture, top-left origin.
@@ -26,10 +27,10 @@ class TextureCPU{
         Color* getPixelsRec(Rectangle rec);
 
         // Update the texture only
-        void update(View view, Mesh3* mesh, int WIDTH, int HEIGHT);
+        void update(View view, std::vector<Mesh3*>* mesh, int WIDTH, int HEIGHT, std::vector<PointLight> lights);
 
         // Update directly to the screen
-        void renderToScreen(View view, Mesh3* mesh, int WIDTH, int HEIGHT, int anim_speed);
+        void renderToScreen(View view, std::vector<Mesh3*>* meshes, int WIDTH, int HEIGHT, std::vector<PointLight> lights, int anim_speed);
 };
 
 #endif // RENDERER_TEXTURE_H

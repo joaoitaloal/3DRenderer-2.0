@@ -15,13 +15,13 @@
     - Make rotation code(maybe try to make a Transform class)
         Clearly too dificult for now, spent a long time reading and still dont understand enough to implement it, gonna stick to a fixed camera and single object for now
     - Implement a better acceleration structure than the bounding box
-    - Change the entire thing to an image renderer instead of a live renderer, it can still be a live app with an UI if i manage to implement it
-        done, still want to do an ui if possible, ill need to implement threading to make it work correctly though
-    - Implement a UI with a text input for a .obj file
-        Probably using RayGUI, i included the .h but im gonna take some time to learn how to use it
+    - Give more live control to the renderer using the UI
     - Implement threading so that the UI is not paused while rendering
         also thread the rendering probably, to make it faster
     - Make a Readme
+    - Maybe make a "Scene" class with all the lights and meshes of the scene
+    - Take a look at the ray-triangle intersection function from raylib to see how different is the implementation from mine
+    - Check if im not passing any big object by value instead of reference in some part of the code
 */
 
 /*
@@ -51,7 +51,7 @@ int main(){
     GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, ColorToInt((Color){ 100, 200, 255, 255 }));
 
     // UI "states"
-    char obj_file_entry[120] = "models/Cube.obj";
+    char obj_file_entry[120] = "models/NSMonkey.obj";
     bool obj_file_entry_edit = false;
 
     // Program "states"
@@ -65,9 +65,11 @@ int main(){
 
     EndDrawing();
 
-    Mesh3 mesh;
+    std::vector<Mesh3*> meshes; // If i ever make some way to remove meshes i need to remember to manually destroy them
     try{
+        Mesh3* mesh = new Mesh3();
         mesh = ParseOBJFile((const char*)obj_file_entry);
+        meshes.push_back(mesh);
         obj_loaded = true;
     }catch(const int err){
         obj_loaded = false;
@@ -87,6 +89,14 @@ int main(){
     EndDrawing();
 
     std::chrono::duration<double, std::milli> time_elapsed(0);
+
+    // Temporary manual light creation:
+    std::vector<PointLight> lights;
+    PointLight light;
+    light.intensity = (Color3){255, 255, 255};
+    light.pos = (Vector3){20, 20, 0};
+
+    lights.push_back(light);
 
     float speed = 0.5f;
     while(!WindowShouldClose()){
@@ -111,7 +121,7 @@ int main(){
             }
             if(IsKeyDown(KEY_ENTER) && obj_loaded){
                 auto start = std::chrono::high_resolution_clock().now();
-                tex->update(view, &mesh, WIDTH, HEIGHT);
+                tex->update(view, &meshes, WIDTH, HEIGHT, lights);
                 auto end = std::chrono::high_resolution_clock().now();
 
                 // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
@@ -139,7 +149,9 @@ int main(){
             obj_file_entry_edit = !obj_file_entry_edit;
 
             try{
+                Mesh3* mesh;
                 mesh = ParseOBJFile((const char*)obj_file_entry);
+                meshes.push_back(mesh);
                 obj_loaded = true;
             }catch(const int err){
                 obj_loaded = false;
@@ -152,7 +164,7 @@ int main(){
 
         if(GuiButton((Rectangle){UI_WIDTH/2 - 90, UI_HEIGHT - 64 - UI_PADDING, 180, 64}, "Render Image") && obj_loaded){
             auto start = std::chrono::high_resolution_clock().now();
-            tex->update(view, &mesh, WIDTH, HEIGHT);
+            tex->update(view, &meshes, WIDTH, HEIGHT, lights);
             auto end = std::chrono::high_resolution_clock().now();
 
             // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay

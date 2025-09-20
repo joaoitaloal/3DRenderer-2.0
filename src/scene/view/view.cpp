@@ -1,5 +1,10 @@
 #include "view.h"
 #include "../../renderer/renderer.h"
+#include <vector>
+
+inline float max(float a, float b){
+    return a > b?a:b;
+}
 
 View::View(float set_x, float set_y, float set_z, float set_plane_width, float set_plane_height){
     position = {set_x, set_y, set_z};
@@ -40,43 +45,59 @@ Ray View::createRay(float alpha, float beta){
 }
 
 // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-Color View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, Mesh3* mesh){
-    Color color;
-    if(mesh->faces.size() == 0){
-        color = {0, 0, 0, 0};
-        return color;
-    }
+Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std::vector<Mesh3*>* meshes, std::vector<PointLight> lights){
+    Color3 color = {0, 0, 0, 255};
 
     float alpha = origin_x/WIDTH;
     float beta = origin_y/HEIGHT;
 
     Ray ray = createRay(alpha, beta);
 
-    RayCollision boxCol = GetRayCollisionBox(ray, mesh->bbox);
+    Mesh3* mesh;
+    RayCollision col;
+    col.hit = false;
+    for(Mesh3* curMesh : *meshes){
+        RayCollision boxCol = GetRayCollisionBox(ray, curMesh->bbox);
     
-    if(!boxCol.hit){
-        color = {0, 0, 0, 0};
-        return color;
-    }
-    
-    //RayCollision col = GetRayCollisionTriangle(ray, mesh->faces[0].v1, mesh->faces[0].v2, mesh->faces[0].v3);
-    RayCollision col = triangleCollisionCheck(ray, mesh->faces[0].v1, mesh->faces[0].v2, mesh->faces[0].v3);
-    color = mesh->faces[0].color;
-    for(FaceTri tri : mesh->faces){
-        //RayCollision temp = GetRayCollisionTriangle(ray, tri.v1, tri.v2, tri.v3);
-        RayCollision temp = triangleCollisionCheck(ray, tri.v1, tri.v2, tri.v3);
+        if(!boxCol.hit){
+            continue;
+        }
+        
+        if(curMesh->faces.size() == 0){
+            continue;
+        }
+        
+        for(FaceTri tri : curMesh->faces){
+            //RayCollision temp = GetRayCollisionTriangle(ray, tri.v1, tri.v2, tri.v3);
+            RayCollision temp = triangleCollisionCheck(ray, tri.v1, tri.v2, tri.v3);
 
-        if(!col.hit || (temp.hit && col.distance > temp.distance)){ 
-            col = temp;
-            color = tri.color;
+            if(!col.hit || (temp.hit && col.distance > temp.distance)){ 
+                col = temp;
+                mesh = curMesh;
+            }
         }
     }
 
     if(!col.hit){
-        color = {0, 0, 0, 0};
+        return color;
     }
 
-    return color;
+    // Shading
+    for(PointLight light : lights){
+        Vector3 l = Vector3Normalize(light.pos - col.point);
+
+        color = color + light.intensity*mesh->material.kd*max(0, Vector3DotProduct(col.normal, l));
+
+        Vector3 v = Vector3Normalize(cam.position - col.point);
+        Vector3 h = Vector3Normalize(v+l);
+
+        color = color + light.intensity*mesh->material.ks*powf(max(0, Vector3DotProduct(col.normal, h)), 10);
+
+        float ALI = 20; // temporary constant Ambient Light Intensity
+        color = color + mesh->material.ka*ALI;
+    }
+
+    return color.clampMax();
 }
 
 //temp

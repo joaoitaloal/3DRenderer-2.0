@@ -5,7 +5,7 @@ using namespace std;
 
 FaceTriIndexes ParseFace(vector<string> vertices_info);
 
-Mesh3 ParseOBJFile(const char* fileName){
+Mesh3* ParseOBJFile(const char* fileName){
     ifstream file(fileName);
 
     if(!file) throw 1;
@@ -87,14 +87,6 @@ Mesh3 ParseOBJFile(const char* fileName){
             face.vt2 = v_texture[faceIndexes.v_tex[1]];
             if(faceIndexes.v_tex[2] != -1)
             face.vt3 = v_texture[faceIndexes.v_tex[2]];
-
-            Color color; 
-            color.r = GetRandomValue(0, 255);
-            color.g = GetRandomValue(0, 255);
-            color.b = GetRandomValue(0, 255);
-            color.a = 255;
-
-            face.color = color;
             
             faces.push_back(face);
         }
@@ -107,7 +99,12 @@ Mesh3 ParseOBJFile(const char* fileName){
         {max_x, max_y, max_z}
     };
 
-    Mesh3 mesh = {faces, bbox}; // this is probably inneficient(i think it copies the vector), need to check later
+    Material3 mat = {0.5, 0.7, 0.3}; // Temporary
+
+    Mesh3* mesh = new Mesh3(); // this is probably inneficient(i think it copies the vector), need to check later
+    mesh->faces = faces;
+    mesh->bbox = bbox;
+    mesh->material = mat;
 
     return mesh;
 }
