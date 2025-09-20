@@ -63,7 +63,8 @@ Color View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, Mesh3
     RayCollision col = triangleCollisionCheck(ray, mesh->faces[0].v1, mesh->faces[0].v2, mesh->faces[0].v3);
     color = mesh->faces[0].color;
     for(FaceTri tri : mesh->faces){
-        RayCollision temp = GetRayCollisionTriangle(ray, tri.v1, tri.v2, tri.v3);
+        //RayCollision temp = GetRayCollisionTriangle(ray, tri.v1, tri.v2, tri.v3);
+        RayCollision temp = triangleCollisionCheck(ray, tri.v1, tri.v2, tri.v3);
 
         if(!col.hit || (temp.hit && col.distance > temp.distance)){ 
             col = temp;

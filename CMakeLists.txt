@@ -9,6 +9,7 @@ add_executable(Renderer ${SRC_FILES})
 
 include_directories(dependencies/include)
 
+# Supressing warnings from raygui
 target_include_directories(Renderer
     SYSTEM
     PRIVATE

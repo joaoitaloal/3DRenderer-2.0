@@ -1,13 +1,16 @@
 #include "renderer.h"
+#include <limits>
 
 // Most of the math for this code comes from chapter 4 and 5 of Fundamentals of Computer Graphics by Peter Shirley
 // After a very simple and quick test this seems to be as fast as the raylib version??
 // The book does not say what algorithm is this which is very weird but after some reading im pretty sure it is more-trumbore, which is the same technique used on raylib, so the similar speed makes sense
+// After some more tests it actually is about 1.25x slower than the raylib version, should take a look at the source for raylib and see what is different there
 
 // Raylib already has this function but i want to try a custom implementation from zero to compare how badly it performs
 RayCollision triangleCollisionCheck(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3){
     // Some terrible naming conventions here
     RayCollision col;
+    const double inf = std::numeric_limits<float>::infinity();
     
     // M  = a(ei - hf) + b(gf - di) + d(dh- eg)
     float a = p1.x - p2.x; float d = p1.x - p3.x; float g = ray.direction.x; float j = p1.x - ray.position.x;
@@ -22,9 +25,10 @@ RayCollision triangleCollisionCheck(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
     float ak_minus_jb = a*k - j*b;
     float jc_minus_al = j*c - a*l;
     float bl_minus_kc = b*l - k*c;
-    float t = (f*ak_minus_jb + e*jc_minus_al + d*bl_minus_kc)/M;
+    float t = -(f*ak_minus_jb + e*jc_minus_al + d*bl_minus_kc)/M;
 
     if(t < 0){
+        col.distance = inf;
         col.hit = false;
         return col;
     }
@@ -32,6 +36,7 @@ RayCollision triangleCollisionCheck(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
     float gamma = (i*ak_minus_jb + h*jc_minus_al + g*bl_minus_kc)/M;
 
     if(gamma < 0 || gamma > 1){
+        col.distance = inf;
         col.hit = false;
         return col;
     }
@@ -39,6 +44,7 @@ RayCollision triangleCollisionCheck(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
     float beta = (j*ei_minus_hf + k*gf_minus_di + l*dh_minus_eg)/M;
 
     if(beta < 0 || beta > 1 - gamma){
+        col.distance = inf;
         col.hit = false;
         return col;
     }
