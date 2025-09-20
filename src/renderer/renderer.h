@@ -26,4 +26,6 @@ RayCollision meshCollisionCheck(Ray ray, Mesh3* mesh);
 
 bool meshShadowCheck(Ray ray, Mesh3* mesh);
 
+Color3 genericRecursiveRayCast(Ray ray, std::vector<Mesh3*>* meshes, std::vector<PointLight> lights, int depth);
+
 #endif // RENDERER_RENDERER_H

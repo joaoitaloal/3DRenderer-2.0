@@ -99,7 +99,7 @@ Mesh3* ParseOBJFile(const char* fileName){
         {max_x, max_y, max_z}
     };
 
-    Material3 mat = {0.5, 0.7, 0.3}; // Temporary
+    Material3 mat = {0.5, 0.7, 0.3, 0.3}; // Temporary
 
     Mesh3* mesh = new Mesh3(); // this is probably inneficient(i think it copies the vector), need to check later
     mesh->faces = faces;

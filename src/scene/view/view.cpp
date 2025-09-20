@@ -95,6 +95,12 @@ Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std:
         Vector3 h = Vector3Normalize(v+l);
 
         color = color + light.intensity*mesh->material.ks*powf(max(0, Vector3DotProduct(col.normal, h)), 10);
+
+        // Specular Reflection
+        Vector3 r = Vector3Normalize(ray.direction - col.normal*(Vector3DotProduct(ray.direction, col.normal))*2);
+        Ray reflection = {col.point + r*EPSILON, r};
+
+        color = color + genericRecursiveRayCast(reflection, meshes, lights, 0)*mesh->material.km;
     }
 
     return color.clampMax();

@@ -32,7 +32,7 @@ class Plane {
 
 class Material3{
     public:
-        float kd; float ks; float ka; // Light intensity coefficients
+        float kd; float ks; float ka; float km; // Light intensity coefficients
 };
 
 #endif // RENDERER_SCENE_H
