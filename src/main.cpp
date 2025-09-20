@@ -24,6 +24,10 @@
     - Make a Readme
 */
 
+/*
+    There are raylib bindings for brainfuck...why...
+*/
+
 int main(){
     // Window configuration
     const int WIN_WIDTH = 1080;

@@ -3,6 +3,14 @@
 
 #include <raylib.h>
 
-Vector3* createVector3(float x, float y, float z);
+float matrixDeterminant3x3(Matrix mat){
+    return 
+        mat.m0*mat.m5*mat.m10 
+        - mat.m0*mat.m9*mat.m6
+        - mat.m4*mat.m1*mat.m10
+        + mat.m4*mat.m9*mat.m2
+        + mat.m8*mat.m1*mat.m6
+        - mat.m8*mat.m5*mat.m2;
+}
 
 #endif // RENDERER_UTILS_H

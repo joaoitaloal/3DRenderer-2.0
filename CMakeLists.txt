@@ -9,6 +9,12 @@ add_executable(Renderer ${SRC_FILES})
 
 include_directories(dependencies/include)
 
+target_include_directories(Renderer
+    SYSTEM
+    PRIVATE
+    dependencies/include
+)
+
 # windows only
 target_link_libraries(Renderer
     PRIVATE
