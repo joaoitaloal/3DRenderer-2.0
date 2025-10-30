@@ -22,7 +22,14 @@ class Mesh3 {
 };
 
 class Transform3{
+    public:
+        Matrix mat;
+        Vector4 position; // rotation anchor
+    
+        // changes Vector3 point, not the best way to do that but i can change it later
+        void rotate_and_translate_point(Vector3 rotation_dir, float angle, Vector3 translation, Vector3& point);
 
+        void rotate_and_translate_tri(Vector3 rotation_dir, float angle, Vector3 translation, FaceTri& tri);
 };
 
 struct FaceTriIndexes{

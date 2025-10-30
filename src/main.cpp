@@ -21,7 +21,6 @@
     - Make a Readme
     - Maybe make a "Scene" class with all the lights and meshes of the scene
     - Take a look at the ray-triangle intersection function from raylib to see how different is the implementation from mine
-    - Check if im not passing any big object by value instead of reference in some part of the code
 */
 
 /*
@@ -51,7 +50,7 @@ int main(){
     GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, ColorToInt((Color){ 100, 200, 255, 255 }));
 
     // UI "states"
-    char obj_file_entry[120] = "models/NSMonkey.obj";
+    char obj_file_entry[120] = "models/NSUtahTeapot.obj";
     bool obj_file_entry_edit = false;
 
     // Program "states"

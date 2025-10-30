@@ -74,8 +74,8 @@ Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std:
     color = color + mesh->material.ka*ALI;
 
     for(PointLight light : lights){
-        Vector3 shadowRayDir = light.pos - col.point;
-        Ray shadowCheckRay = {col.point + shadowRayDir*EPSILON, shadowRayDir};
+        Vector3 lightDir = light.pos - col.point;
+        Ray shadowCheckRay = {col.point + lightDir*EPSILON, lightDir};
 
         RayCollision shadowCol;
         shadowCol.hit = false;
@@ -87,7 +87,7 @@ Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std:
             }
         }
 
-        Vector3 l = Vector3Normalize(shadowRayDir);
+        Vector3 l = Vector3Normalize(lightDir);
 
         color = color + light.intensity*mesh->material.kd*max(0, Vector3DotProduct(col.normal, l));
 
