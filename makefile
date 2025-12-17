@@ -1,41 +1,42 @@
-# Parei de usar essa makefile, ela provavelmente tá desatualizada e não funcionando!!
-# ToDo: Consertar essa makefile, adicionar a versão de linux da raylib nas dependencias
+CXX := g++
+CXXFLAGS := -std=c++17 -Wall -Wextra -g -Isrc -MMD -MP 
+
+# Incluindo como sistema pra suprimir as warnings da raygui
+INCLUDES = \
+    -isystem deps/include
 
 ifeq ($(OS), Windows_NT)
-    EXE = .exe
+	LDFLAGS = \
+    	-L ./deps/lib/windows
+
+	LDLIBS = -lraylib -lgdi32 -lwinmm
 else
-    EXE =
+	LDFLAGS = \
+    	-L ./deps/lib
+
+	LDLIBS = ./deps/lib/libraylib.a
 endif
 
-CC = g++
-CFLAGS = -Wall -lm
+SRC_DIR := src
+BUILD_DIR := build
 
-INCLUDES = \
-    -I ./dependencies/include
+SRC := $(shell find $(SRC_DIR) -name "*.cpp")
+OBJ := $(SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+DEP := $(OBJ:.o=.d)
 
-LDFLAGS = \
-    -L ./dependencies/lib
+TARGET := Renderer
 
-LDLIBS = -lraylib -lgdi32 -lwinmm
+all: $(BUILD_DIR)/$(TARGET)
 
-BUILD_DIR = build
-TARGET ?= $(BUILD_DIR)/main$(EXE)
-SRC ?= ./src/main.cpp
+$(BUILD_DIR)/$(TARGET): $(OBJ)
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(INCLUDES) -o $@ $(OBJ) $(LDFLAGS) $(LDLIBS)
 
-all: $(TARGET)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
+	@mkdir -p $(dir $@)
+	$(CXX) $(INCLUDES) $(CXXFLAGS) -c $< -o $@
 
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) $(INCLUDES) $(SRC) -o $(TARGET) $(LDFLAGS) $(LDLIBS)
+-include $(DEP)
 
 clean:
-ifeq ($(OS), Windows_NT)
-	del /Q $(BUILD_DIR)
-else # não sei como o rm se comporta, talvez tenha que ser diferente esse comando
-	rm $(TARGET) 
-endif
-
-run:
-	$(TARGET)
-
-test:
-	echo $(OS)
+	rm -f $(OBJ) $(DEP) $(BUILD_DIR)/$(TARGET)
