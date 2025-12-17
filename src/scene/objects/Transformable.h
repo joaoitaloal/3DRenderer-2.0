@@ -22,4 +22,14 @@ struct Escalable{
     virtual void escale() = 0;
 };
 
+struct Skewable{
+    ~Skewable() = default;
+    virtual void skew() = 0;
+};
+
+struct Mirrorable{
+    ~Mirrorable() = default;
+    virtual void mirror() = 0;
+};
+
 #endif // RENDERER_TRANSFORMABLE_H

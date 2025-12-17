@@ -55,8 +55,7 @@ Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, in
 // Modificar isso aqui pra receber o raio direto, e criar uma nova função intermediária que calcula os valores do raio
 // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
 Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
-    Color3 color = {0, 0, 0};
-    if(recursion_index <= 0) return color;
+    if(recursion_index <= 0) return {0, 0, 0};
     
     Shape* shape;
     Collision col;
@@ -71,16 +70,15 @@ Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, in
         }
     }
 
-    if(!col.hit){
-        return color;
-    }
+    if(!col.hit) return {0, 0, 0};
 
     // Shading
     float ALI = 0.2; // temporary constant Ambient Light Intensity
+    Color3 color = shape->get_material().color;
     color = color + shape->get_material().ka*ALI;
 
     for(Light* light : *lights){
-        Vector3 l = Vector3Normalize(light->get_position() - col.point);
+        Vector3 l = light->get_light_vector(col.point);
 
         Ray shadowRay = {col.point + l*EPSILON, l};
 
@@ -110,11 +108,11 @@ Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, in
         }
 
         // Specular Reflection
-        Ray reflection = {col.point + r*EPSILON, r};
+        Vector3 reflection_vec = Vector3Normalize(((v*col.normal)*2)*col.normal - v);
+        Ray reflection = {col.point + reflection_vec*EPSILON, reflection_vec};
 
         color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
     }
-
 
     return color.clampMax();
 }

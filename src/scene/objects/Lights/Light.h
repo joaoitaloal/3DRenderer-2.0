@@ -4,16 +4,15 @@
 #include <raylib.h>
 
 #include "../../../math/Color3.h"
-#include "../Transformable.h"
 
-// Luz abstrata
-class Light : public Translatable{
+// Luz genérica
+class Light{
     public:
-        Vector3 get_position() { return position; }
+        // Retorna o vetor l
+        virtual Vector3 get_light_vector(Vector3 origin) = 0;
 
         Color3 get_intensity() { return intensity; }
     protected:
-        Vector3 position;
         Color3 intensity;
 };
 

@@ -1,7 +1,7 @@
 #include "app.h"
 
 // Temporario, tirar daqui depois
-#include "../scene/objects/Lights/PointLight.h"
+#include "../scene/objects/Lights/Point/PointLight.h"
 // Esse não sei se é temporario, mas deve ir pra outro lugar em alguma refatoração
 #include "../scene/objects/Mesh3/Mesh3.h"
 
@@ -18,8 +18,8 @@ App::App(int win_width_, int win_height_)
     ui_padding = 12;
     obj_file_entry_edit = false;
     obj_file_entry = "";
-    load_new_mesh("models/PlaneLow.obj");
-    load_new_mesh("models/Cube.obj");
+    load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
+    load_new_mesh("models/Cube.obj", {0.25, 0, 0});
 
     // Rendered image dimensions
     render_witdh = 720; render_height = 720;
@@ -48,7 +48,7 @@ void App::start()
     //std::chrono::duration<double, std::milli> time_elapsed(0);
 
     // Temporary manual light creation:
-    Light* light = new PointLight({0, 20, 20}, {1, 1, 1});
+    Light* light = new PointLight({20, 20, 20}, {1, 1, 1});
     lights->push_back(light);
 
     while(!WindowShouldClose()){
@@ -58,10 +58,10 @@ void App::start()
     CloseWindow();
 }
 
-void App::load_new_mesh(string filename){
+void App::load_new_mesh(string filename, Color3 color){
     try{
         // Material fixo temporário
-        Mesh3* mesh = Mesh3::create_from_obj_file(filename, {0.5, 0.5, 0.3, 0.3, 10});
+        Mesh3* mesh = Mesh3::create_from_obj_file(filename, {color, 0.5, 0.5, 0.3, 0.3, 10});
         shapes->push_back(mesh);
 
         cout << "Carregou!" << endl;

@@ -14,6 +14,19 @@
 
 #define USER_SPEED 0.5f
 
+/* ToDo: Especificações do trabalho:
+    - Esfera, cilindro, cone e malha(tá feita, só falta mudar o algoritmo do triangulo);
+    - Aplicação de textura
+    - Transformações(tem só as interfaces, falta implementar)
+    - Fonte spot e direcional, a ambiente tá hardcoded, tem que ajeitar também
+    - Função de selecionar um objeto com o clique
+    - Determinar o cenário
+
+    - Mudar o sistema de camera pra usar aquele modelo que ele usa, centrado na origem e com as transformações world-to-camera e etc.
+*/
+
+// ---------------- Outros ToDos ---------------- //
+
 // ToDo: Mover tudo que é da UI aqui pra uma classe separada, talvez convenha modificar a posição da UI,
 // do jeito que tá agora o renderizador inteiro precisa de um offset, 
 // acho que uma opção decente é manter toda a UI sobreposta no próprio renderizador
@@ -25,12 +38,27 @@
 
 // ToDo: Mudar os Vector3 da raylib pela nossa classe Vector3R
 
+// ToDo: Criar classe e implementações pra operações com matrizes
+
 // ToDo: Revisar o código do renderizador(principalmente a iluminação), fiz faz tempo e pode tá errado
 
 // ToDo: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
 // calculada e dividir todas as cores por ela, que parece bem legal
 
 // ToDo: Colisão com boundingbox
+
+// ToDo: Threading
+
+// Issue: O código de renderização de triangulo tem duas situações estranhas:
+// Quando tu vê um triangulo exatamente em paralelo, a colisão buga e renderiza a linha inteira paralela;
+// A aresta entre dois triangulos diferentes tem alguns buracos as vezes.
+// Dito isso a gente já vai mudar o algoritmo mesmo então tá ok.
+
+// Issue: O modelo do cubo tá colidindo com o raio do centro da tela, independente da posição do observador,
+// acho que tem relação com o problema de cima, o algoritmo do triangulo deve tá errado.
+
+// Issue: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
+// mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
 
 using namespace std;
 
@@ -45,7 +73,8 @@ class App{
         // Inicializa o programa
         void start();
 
-        void load_new_mesh(string filename);
+        // Acho que temporário, deve ir pra outra classe pelo menos
+        void load_new_mesh(string filename, Color3 color);
 
     private:
         int win_width, win_height;
