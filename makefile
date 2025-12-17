@@ -1,4 +1,5 @@
 # Parei de usar essa makefile, ela provavelmente tá desatualizada e não funcionando!!
+# ToDo: Consertar essa makefile, adicionar a versão de linux da raylib nas dependencias
 
 ifeq ($(OS), Windows_NT)
     EXE = .exe

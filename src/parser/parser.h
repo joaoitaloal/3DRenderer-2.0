@@ -9,6 +9,8 @@
 
 #include "../scene/objects/objects.h"
 
-Mesh3* ParseOBJFile(const char* filename);
+using namespace std;
+
+Mesh3* ParseOBJFile(string filename);
 
 #endif // RENDERER_PARSER_H

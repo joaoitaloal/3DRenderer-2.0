@@ -1,11 +1,9 @@
 // This function was greatly guided by this page: https://www.scratchapixel.com/lessons/3d-basic-rendering/obj-file-format/obj-file-format.html
 #include "parser.h"
 
-using namespace std;
-
 FaceTriIndexes ParseFace(vector<string> vertices_info);
 
-Mesh3* ParseOBJFile(const char* fileName){
+Mesh3* ParseOBJFile(string fileName){
     ifstream file(fileName);
 
     if(!file) throw 1;
