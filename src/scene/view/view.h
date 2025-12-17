@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "../scene.h"
-#include "../objects/shape.h"
+#include "../objects/Shape.h"
 #include "../objects/Lights/Light.h"
 #include "../../math/Color3.h"
 

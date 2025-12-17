@@ -10,7 +10,7 @@
 
 #include "../texture/texture.h"
 #include "../scene/view/view.h"
-#include "../scene/objects/shape.h"
+#include "../scene/objects/Shape.h"
 
 #define USER_SPEED 0.5f
 
@@ -68,7 +68,6 @@ using namespace std;
 class App{
     public:
         App(int win_width_, int win_height_);
-        ~App();
 
         // Inicializa o programa
         void start();

@@ -38,5 +38,8 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 
 -include $(DEP)
 
+run:
+	build/renderer
+
 clean:
 	rm -f $(OBJ) $(DEP) $(BUILD_DIR)/$(TARGET)

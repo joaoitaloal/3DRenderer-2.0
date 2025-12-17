@@ -38,10 +38,6 @@ App::App(int win_width_, int win_height_)
     UnloadImage(init);
 }
 
-App::~App(){
-    delete tex;
-}
-
 // Falta ajeitar muita coisa aqui, principalmente coisas da UI que precisam sair desse método
 void App::start()
 {
@@ -54,6 +50,8 @@ void App::start()
     while(!WindowShouldClose()){
         process();
     }
+
+    delete tex;
     
     CloseWindow();
 }
@@ -116,11 +114,13 @@ void App::process(){
 
     GuiLabel((Rectangle){0 + ui_padding, 0, 32, 16}, std::to_string(fps).insert(0, "fps: ").c_str());
 
-    if(GuiTextBox((Rectangle){0 + ui_padding, 32, 260, 32}, obj_file_entry, 120, obj_file_entry_edit)){
+    // Não tá legal, ele carregar a mesh toda vez q clica, tá carregando meshs repetidas
+    // Além disso esse obj_file_entry como um char* tá terrivel
+    /*if(GuiTextBox((Rectangle){0 + ui_padding, 32, 260, 32}, obj_file_entry, 120, obj_file_entry_edit)){
         obj_file_entry_edit = !obj_file_entry_edit;
 
-        //load_new_mesh(obj_file_entry); // Não tá legal, ele carregar a mesh toda vez q clica, tá carregando meshs repetidas
-    }
+        load_new_mesh(obj_file_entry); 
+    }*/
 
     if(GuiButton((Rectangle){ui_width/2 - 90, ui_height - 64 - ui_padding, 180, 64}, "Render Image")){
         //auto start = std::chrono::high_resolution_clock().now();

@@ -3,7 +3,7 @@
 
 #include <raylib.h>
 #include "../scene/view/view.h"
-#include "../scene/objects/shape.h"
+#include "../scene/objects/Shape.h"
 #include <vector>
 
 class TextureCPU{
