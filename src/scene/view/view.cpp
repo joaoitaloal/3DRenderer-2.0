@@ -1,6 +1,4 @@
 #include "view.h"
-#include "../../renderer/renderer.h"
-#include <vector>
 
 inline float max(float a, float b){
     return a > b?a:b;
@@ -44,24 +42,32 @@ Ray View::createRay(float alpha, float beta){
     return ray;
 }
 
-// Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std::vector<Mesh3*>* meshes, std::vector<PointLight> lights){
-    Color3 color = {0, 0, 0, 255};
-
+Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights)
+{
     float alpha = origin_x/WIDTH;
     float beta = origin_y/HEIGHT;
 
     Ray ray = createRay(alpha, beta);
+    return raycast(ray, shapes, lights, RECURSION_DEPTH);
+}
 
-    Mesh3* mesh;
-    RayCollision col;
+#include <iostream>
+// Modificar isso aqui pra receber o raio direto, e criar uma nova função intermediária que calcula os valores do raio
+// Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
+Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
+    Color3 color = {0, 0, 0};
+    if(recursion_index <= 0) return color;
+    
+    Shape* shape;
+    Collision col;
     col.hit = false;
-    for(Mesh3* curMesh : *meshes){
+
+    for(Shape* curShape : *shapes){
         
-        RayCollision temp = meshCollisionCheck(ray, curMesh);
+        Collision temp = curShape->get_collision(ray);
         if(!col.hit || (temp.hit && col.distance > temp.distance)){
             col = temp;
-            mesh = curMesh;
+            shape = curShape;
         }
     }
 
@@ -70,38 +76,45 @@ Color3 View::rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std:
     }
 
     // Shading
-    float ALI = 20; // temporary constant Ambient Light Intensity
-    color = color + mesh->material.ka*ALI;
+    float ALI = 0.2; // temporary constant Ambient Light Intensity
+    color = color + shape->get_material().ka*ALI;
 
-    for(PointLight light : lights){
-        Vector3 lightDir = light.pos - col.point;
-        Ray shadowCheckRay = {col.point + lightDir*EPSILON, lightDir};
+    for(Light* light : *lights){
+        Vector3 l = Vector3Normalize(light->get_position() - col.point);
 
-        RayCollision shadowCol;
-        shadowCol.hit = false;
-        for(Mesh3* shadowMesh : *meshes){
-            if(meshShadowCheck(shadowCheckRay, shadowMesh)){
-                shadowCol.hit = true;
-                
+        Ray shadowRay = {col.point + l*EPSILON, l};
+
+        for(Shape* shadowShape : *shapes){
+            if(shadowShape->get_collision(shadowRay).hit){
                 return color;
             }
         }
 
-        Vector3 l = Vector3Normalize(lightDir);
-
-        color = color + light.intensity*mesh->material.kd*max(0, Vector3DotProduct(col.normal, l));
-
         Vector3 v = Vector3Normalize(cam.position - col.point);
-        Vector3 h = Vector3Normalize(v+l);
+        Vector3 r = Vector3Normalize(((l*col.normal)*2)*col.normal - l);
 
-        color = color + light.intensity*mesh->material.ks*powf(max(0, Vector3DotProduct(col.normal, h)), 10);
+        float dotnl = Vector3DotProduct(col.normal, l);
+        if(dotnl > 0){
+            color = (
+                color + 
+                light->get_intensity() * shape->get_material().kd * max(0, dotnl)
+            );
+        }
+
+        float dotvr = Vector3DotProduct(v, r);
+        if(dotvr > 0){
+            color = (
+                color + 
+                light->get_intensity() * shape->get_material().ks * powf(max(0, dotvr), shape->get_material().km)
+            );
+        }
 
         // Specular Reflection
-        Vector3 r = Vector3Normalize(ray.direction - col.normal*(Vector3DotProduct(ray.direction, col.normal))*2);
         Ray reflection = {col.point + r*EPSILON, r};
 
-        color = color + genericRecursiveRayCast(reflection, meshes, lights, 0)*mesh->material.km;
+        color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
     }
+
 
     return color.clampMax();
 }

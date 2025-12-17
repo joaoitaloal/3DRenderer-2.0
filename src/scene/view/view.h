@@ -1,12 +1,18 @@
 #ifndef RENDERER_VIEW_H
 #define RENDERER_VIEW_H
 
-#include "../scene.h"
-#include "../objects/objects.h"
-
 #include <raylib.h>
 #include <raymath.h>
-#include "../../utils/utils.h"
+#include <vector>
+
+#include "../scene.h"
+#include "../objects/shape.h"
+#include "../objects/Lights/Light.h"
+#include "../../math/Color3.h"
+
+using namespace std;
+
+#define RECURSION_DEPTH 3
 
 // Camera and plane combined
 class View{
@@ -25,8 +31,10 @@ class View{
 
         Ray createRay(float alpha, float beta);
 
+        Color3 calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights);
+
         // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-        Color3 rayCast(float origin_x, float origin_y, int WIDTH, int HEIGHT, std::vector<Mesh3*>* mesh, std::vector<PointLight> lights);
+        Color3 raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_depth);
 
         //temp
         void move(float x, float y, float z);

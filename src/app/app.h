@@ -1,5 +1,5 @@
-#ifndef APP_H
-#define APP_H
+#ifndef RENDERER_APP_H
+#define RENDERER_APP_H
 
 #include <raylib.h>
 #include <raygui.h>
@@ -9,9 +9,8 @@
 //#include <chrono>
 
 #include "../texture/texture.h"
-#include "../renderer/renderer.h"
-#include "../scene/objects/objects.h"
-#include "../parser/parser.h"
+#include "../scene/view/view.h"
+#include "../scene/objects/shape.h"
 
 #define USER_SPEED 0.5f
 
@@ -24,12 +23,20 @@
 
 // ToDo: Mudar todos os char* por std::string
 
-// Comentei as partes do código que calculam o tempo de renderização, talvez temporariamente talvez não
+// ToDo: Mudar os Vector3 da raylib pela nossa classe Vector3R
 
-// Classe que inicializa a janela da raylib e o programa
+// ToDo: Revisar o código do renderizador(principalmente a iluminação), fiz faz tempo e pode tá errado
+
+// ToDo: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
+// calculada e dividir todas as cores por ela, que parece bem legal
+
+// ToDo: Colisão com boundingbox
 
 using namespace std;
 
+// Comentei as partes do código que calculam o tempo de renderização, talvez temporariamente talvez não
+
+// Classe que inicializa a janela da raylib e o programa
 class App{
     public:
         App(int win_width_, int win_height_);
@@ -38,7 +45,7 @@ class App{
         // Inicializa o programa
         void start();
 
-        void load_new_mesh(string);
+        void load_new_mesh(string filename);
 
     private:
         int win_width, win_height;
@@ -56,11 +63,11 @@ class App{
 
         // Esses próximos atributos devem ir pra uma classe Scene, quando ela for criada
         View view;
-        std::vector<Mesh3*> meshes;
-        std::vector<PointLight> lights;
+        std::vector<Shape*>* shapes;
+        std::vector<Light*>* lights;
 
         // Função chamada todo frame
         void process();
 };
 
-#endif // APP_H
+#endif // RENDERER_APP_H

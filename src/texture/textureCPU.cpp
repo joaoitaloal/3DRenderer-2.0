@@ -22,6 +22,7 @@ void TextureCPU::setPixelColor(int x, int y, Color3 color){
     pixels[index].r = color.r;
     pixels[index].g = color.g;
     pixels[index].b = color.b;
+    pixels[index].a = 255;
 }
 
 Color* TextureCPU::getPixelsRec(int x, int y, int WIDTH, int HEIGHT){
@@ -63,17 +64,17 @@ Color* TextureCPU::getPixelsRec(Rectangle rec){
     return newPixels;
 }
 
-void TextureCPU::update(View view, std::vector<Mesh3*>* meshes, int WIDTH, int HEIGHT, std::vector<PointLight> lights){
+void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
-            Color3 color = view.rayCast(x, y, WIDTH, HEIGHT, meshes, lights);
+            Color3 color = view.calculate_pixel_color(x, y, WIDTH, HEIGHT, shapes, lights);
 
-            setPixelColor(x, y, {color.r, color.g, color.b});
+            setPixelColor(x, y, {color.r*255, color.g*255, color.b*255});
         }
     }
 }
 
-void TextureCPU::renderToScreen(View view, std::vector<Mesh3*>* meshes, int WIDTH, int HEIGHT, std::vector<PointLight> lights, int anim_speed){
+/*void TextureCPU::renderToScreen(View view, std::vector<Mesh3*>* meshes, int WIDTH, int HEIGHT, std::vector<PointLight> lights, int anim_speed){
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
             Color3 color = view.rayCast(x, y, WIDTH, HEIGHT, meshes, lights);
@@ -111,4 +112,4 @@ void TextureCPU::renderToScreen(View view, std::vector<Mesh3*>* meshes, int WIDT
 
         EndDrawing();
     }
-}
+}*/

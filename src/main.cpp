@@ -1,5 +1,6 @@
 #define RAYGUI_IMPLEMENTATION
 
+// ToDo list antiga, vou manter por enquanto mas ignore!!!
 /* ToDo:
     - Make rotation code(maybe try to make a Transform class)
         Clearly too dificult for now, spent a long time reading and still dont understand enough to implement it, gonna stick to a fixed camera and single object for now

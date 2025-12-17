@@ -1,18 +1,11 @@
-#ifndef RENDERER_UTILS_H
-#define RENDERER_UTILS_H
-
-#include <raylib.h>
-
-float matrixDeterminant3x3(Matrix mat);
+#ifndef RENDERER_COLOR3_H
+#define RENDERER_COLOR3_H
 
 class Color3 {
     public:
         float r;        // Color red value
         float g;        // Color green value
         float b;        // Color blue value
-        float a;        // Color alpha value
-
-        Color3() = default;
 
         Color3 operator+ (const Color3& color);
         Color3 operator- (const Color3& color);
@@ -27,4 +20,4 @@ class Color3 {
         Color3 clampMax();
 };
 
-#endif // RENDERER_UTILS_H
+#endif // RENDERER_COLOR3_H

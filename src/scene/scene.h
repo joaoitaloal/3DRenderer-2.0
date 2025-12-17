@@ -15,6 +15,7 @@ class Camera3 {
         Camera3();
 };
 
+// Plano de visão especificamente, tem que mudar de nome
 class Plane {
     private:
         Camera3* parent;
@@ -28,11 +29,6 @@ class Plane {
         Plane();
 
         void updatePosition();
-};
-
-class Material3{
-    public:
-        float kd; float ks; float ka; float km; // Light intensity coefficients
 };
 
 #endif // RENDERER_SCENE_H

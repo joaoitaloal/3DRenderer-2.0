@@ -1,5 +1,18 @@
 // This function was greatly guided by this page: https://www.scratchapixel.com/lessons/3d-basic-rendering/obj-file-format/obj-file-format.html
-#include "parser.h"
+#include "./Mesh3.h"
+
+#include <iostream>
+
+#include <fstream>
+#include <sstream>
+
+using namespace std;
+
+struct FaceTriIndexes{
+    int vertices[3];
+    int v_normals[3];
+    int v_tex[3];
+};
 
 FaceTriIndexes ParseFace(vector<string> vertices_info);
 
@@ -8,12 +21,12 @@ Mesh3* ParseOBJFile(string fileName){
 
     if(!file) throw 1;
 
-    vector<FaceTri> faces;
+    vector<Triangle>* faces = new vector<Triangle>();
 
-    vector<Vector3> vertices, normals;
-    vector<Vector2> v_texture;
-
-    vector<FaceTri> triangles;
+    vector<Vector3> vertices; 
+    
+    //vector<Vector3> normals;
+    //vector<Vector2> v_texture;
 
     float max_x = 0, max_y = 0, max_z = 0;
     float min_x = 0, min_y = 0, min_z = 0;
@@ -42,7 +55,7 @@ Mesh3* ParseOBJFile(string fileName){
             if(v.z < min_z) min_z = v.z;
 
             vertices.push_back(v);
-        }else if(type == "vn"){
+        }/*else if(type == "vn"){
             Vector3 v;
             stream >> v.x;
             stream >> v.y;
@@ -55,7 +68,7 @@ Mesh3* ParseOBJFile(string fileName){
             stream >> v.y;
 
             v_texture.push_back(v);
-        }else if(type == "f"){
+        }*/else if(type == "f"){
             vector<string> vertices_info;
 
             for(int i = 0; i < 3; i++){
@@ -67,12 +80,13 @@ Mesh3* ParseOBJFile(string fileName){
         
             FaceTriIndexes faceIndexes = ParseFace(vertices_info);
 
-            FaceTri face; // Que horror
-            face.v1 = vertices[faceIndexes.vertices[0]];
-            face.v2 = vertices[faceIndexes.vertices[1]];
-            face.v3 = vertices[faceIndexes.vertices[2]];
+            Triangle face(
+                vertices[faceIndexes.vertices[0]],
+                vertices[faceIndexes.vertices[1]],
+                vertices[faceIndexes.vertices[2]]
+            );
 
-            if(faceIndexes.v_normals[0] != -1)
+            /*if(faceIndexes.v_normals[0] != -1)
                 face.vn1 = normals[faceIndexes.v_normals[0]];
             if(faceIndexes.v_normals[1] != -1)
             face.vn2 = normals[faceIndexes.v_normals[1]];
@@ -84,9 +98,9 @@ Mesh3* ParseOBJFile(string fileName){
             if(faceIndexes.v_tex[1] != -1)
             face.vt2 = v_texture[faceIndexes.v_tex[1]];
             if(faceIndexes.v_tex[2] != -1)
-            face.vt3 = v_texture[faceIndexes.v_tex[2]];
+            face.vt3 = v_texture[faceIndexes.v_tex[2]];*/
             
-            faces.push_back(face);
+            faces->push_back(face);
         }
     }
 
@@ -97,12 +111,10 @@ Mesh3* ParseOBJFile(string fileName){
         {max_x, max_y, max_z}
     };
 
-    Material3 mat = {0.5, 0.7, 0.3, 0.3}; // Temporary
-
-    Mesh3* mesh = new Mesh3(); // this is probably inneficient(i think it copies the vector), need to check later
-    mesh->faces = faces;
-    mesh->bbox = bbox;
-    mesh->material = mat;
+    Mesh3* mesh = new Mesh3(faces, bbox); // this is probably inneficient(i think it copies the vector), need to check later
+    //mesh->faces = faces;
+    //mesh->bbox = bbox;
+    //mesh->material = mat;
 
     return mesh;
 }
@@ -115,25 +127,25 @@ FaceTriIndexes ParseFace(vector<string> vertices_info){
     for(int i = 0; i < 3; i ++){
         string str = vertices_info[i];
 
-        std::istringstream stream(str);
-        std::string part;
+        istringstream stream(str);
+        string part;
 
-        std::getline(stream, part, '/');
+        getline(stream, part, '/');
         if(part.empty()) throw 2;
-        face.vertices[i] = std::stoi(part) - 1;
+        face.vertices[i] = stoi(part) - 1;
 
-        if (std::getline(stream, part, '/')) {
+        if (getline(stream, part, '/')) {
             if(part.empty())
                 face.v_tex[i] = -1;
             else
-                face.v_tex[i] = std::stoi(part) - 1;
+                face.v_tex[i] = stoi(part) - 1;
         }
 
-        if (std::getline(stream, part, '/')) {
+        if (getline(stream, part, '/')) {
             if(part.empty())
                 face.v_normals[i] = -1;
             else
-                face.v_normals[i] = std::stoi(part) - 1;
+                face.v_normals[i] = stoi(part) - 1;
         }
     }
 

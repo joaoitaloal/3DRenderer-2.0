@@ -3,7 +3,7 @@
 
 #include <raylib.h>
 #include "../scene/view/view.h"
-#include "../scene/objects/objects.h"
+#include "../scene/objects/shape.h"
 #include <vector>
 
 class TextureCPU{
@@ -27,10 +27,10 @@ class TextureCPU{
         Color* getPixelsRec(Rectangle rec);
 
         // Update the texture only
-        void update(View view, std::vector<Mesh3*>* mesh, int WIDTH, int HEIGHT, std::vector<PointLight> lights);
+        void update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights);
 
-        // Update directly to the screen
-        void renderToScreen(View view, std::vector<Mesh3*>* meshes, int WIDTH, int HEIGHT, std::vector<PointLight> lights, int anim_speed);
+        // Mesmo método de cima mas com uma animaçãozinha, a estrutura do código não tá legal mas vou manter comentado caso queira ajeitar depois
+        //void renderToScreen(View view, int WIDTH, int HEIGHT, const vector<Shape*>& shapes, const vector<Light*>& lights, int anim_speed);
 };
 
 #endif // RENDERER_TEXTURE_H

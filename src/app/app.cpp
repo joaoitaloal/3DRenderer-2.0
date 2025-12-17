@@ -1,15 +1,25 @@
 #include "app.h"
 
+// Temporario, tirar daqui depois
+#include "../scene/objects/Lights/PointLight.h"
+// Esse não sei se é temporario, mas deve ir pra outro lugar em alguma refatoração
+#include "../scene/objects/Mesh3/Mesh3.h"
+
 App::App(int win_width_, int win_height_)
     : view(0, 2, -10, 1, 1)
 {
     win_width = win_width_;
     win_height = win_height_;
 
+    shapes = new vector<Shape*>;
+    lights = new vector<Light*>;
+
     ui_width = 360; ui_height = 720;
     ui_padding = 12;
     obj_file_entry_edit = false;
-    obj_file_entry = "models/Cube.obj";
+    obj_file_entry = "";
+    load_new_mesh("models/PlaneLow.obj");
+    load_new_mesh("models/Cube.obj");
 
     // Rendered image dimensions
     render_witdh = 720; render_height = 720;
@@ -22,7 +32,7 @@ App::App(int win_width_, int win_height_)
     // Setting UI styles, change this to another file just for organization
     GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, ColorToInt((Color){ 100, 200, 255, 255 }));
 
-    // Inicializando textura
+    // Inicializando textura que guarda os pixels do renderizador
     Image init = GenImageColor(render_witdh, render_height, BLACK);
     tex = new TextureCPU(init);
     UnloadImage(init);
@@ -38,11 +48,8 @@ void App::start()
     //std::chrono::duration<double, std::milli> time_elapsed(0);
 
     // Temporary manual light creation:
-    PointLight light;
-    light.intensity = (Color3){255, 255, 255};
-    light.pos = (Vector3){20, 20, 0};
-
-    lights.push_back(light);
+    Light* light = new PointLight({0, 20, 20}, {1, 1, 1});
+    lights->push_back(light);
 
     while(!WindowShouldClose()){
         process();
@@ -51,11 +58,13 @@ void App::start()
     CloseWindow();
 }
 
-void App::load_new_mesh(string){
+void App::load_new_mesh(string filename){
     try{
-        Mesh3* mesh = new Mesh3();
-        mesh = ParseOBJFile(obj_file_entry);
-        meshes.push_back(mesh);
+        // Material fixo temporário
+        Mesh3* mesh = Mesh3::create_from_obj_file(filename, {0.5, 0.5, 0.3, 0.3, 10});
+        shapes->push_back(mesh);
+
+        cout << "Carregou!" << endl;
     }catch(const int err){
         throw err; // Só pra ficar explicito o erro
     }
@@ -83,7 +92,7 @@ void App::process(){
         }
         if(IsKeyDown(KEY_ENTER)){
             //auto start = std::chrono::high_resolution_clock().now();
-            tex->update(view, &meshes, render_witdh, render_height, lights);
+            tex->update(view, render_witdh, render_height, shapes, lights);
             //auto end = std::chrono::high_resolution_clock().now();
 
             // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
@@ -110,12 +119,12 @@ void App::process(){
     if(GuiTextBox((Rectangle){0 + ui_padding, 32, 260, 32}, obj_file_entry, 120, obj_file_entry_edit)){
         obj_file_entry_edit = !obj_file_entry_edit;
 
-        load_new_mesh(obj_file_entry); // Não tá legal, ele tenta carregar a mesh toda vez q clica
+        //load_new_mesh(obj_file_entry); // Não tá legal, ele carregar a mesh toda vez q clica, tá carregando meshs repetidas
     }
 
     if(GuiButton((Rectangle){ui_width/2 - 90, ui_height - 64 - ui_padding, 180, 64}, "Render Image")){
         //auto start = std::chrono::high_resolution_clock().now();
-        tex->update(view, &meshes, render_witdh, render_height, lights);
+        tex->update(view, render_witdh, render_height, shapes, lights);
         //auto end = std::chrono::high_resolution_clock().now();
 
         // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
