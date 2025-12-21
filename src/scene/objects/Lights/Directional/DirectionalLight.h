@@ -12,7 +12,7 @@ class DirectionalLight : public Light {
         // Ou change direction, só se sobrar tempo pra fz tbm:
         // void rotate_direction();
     private:
-        Vector3 direction;
+        Vector3R direction;
 };
 
 #endif // RENDERER_DIRECTIONALLIGHT_H

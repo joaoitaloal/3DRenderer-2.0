@@ -1,7 +1,6 @@
 #ifndef RENDERER_APP_H
 #define RENDERER_APP_H
 
-#include <raylib.h>
 #include <raygui.h>
 
 #include <iostream>
@@ -34,13 +33,7 @@
 // ToDo: Mover o próprio renderizador pra uma classe separada pode ser bom tbm,
 // por ele ter uma width e heigth própria
 
-// ToDo: Mudar todos os char* por std::string
-
-// ToDo: Mudar os Vector3 da raylib pela nossa classe Vector3R
-
 // ToDo: Criar classe e implementações pra operações com matrizes
-
-// ToDo: Revisar o código do renderizador(principalmente a iluminação), fiz faz tempo e pode tá errado
 
 // ToDo: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
 // calculada e dividir todas as cores por ela, que parece bem legal
@@ -59,6 +52,8 @@
 
 // Issue: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
 // mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
+// Acho que uma solução possível é guardar um ponteiro pro material na classe shape, daí quando tiver criando a mesh podemos criar
+// com todos os materiais iguais, ou um nullptr, só o gerenciamento de memória que ia ser meio complicadinho.
 
 using namespace std;
 

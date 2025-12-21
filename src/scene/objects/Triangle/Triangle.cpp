@@ -2,7 +2,7 @@
 
 #include <limits>
 
-Triangle::Triangle(Vector3 v1_, Vector3 v2_, Vector3 v3_){
+Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_){
     v1 = v1_;
     v2 = v2_;
     v3 = v3_;
@@ -15,7 +15,7 @@ Triangle::Triangle(Vector3 v1_, Vector3 v2_, Vector3 v3_){
     After some more tests it actually is about 1.25x slower than the raylib version, should take a look at the source for raylib and see what is different there
 */
 // Raylib already has this function but i wanted to try a custom implementation from zero to compare how badly it performs
-Collision Triangle::get_collision(Ray ray){
+Collision Triangle::get_collision(RayR ray){
     // Some terrible naming conventions here
     Collision col;
     const double inf = std::numeric_limits<float>::infinity();
@@ -60,11 +60,11 @@ Collision Triangle::get_collision(Ray ray){
     // hit
     col.hit = true;
     col.distance = t;
-    col.point = v1 + (v2 - v1)*beta + (v3 - v1)*gamma;
+    Vector3R test = (v2 - v1)*beta + (v3 - v1)*gamma;
+    col.point = v1 + test;
 
-    Vector3 p1 = v2-v1; Vector3 p2 = v3-v1;
-    Vector3 normal = {p1.y*p2.z - p1.z*p2.y, p1.z*p2.x - p1.x*p2.z, p1.x*p2.y - p1.y*p2.x};
-    col.normal = Vector3Normalize(normal);
+    Vector3R p1 = v2-v1; Vector3R p2 = v3-v1;
+    col.normal = Vector3R{p1.y*p2.z - p1.z*p2.y, p1.z*p2.x - p1.x*p2.z, p1.x*p2.y - p1.y*p2.x}.normalize();
 
     return col;
 }

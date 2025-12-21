@@ -1,6 +1,6 @@
 #include "Mesh3.h"
 
-Mesh3::Mesh3(vector<Triangle>* faces_, BoundingBox bbox_){
+Mesh3::Mesh3(vector<Triangle>* faces_, BoundingBoxR bbox_){
     faces = faces_;
     bbox = bbox_;
 }
@@ -17,7 +17,7 @@ Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_)
     return mesh;
 }
 
-Collision Mesh3::get_collision(Ray ray){
+Collision Mesh3::get_collision(RayR ray){
     Collision col;
     col.hit = false;
 

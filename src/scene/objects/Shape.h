@@ -1,21 +1,21 @@
 #ifndef RENDERER_SHAPE_H
 #define RENDERER_SHAPE_H
 
-#include <raylib.h>
-
 #include "./Material3.h"
+#include "../../math/Vector3R.h"
+#include "../../math/utils.h"
 
 struct Collision {
     bool hit;
     float distance;
-    Vector3 point;
-    Vector3 normal;
+    Vector3R point;
+    Vector3R normal;
 };
 
 // Classe de forma genérica
 class Shape{
     public:
-        virtual Collision get_collision(Ray ray) = 0;
+        virtual Collision get_collision(RayR ray) = 0;
 
         // Retornando uma referencia read-only, nem sei se precisa, talvez copiar seria suave
         const Material3& get_material() const { return material; };

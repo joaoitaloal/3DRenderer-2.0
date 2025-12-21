@@ -7,7 +7,7 @@
 class Cone : public Shape{
     public:
         //Cone();
-        //Collision get_collision(Ray ray) override;
+        //Collision get_collision(RayR ray) override;
 };
 
 #endif // RENDERER_CONE_H

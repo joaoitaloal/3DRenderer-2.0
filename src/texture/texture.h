@@ -2,9 +2,10 @@
 #define RENDERER_TEXTURECPU_H
 
 #include <raylib.h>
+#include <vector>
+
 #include "../scene/view/view.h"
 #include "../scene/objects/Shape.h"
-#include <vector>
 
 class TextureCPU{
     public:

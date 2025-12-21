@@ -1,9 +1,9 @@
 # Renderer
 
 ```bash
-    make
+make
 ```
 
 ```bash
-    make run
+make run
 ```

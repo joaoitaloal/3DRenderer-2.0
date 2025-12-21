@@ -33,7 +33,7 @@ Color3 Color3::operator/ (float scalar){
     return (Color3){this->r / scalar, this->g / scalar, this->b / scalar};
 }
 
-float min(float a, float b){
+inline float min(float a, float b){
     return a < b?a:b;
 }
 

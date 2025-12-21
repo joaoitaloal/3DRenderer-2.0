@@ -19,25 +19,16 @@ View::View(Camera3 &set_cam, Plane &set_plane)
 // Not implemented yet
 void View::setFov(float fov){};
 
-Ray View::createRay(float alpha, float beta){
-    Vector3 t = Vector3Add(
-        Vector3Scale(plane.p1, 1.0f-alpha),
-        Vector3Scale(plane.p2, alpha)
-    );
+RayR View::createRay(float alpha, float beta){
+    Vector3R t = plane.p1*(1.0f-alpha) + plane.p2*alpha;
 
-    Vector3 b = Vector3Add(
-        Vector3Scale(plane.p3, 1.0f-alpha),
-        Vector3Scale(plane.p4, alpha)
-    );
+    Vector3R b = plane.p3*(1.0f-alpha) + plane.p4*alpha;
 
-    Vector3 origin = Vector3Add(
-        Vector3Scale(t, 1.0f-beta),
-        Vector3Scale(b, beta)
-    );
+    Vector3R origin = t*(1.0f-beta) + b*beta;
 
-    Vector3 dir = Vector3Normalize(Vector3Subtract(origin, cam.position));
+    Vector3R dir = (origin - cam.position).normalize();
 
-    Ray ray = {origin, dir};
+    RayR ray = {origin, dir};
 
     return ray;
 }
@@ -47,14 +38,13 @@ Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, in
     float alpha = origin_x/WIDTH;
     float beta = origin_y/HEIGHT;
 
-    Ray ray = createRay(alpha, beta);
+    RayR ray = createRay(alpha, beta);
     return raycast(ray, shapes, lights, RECURSION_DEPTH);
 }
 
-#include <iostream>
 // Modificar isso aqui pra receber o raio direto, e criar uma nova função intermediária que calcula os valores do raio
 // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
+Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
     if(recursion_index <= 0) return {0, 0, 0};
     
     Shape* shape;
@@ -78,9 +68,9 @@ Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, in
     color = color + shape->get_material().ka*ALI;
 
     for(Light* light : *lights){
-        Vector3 l = light->get_light_vector(col.point);
+        Vector3R l = light->get_light_vector(col.point);
 
-        Ray shadowRay = {col.point + l*EPSILON, l};
+        RayR shadowRay = {col.point + l*EPSILON, l};
 
         for(Shape* shadowShape : *shapes){
             if(shadowShape->get_collision(shadowRay).hit){
@@ -88,10 +78,10 @@ Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, in
             }
         }
 
-        Vector3 v = Vector3Normalize(cam.position - col.point);
-        Vector3 r = Vector3Normalize(((l*col.normal)*2)*col.normal - l);
+        Vector3R v = (cam.position - col.point).normalize();
+        Vector3R r = ((col.normal*(l*col.normal)*2) - l).normalize();
 
-        float dotnl = Vector3DotProduct(col.normal, l);
+        float dotnl = col.normal * l;
         if(dotnl > 0){
             color = (
                 color + 
@@ -99,7 +89,7 @@ Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, in
             );
         }
 
-        float dotvr = Vector3DotProduct(v, r);
+        float dotvr = v * r;
         if(dotvr > 0){
             color = (
                 color + 
@@ -108,8 +98,8 @@ Color3 View::raycast(Ray ray, vector<Shape*>* shapes, vector<Light*>* lights, in
         }
 
         // Specular Reflection
-        Vector3 reflection_vec = Vector3Normalize(((v*col.normal)*2)*col.normal - v);
-        Ray reflection = {col.point + reflection_vec*EPSILON, reflection_vec};
+        Vector3R reflection_vec = (col.normal*((v*col.normal)*2) - v).normalize();
+        RayR reflection = {col.point + reflection_vec*EPSILON, reflection_vec};
 
         color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
     }

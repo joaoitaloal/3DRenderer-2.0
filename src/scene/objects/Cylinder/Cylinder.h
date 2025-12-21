@@ -7,7 +7,7 @@
 class Cylinder : public Shape{
     public:
         //Cylinder();
-        //Collision get_collision(Ray ray) override;
+        //Collision get_collision(RayR ray) override;
 };
 
 #endif // RENDERER_CYLINDER_H

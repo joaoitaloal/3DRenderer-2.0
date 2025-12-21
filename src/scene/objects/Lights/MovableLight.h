@@ -6,9 +6,9 @@
 
 class MovableLight : public Light, public Translatable {
     public:
-        Vector3 get_position() { return position; }
+        Vector3R get_position() { return position; }
     protected:
-        Vector3 position;
+        Vector3R position;
 };
 
 #endif // RENDERER_MOVABLELIGHT_H

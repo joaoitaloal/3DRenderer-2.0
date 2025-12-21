@@ -7,7 +7,7 @@
 class Sphere : public Shape{
     public:
         //Sphere();
-        //Collision get_collision(Ray ray) override;
+        //Collision get_collision(RayR ray) override;
 };
 
 #endif // RENDERER_SPHERE_H

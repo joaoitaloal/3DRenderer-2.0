@@ -23,7 +23,7 @@ Mesh3* ParseOBJFile(string fileName){
 
     vector<Triangle>* faces = new vector<Triangle>();
 
-    vector<Vector3> vertices; 
+    vector<Vector3R> vertices; 
     
     //vector<Vector3> normals;
     //vector<Vector2> v_texture;
@@ -40,7 +40,7 @@ Mesh3* ParseOBJFile(string fileName){
         stream >> type;
 
         if(type == "v"){
-            Vector3 v;
+            Vector3R v;
 
             stream >> v.x;
             if(v.x > max_x) max_x = v.x;
@@ -106,7 +106,7 @@ Mesh3* ParseOBJFile(string fileName){
 
     file.close();
 
-    BoundingBox bbox = {
+    BoundingBoxR bbox = {
         {min_x, min_y, min_z},
         {max_x, max_y, max_z}
     };
