@@ -2,6 +2,7 @@
 #define RENDERER_TRIANGLE_H
 
 #include "../Shape.h"
+#include "../Plane/Plane.h"
 
 class Triangle : Shape {
     public:
@@ -10,6 +11,7 @@ class Triangle : Shape {
 
     protected:
         Vector3R v1, v2, v3; // vertices
+        Plane plane; // Plano definido pelo triangulo, talvez daria pra fz de outra forma melhor doq guardar ele aqui
         
         // Coisas de mesh, só vai precisar se a gente colocar texturas em mesh
         // Vector3 vn1, vn2, vn3; // vertex normals

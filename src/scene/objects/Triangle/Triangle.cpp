@@ -2,10 +2,38 @@
 
 #include <limits>
 
-Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_){
+Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
+    : plane(v1_, v2_, v3_, true) // Usando backface culling por padrão
+{
     v1 = v1_;
     v2 = v2_;
     v3 = v3_;
+}
+
+// A reflexão e algumas outras coisas tão com alguns pontos vazios, 
+// deve ser problema de precisão ou aqui ou na colisão do plano, dar uma olhada depois.
+Collision Triangle::get_collision(RayR ray){
+    Collision col = plane.get_collision(ray);
+    if(!col.hit) return col;
+
+    Vector3R r1 = v2 - v1;
+    Vector3R r2 = v3 - v1;
+
+    Vector3R N = cross_product(r1, r2);
+    Vector3R n = N.normalize();
+    float N_length = N.length();
+
+    Vector3R p1 = v1 - col.point;
+    Vector3R p2 = v2 - col.point;
+    Vector3R p3 = v3 - col.point;
+
+    float c1 = (n*cross_product(p3, p1))/N_length;
+    float c2 = (n*cross_product(p1, p2))/N_length;
+    float c3 = 1-c1-c2;
+
+    if(c1 < 0 || c2 < 0 || c3 < 0) col.hit = false;
+
+    return col;
 }
 
 /* 
@@ -15,7 +43,7 @@ Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_){
     After some more tests it actually is about 1.25x slower than the raylib version, should take a look at the source for raylib and see what is different there
 */
 // Raylib already has this function but i wanted to try a custom implementation from zero to compare how badly it performs
-Collision Triangle::get_collision(RayR ray){
+/*Collision Triangle::get_collision(RayR ray){
     // Some terrible naming conventions here
     Collision col;
     const double inf = std::numeric_limits<float>::infinity();
@@ -67,4 +95,4 @@ Collision Triangle::get_collision(RayR ray){
     col.normal = Vector3R{p1.y*p2.z - p1.z*p2.y, p1.z*p2.x - p1.x*p2.z, p1.x*p2.y - p1.y*p2.x}.normalize();
 
     return col;
-}
+}*/

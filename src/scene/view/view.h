@@ -17,13 +17,13 @@ using namespace std;
 class View{
     private:
         Camera3 cam;
-        Plane plane;
+        PlaneV plane;
     public:
         Vector3R position;
 
         View(float set_x, float set_y, float set_z, float set_plane_width, float set_plane_height);
 
-        View(Camera3 &set_cam, Plane &set_plane);
+        View(Camera3 &set_cam, PlaneV &set_plane);
 
         // Not implemented yet
         void setFov(float fov);

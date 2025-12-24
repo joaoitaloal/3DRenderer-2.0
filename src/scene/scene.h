@@ -16,7 +16,7 @@ class Camera3 {
 };
 
 // Plano de visão especificamente, tem que mudar de nome
-class Plane {
+class PlaneV {
     private:
         Camera3* parent;
     public:
@@ -24,9 +24,9 @@ class Plane {
         float width; float height;
 
         // Centered in the origin(0, 0, 0)
-        Plane(float set_width, float set_height, Camera3* set_parent);
+        PlaneV(float set_width, float set_height, Camera3* set_parent);
         
-        Plane();
+        PlaneV();
 
         void updatePosition();
 };

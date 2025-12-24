@@ -11,7 +11,7 @@ View::View(float set_x, float set_y, float set_z, float set_plane_width, float s
     plane = {set_plane_width, set_plane_height, &cam};
 }
 
-View::View(Camera3 &set_cam, Plane &set_plane)
+View::View(Camera3 &set_cam, PlaneV &set_plane)
     : cam(set_cam), plane(set_plane) {
                     position = cam.position;
                 };
