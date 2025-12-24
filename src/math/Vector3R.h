@@ -29,4 +29,6 @@ float operator *(const Vector3R& v, const Vector3R& s);
 
 Vector3R cross_product(Vector3R p1, Vector3R p2);
 
+Vector3R operator -(const Vector3R& v);
+
 #endif // RENDERER_VECTOR3R_H

@@ -33,3 +33,8 @@ Vector3R cross_product(Vector3R p1, Vector3R p2)
 {
     return {p1.y*p2.z - p1.z*p2.y, p1.z*p2.x - p1.x*p2.z, p1.x*p2.y - p1.y*p2.x};
 }
+
+Vector3R operator-(const Vector3R &v)
+{
+    return {-v.x, -v.y, -v.z};
+}

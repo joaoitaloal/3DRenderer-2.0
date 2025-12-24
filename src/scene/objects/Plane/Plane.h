@@ -10,10 +10,11 @@ class Plane : public Shape {
 
         Collision get_collision(RayR ray) override;
 
-    private:
+    protected:
         Vector3R normal;
         Vector3R point; // Ponto conhecido do plano
 
+    private:
         bool backface_culled;
 };
 

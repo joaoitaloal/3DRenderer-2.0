@@ -5,13 +5,6 @@
 #include "../../math/Vector3R.h"
 #include "../../math/utils.h"
 
-struct Collision {
-    bool hit;
-    float distance;
-    Vector3R point;
-    Vector3R normal;
-};
-
 // Classe de forma genérica
 class Shape{
     public:
