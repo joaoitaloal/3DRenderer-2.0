@@ -4,9 +4,16 @@
 #include "../scene/objects/Lights/Point/PointLight.h"
 // Esse não sei se é temporario, mas deve ir pra outro lugar em alguma refatoração
 #include "../scene/objects/Mesh3/Mesh3.h"
+#include "../scene/objects/Cylinder/Cylinder.h"
+#include "../scene/objects/Sphere/Sphere.h"
+
+// Temporario
+Material3 debug_temp_material(Color3 color){
+    return {color, 0.5, 0.5, 0.3, 0.3, 10};
+}
 
 App::App(int win_width_, int win_height_)
-    : view(0, 2, -10, 1, 1)
+    : view(0, 2, -10, 1, 1, 1)
 {
     win_width = win_width_;
     win_height = win_height_;
@@ -18,8 +25,25 @@ App::App(int win_width_, int win_height_)
     ui_padding = 12;
     obj_file_entry_edit = false;
     obj_file_entry = "";
+
+    // ========= Criando objetos =========
+    // Malhas
     load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
     load_new_mesh("models/Cube.obj", {0.25, 0, 0});
+    // Cilindro
+    shapes->push_back(new Cylinder(
+        {-10, 0, 10},
+        {0, 1, 0},
+        3,
+        10,
+        debug_temp_material({0, 0, 0})
+    ));
+    // Esfera
+    shapes->push_back(new Sphere(
+        {0, 10, 0},
+        3,
+        debug_temp_material({0, 0, 0})
+    ));
 
     // Rendered image dimensions
     render_witdh = 720; render_height = 720;
@@ -51,6 +75,12 @@ void App::start()
         process();
     }
 
+    // Cleanup
+    for(Shape* shape : *shapes) delete shape;
+    for(Light* light : *lights) delete light;
+
+    delete shapes;
+    delete lights;
     delete tex;
     
     CloseWindow();
@@ -59,10 +89,8 @@ void App::start()
 void App::load_new_mesh(string filename, Color3 color){
     try{
         // Material fixo temporário
-        Mesh3* mesh = Mesh3::create_from_obj_file(filename, {color, 0.5, 0.5, 0.3, 0.3, 10});
+        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color));
         shapes->push_back(mesh);
-
-        cout << "Carregou!" << endl;
     }catch(const int err){
         throw err; // Só pra ficar explicito o erro
     }
@@ -134,9 +162,9 @@ void App::process(){
 
     // Render image displays
 
-    DrawText(std::to_string(view.position.x).insert(0, "cam X: ").c_str(), 0 + render_offset + ui_padding, 0 + ui_padding, 16, WHITE);
-    DrawText(std::to_string(view.position.y).insert(0, "cam Y: ").c_str(), 0 + render_offset + ui_padding, 16 + ui_padding, 16, WHITE);
-    DrawText(std::to_string(view.position.z).insert(0, "cam Z: ").c_str(), 0 + render_offset + ui_padding, 32 + ui_padding, 16, WHITE);
+    DrawText(std::to_string(view.get_camera_position().x).insert(0, "cam X: ").c_str(), 0 + render_offset + ui_padding, 0 + ui_padding, 16, WHITE);
+    DrawText(std::to_string(view.get_camera_position().y).insert(0, "cam Y: ").c_str(), 0 + render_offset + ui_padding, 16 + ui_padding, 16, WHITE);
+    DrawText(std::to_string(view.get_camera_position().z).insert(0, "cam Z: ").c_str(), 0 + render_offset + ui_padding, 32 + ui_padding, 16, WHITE);
 
     //DrawText(std::to_string(time_elapsed.count()/1000).insert(0, "Time to render: ").append("s").c_str(), 0 + render_offset, render_height - 24, 24, WHITE);
 

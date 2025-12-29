@@ -13,3 +13,8 @@ Collision Circle::get_collision(RayR ray){
 
     return col;
 }
+
+Circle *Circle::transform(MatrixR m)
+{
+
+}

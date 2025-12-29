@@ -8,6 +8,7 @@ class Triangle : Shape {
     public:
         Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_);
         Collision get_collision(RayR ray) override;
+        Triangle* transform(MatrixR m) override;
 
     protected:
         Vector3R v1, v2, v3; // vertices

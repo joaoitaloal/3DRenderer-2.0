@@ -8,6 +8,7 @@ class Circle : public Plane {
     public:
         Circle(Vector3R point_, Vector3R normal_, float radius_, bool culled);
         Collision get_collision(RayR ray) override;
+        Circle* transform(MatrixR m) override;
 
     private:
         float radius;

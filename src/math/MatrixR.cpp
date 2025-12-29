@@ -1,6 +1,6 @@
-#include "Matrix.h"
+#include "MatrixR.h"
 
-Matrix::Matrix( float _m0, float _m1, float _m2, float _m3,
+MatrixR::MatrixR( float _m0, float _m1, float _m2, float _m3,
                 float _m4, float _m5, float _m6, float _m7,
                 float _m8, float _m9, float _m10, float _m11,
                 float _m12, float _m13, float _m14, float _m15)
@@ -11,7 +11,14 @@ Matrix::Matrix( float _m0, float _m1, float _m2, float _m3,
     m12 = _m12; m13 = _m13; m14 = _m14; m15 = _m15;
 }
 
-Matrix subtract_matrix(Matrix A, Matrix B)
+void MatrixR::print(){
+    std::cout << "[ " << m0 << " " << m1 << " " << m2 << " " << m3 << " ]" << std::endl;
+    std::cout << "[ " << m4 << " " << m5 << " " << m6 << " " << m7 << " ]" << std::endl;
+    std::cout << "[ " << m8 << " " << m9 << " " << m10 << " " << m11 << " ]" << std::endl;
+    std::cout << "[ " << m12 << " " << m13 << " " << m14 << " " << m15 << " ]" << std::endl;
+}
+
+MatrixR subtract_matrix(MatrixR A, MatrixR B)
 {
     return {
         A.m0 - B.m0, A.m1 - B.m1, A.m2 - B.m2, A.m3 - B.m3,
@@ -21,7 +28,7 @@ Matrix subtract_matrix(Matrix A, Matrix B)
     };
 }
 
-Matrix mul_mat(Matrix A, Matrix B)
+MatrixR mul_mat(MatrixR A, MatrixR B)
 {
     float _m0 = A.m0*B.m0  + A.m1*B.m4  + A.m2*B.m8  + A.m3*B.m12;
     float _m1 = A.m0*B.m1  + A.m1*B.m5  + A.m2*B.m9  + A.m3*B.m13;
@@ -40,7 +47,7 @@ Matrix mul_mat(Matrix A, Matrix B)
     float _m14 = A.m12*B.m2 + A.m13*B.m6 + A.m14*B.m10 + A.m15*B.m14;
     float _m15 = A.m12*B.m3 + A.m13*B.m7 + A.m14*B.m11 + A.m15*B.m15;
 
-    Matrix resultado (_m0,  _m1,  _m2,  _m3,
+    MatrixR resultado (_m0,  _m1,  _m2,  _m3,
                       _m4,  _m5,  _m6,  _m7,
                       _m8,  _m9,  _m10,  _m11,
                       _m12,  _m13,  _m14,  _m15);
@@ -48,7 +55,7 @@ Matrix mul_mat(Matrix A, Matrix B)
     return resultado;
 }
 
-Vector3R vector_transform(Vector3R v, Matrix m){
+Vector3R vector_transform(Vector3R v, MatrixR m){
     return {
         m.m0*v.x + m.m1*v.y + m.m2*v.z + m.m3,
         m.m4*v.x + m.m5*v.y + m.m6*v.z + m.m7,
@@ -56,8 +63,8 @@ Vector3R vector_transform(Vector3R v, Matrix m){
     };
 }
 
-Matrix matrix_by_vector(Matrix m, Vector3R v){
-    Matrix aux = {
+MatrixR matrix_by_vector(MatrixR m, Vector3R v){
+    MatrixR aux = {
         v.x, v.y, v.z, 0,
         0, 0, 0, 0,
         0, 0, 0, 0,
@@ -67,7 +74,7 @@ Matrix matrix_by_vector(Matrix m, Vector3R v){
     return mul_mat(m, aux);
 }
 
-Matrix vector_transpose(Vector3R v){
+MatrixR vector_transpose(Vector3R v){
     return {
         v.x, 0, 0, 0,
         v.y, 0, 0, 0,
@@ -76,7 +83,7 @@ Matrix vector_transpose(Vector3R v){
     };
 }
 
-Matrix identity_matrix()
+MatrixR identity_matrix()
 {
     return {
         1, 0, 0, 0,

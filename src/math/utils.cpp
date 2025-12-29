@@ -33,11 +33,20 @@ float modified_quadratic(float a, float b, float c)
 }
 
 Collision get_first_collision(std::vector<Collision> cols){
-    Collision col = cols.at(0);
+    Collision col;
+    col.hit = false;
 
-    for(int i = 1; i < cols.size(); i++){
+    int i = 0;
+    for(int i = 0; i < cols.size(); i++){
+        if(cols.at(i).hit){
+            col = cols.at(i);
+            break;
+        }
+    }
+
+    for(; i < cols.size(); i++){
         if(!cols.at(i).hit) continue;
-        if(cols.at(i) < col.distance) col = cols.at(i);
+        if(cols.at(i).distance < col.distance) col = cols.at(i);
     }
 
     return col;

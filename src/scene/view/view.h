@@ -7,23 +7,17 @@
 #include "../objects/Shape.h"
 #include "../objects/Lights/Light.h"
 #include "../../math/Color3.h"
+#include "../../math/MatrixR.h"
 
 using namespace std;
 
 #define RECURSION_DEPTH 3
-#define EPSILON 0.000001f // Usando pra evitar problemas com a precisão no raycasting
+#define EPSILON 0.001f // Usando pra evitar problemas com a precisão no raycasting, talvez pensar uma forma melhor de consertar isso
 
-// Camera and plane combined
+// Tá meio godclass isso aqui
 class View{
-    private:
-        Camera3 cam;
-        PlaneV plane;
     public:
-        Vector3R position;
-
-        View(float set_x, float set_y, float set_z, float set_plane_width, float set_plane_height);
-
-        View(Camera3 &set_cam, PlaneV &set_plane);
+        View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_);
 
         // Not implemented yet
         void setFov(float fov);
@@ -33,11 +27,24 @@ class View{
         Color3 calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights);
 
         // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-        Color3 raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_depth);
+        Color3 raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_depth = RECURSION_DEPTH);
 
         //temp
         void move(float x, float y, float z);
 
+        float get_width();
+        float get_height();
+        float get_plane_distance();
+
+        Vector3R get_camera_position();
+
+    private:
+        Camera3 camera;
+        PlaneV plane; // Temp, lembrar de tirar
+        float view_width, view_height;
+        float plane_distance;
+
+        MatrixR world_to_camera;
 };
 
 #endif // RENDERER_VIEW_H

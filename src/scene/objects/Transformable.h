@@ -1,13 +1,18 @@
 #ifndef RENDERER_TRANSFORMABLE_H
 #define RENDERER_TRANSFORMABLE_H
 
+#include "../../math/MatrixR.h"
+
+struct Transformable{
+    ~Transformable() = default;
+    virtual void transform(MatrixR m) = 0;
+};
+
+// -------- Ideia anterior, acho que não ficava muito legal
 // Interfaces que dizem se uma classe pode ser movida, rotacionada e escalonada
-
 // ToDo: Adicionar parâmetros na assinatura
-
 // Nomes péssimos
-
-struct Translatable{
+/*struct Translatable{
     ~Translatable() = default;
     virtual void translate() = 0;
 };
@@ -30,6 +35,6 @@ struct Skewable{
 struct Mirrorable{
     ~Mirrorable() = default;
     virtual void mirror() = 0;
-};
+};*/
 
 #endif // RENDERER_TRANSFORMABLE_H

@@ -5,20 +5,20 @@
 
 // Temporário enquanto não temos a classe matriz
 #include "../Circle/Circle.h"
-#include "../../../math/Matrix.h"
 
 //ToDo
 class Cylinder : public Shape{
     public:
-        Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_);
+        Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_);
         Collision get_collision(RayR ray) override;
+        Cylinder* transform(MatrixR m) override;
     
     private:
         Vector3R base_center, axis_dir;
         float radius, height;
 
-        Matrix Q; // projection on axis_dir
-        Matrix M; // orthogonal projection on axis_dir
+        MatrixR Q; // projection on axis_dir
+        MatrixR M; // orthogonal projection on axis_dir
 
         Circle base;
         Circle roof;

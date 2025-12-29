@@ -1,7 +1,10 @@
 #include "Sphere.h"
 
-Sphere::Sphere(Vector3R sphere_center_, float radius_)
-: sphere_center(sphere_center_), radius(radius_) {}
+Sphere::Sphere(Vector3R sphere_center_, float radius_, Material3 material_)
+: sphere_center(sphere_center_), radius(radius_) 
+{
+    material = material_;
+}
 
 Collision Sphere::get_collision(RayR ray){
     Collision col;
@@ -24,4 +27,8 @@ Collision Sphere::get_collision(RayR ray){
     col.point = ray.position + (ray.direction*col.distance);
 
     return col;
+}
+
+Sphere* Sphere::transform(MatrixR m){
+
 }

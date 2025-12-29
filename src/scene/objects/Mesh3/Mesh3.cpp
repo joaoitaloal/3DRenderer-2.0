@@ -39,3 +39,7 @@ Collision Mesh3::get_collision(RayR ray){
 
     return col;
 }
+
+Mesh3* Mesh3::transform(MatrixR m){
+
+}

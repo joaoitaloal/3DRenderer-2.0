@@ -14,6 +14,10 @@ float Vector3R::length()
     return sqrtf(x*x + y*y + z*z);
 }
 
+void Vector3R::print(){
+    std::cout << "( " << x << " " << y << " " << z << " )" << std::endl;
+}
+
 Vector3R operator +(const Vector3R& v, const Vector3R& s){
     return {v.x + s.x, v.y + s.y, v.z + s.z};
 }

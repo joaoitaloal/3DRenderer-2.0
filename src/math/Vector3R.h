@@ -2,6 +2,7 @@
 #define RENDERER_VECTOR3R_H
 
 #include <math.h>
+#include <iostream>
 
 // Não confundir com o Vector3 da raylib
 class Vector3R{
@@ -15,6 +16,8 @@ class Vector3R{
 
         Vector3R normalize();
         float length();
+
+        void print();
 };
 
 Vector3R operator +(const Vector3R& v, const Vector3R& s);

@@ -6,8 +6,9 @@
 //ToDo
 class Sphere : public Shape{
     public:
-        Sphere(Vector3R sphere_center, float radius);
+        Sphere(Vector3R sphere_center, float radius, Material3 material_);
         Collision get_collision(RayR ray) override;
+        Sphere* transform(MatrixR m) override;
 
     private:
         Vector3R sphere_center;

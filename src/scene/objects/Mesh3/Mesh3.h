@@ -17,6 +17,8 @@ class Mesh3 : public Shape {
         static Mesh3* create_from_obj_file(string filename, Material3 material_);
 
         Collision get_collision(RayR ray) override;
+        Mesh3* transform(MatrixR m) override;
+
     private:
         // O gerenciamento de memória do vetor faces é feito pela classe
         vector<Triangle>* faces;

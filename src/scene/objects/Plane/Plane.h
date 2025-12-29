@@ -9,6 +9,7 @@ class Plane : public Shape {
         Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled);
 
         Collision get_collision(RayR ray) override;
+        Plane* transform(MatrixR m) override;
 
     protected:
         Vector3R normal;

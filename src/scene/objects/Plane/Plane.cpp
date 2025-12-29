@@ -33,3 +33,7 @@ Collision Plane::get_collision(RayR ray)
 
     return col;
 }
+
+Plane* Plane::transform(MatrixR m){
+
+}

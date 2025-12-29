@@ -36,6 +36,10 @@ Collision Triangle::get_collision(RayR ray){
     return col;
 }
 
+Triangle* Triangle::transform(MatrixR m){
+
+}
+
 /* 
     Most of the math for this code comes from chapter 4 and 5 of Fundamentals of Computer Graphics by Peter Shirley
     After a very simple and quick test this seems to be as fast as the raylib version??

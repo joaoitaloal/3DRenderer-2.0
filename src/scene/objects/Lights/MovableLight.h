@@ -4,9 +4,11 @@
 #include "./Light.h"
 #include "../Transformable.h"
 
-class MovableLight : public Light, public Translatable {
+// Parei de usar, tem que ver como vamos fazer as transformações nas luzes
+class MovableLight : public Light, public Transformable {
     public:
         Vector3R get_position() { return position; }
+        void transform(MatrixR m) override;
     protected:
         Vector3R position;
 };

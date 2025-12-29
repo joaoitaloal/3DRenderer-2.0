@@ -4,46 +4,20 @@ inline float max(float a, float b){
     return a > b?a:b;
 }
 
-View::View(float set_x, float set_y, float set_z, float set_plane_width, float set_plane_height){
-    position = {set_x, set_y, set_z};
+View::View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_)
+    : camera(x_, y_, z_, 0, 0, 1),
+    world_to_camera(identity_matrix())
+{
+    view_width = view_width_;
+    view_height = view_height_;
+    plane_distance = plane_distance_;
 
-    cam = {set_x, set_y, set_z, 0, 0, 1};
-    plane = {set_plane_width, set_plane_height, &cam};
+    plane = {view_width_, view_height_, &camera};
 }
-
-View::View(Camera3 &set_cam, PlaneV &set_plane)
-    : cam(set_cam), plane(set_plane) {
-                    position = cam.position;
-                };
 
 // Not implemented yet
 void View::setFov(float fov){};
 
-RayR View::createRay(float alpha, float beta){
-    Vector3R t = plane.p1*(1.0f-alpha) + plane.p2*alpha;
-
-    Vector3R b = plane.p3*(1.0f-alpha) + plane.p4*alpha;
-
-    Vector3R origin = t*(1.0f-beta) + b*beta;
-
-    Vector3R dir = (origin - cam.position).normalize();
-
-    RayR ray = {origin, dir};
-
-    return ray;
-}
-
-Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights)
-{
-    float alpha = origin_x/WIDTH;
-    float beta = origin_y/HEIGHT;
-
-    RayR ray = createRay(alpha, beta);
-    return raycast(ray, shapes, lights, RECURSION_DEPTH);
-}
-
-// Modificar isso aqui pra receber o raio direto, e criar uma nova função intermediária que calcula os valores do raio
-// Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
 Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
     if(recursion_index <= 0) return {0, 0, 0};
     
@@ -78,14 +52,14 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
             }
         }
 
-        Vector3R v = (cam.position - col.point).normalize();
+        Vector3R v = (camera.position - col.point).normalize();
         Vector3R r = ((col.normal*(l*col.normal)*2) - l).normalize();
 
         float dotnl = col.normal * l;
         if(dotnl > 0){
             color = (
                 color + 
-                light->get_intensity() * shape->get_material().kd * max(0, dotnl)
+                light->get_intensity() * shape->get_material().kd * dotnl
             );
         }
 
@@ -93,7 +67,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
         if(dotvr > 0){
             color = (
                 color + 
-                light->get_intensity() * shape->get_material().ks * powf(max(0, dotvr), shape->get_material().km)
+                light->get_intensity() * shape->get_material().ks * powf(dotvr, shape->get_material().km)
             );
         }
 
@@ -107,15 +81,57 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
     return color.clampMax();
 }
 
+// Funções que usam interpolação, acho que não vamos mais usar
+RayR View::createRay(float alpha, float beta){
+    Vector3R t = plane.p1*(1.0f-alpha) + plane.p2*alpha;
+
+    Vector3R b = plane.p3*(1.0f-alpha) + plane.p4*alpha;
+
+    Vector3R origin = t*(1.0f-beta) + b*beta;
+
+    Vector3R dir = (origin - camera.position).normalize();
+
+    RayR ray = {origin, dir};
+
+    return ray;
+}
+
+Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights)
+{
+    float alpha = origin_x/WIDTH;
+    float beta = origin_y/HEIGHT;
+
+    RayR ray = createRay(alpha, beta);
+    return raycast(ray, shapes, lights, RECURSION_DEPTH);
+}
+
 //temp
 void View::move(float x, float y, float z){
-    cam.position.x += x;
-    cam.position.y += y;
-    cam.position.z += z;
+    camera.position.x += x;
+    camera.position.y += y;
+    camera.position.z += z;
 
-    position.x += x;
-    position.y += y;
-    position.z += z;
+    //position.x += x;
+    //position.y += y;
+    //position.z += z;
 
     plane.updatePosition();
+}
+
+float View::get_width(){
+    return view_width;
+}
+
+float View::get_height(){
+    return view_height;
+}
+
+float View::get_plane_distance()
+{
+    return plane_distance;
+}
+
+Vector3R View::get_camera_position()
+{
+    return camera.position;
 }
