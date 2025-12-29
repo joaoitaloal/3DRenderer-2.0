@@ -6,8 +6,12 @@
 //ToDo
 class Sphere : public Shape{
     public:
-        //Sphere();
-        //Collision get_collision(RayR ray) override;
+        Sphere(Vector3R sphere_center, float radius);
+        Collision get_collision(RayR ray) override;
+
+    private:
+        Vector3R sphere_center;
+        float radius;
 };
 
 #endif // RENDERER_SPHERE_H
