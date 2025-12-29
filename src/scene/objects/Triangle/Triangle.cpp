@@ -92,6 +92,8 @@ Collision Triangle::get_collision(RayR ray){
     col.point = v1 + test;
 
     Vector3R p1 = v2-v1; Vector3R p2 = v3-v1;
+
+    // It is not necessary to calculate this normal inside the collision
     col.normal = Vector3R{p1.y*p2.z - p1.z*p2.y, p1.z*p2.x - p1.x*p2.z, p1.x*p2.y - p1.y*p2.x}.normalize();
 
     return col;

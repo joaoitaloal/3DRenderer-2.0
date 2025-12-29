@@ -1,3 +1,4 @@
+#include "Vector3R.h"
 #ifndef MATRIX_H
 #define MATRIX_H
 
@@ -14,7 +15,21 @@ class Matrix {
                 float m8, float m9, float m10, float m11,
                 float m12, float m13, float m14, float m15);
 
-        Matrix mul_mat(Matrix A, Matrix B);
 };
+
+// Dá pra mudar esses pra operators mas são operações muito lentas então não acho legal
+
+Matrix subtract_matrix(Matrix A, Matrix B);
+
+Matrix mul_mat(Matrix A, Matrix B);
+
+Vector3R vector_transform(Vector3R v, Matrix m);
+
+// Nome paia
+Matrix matrix_by_vector(Matrix m, Vector3R v);
+
+Matrix vector_transpose(Vector3R v);
+
+Matrix identity_matrix();
 
 #endif

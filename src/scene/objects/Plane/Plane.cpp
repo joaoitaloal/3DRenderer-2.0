@@ -23,10 +23,10 @@ Collision Plane::get_collision(RayR ray)
     float dir_dot = ray.direction * normal;
     if((backface_culled && dir_dot >= 0) || dir_dot == 0) return col;
 
+    // Se tiver muito ilegivel dá pra separar em várias linhas
     col.distance = -(((ray.position - point) * normal)/dir_dot);
     if(col.distance < 0) return col;
 
-    // Se tiver muito ilegivel dá pra separar em várias linhas
     col.hit = true;
     col.normal = normal;
     col.point = ray.position + (ray.direction*col.distance);

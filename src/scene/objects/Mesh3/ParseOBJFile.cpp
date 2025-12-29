@@ -1,8 +1,6 @@
 // This function was greatly guided by this page: https://www.scratchapixel.com/lessons/3d-basic-rendering/obj-file-format/obj-file-format.html
 #include "./Mesh3.h"
 
-#include <iostream>
-
 #include <fstream>
 #include <sstream>
 

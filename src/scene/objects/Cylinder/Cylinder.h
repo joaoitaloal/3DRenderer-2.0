@@ -4,8 +4,8 @@
 #include "../Shape.h"
 
 // Temporário enquanto não temos a classe matriz
-#include <raymath.h>
 #include "../Circle/Circle.h"
+#include "../../../math/Matrix.h"
 
 //ToDo
 class Cylinder : public Shape{
