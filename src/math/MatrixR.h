@@ -21,17 +21,23 @@ class MatrixR {
 
 // Dá pra mudar esses pra operators mas são operações muito lentas então não acho legal
 
-MatrixR subtract_matrix(MatrixR A, MatrixR B);
+MatrixR subtract_matrix(const MatrixR& A, const MatrixR& B);
 
-MatrixR mul_mat(MatrixR A, MatrixR B);
+MatrixR mul_mat(const MatrixR& A, const MatrixR& B);
 
-Vector3R vector_transform(Vector3R v, MatrixR m);
+// Equivalente a multiplicar uma matriz por um vetor
+Vector3R vector_transform(const MatrixR& m, const Vector3R& v);
 
 // Nome paia
-MatrixR matrix_by_vector(MatrixR m, Vector3R v);
+MatrixR matrix_by_vector(const MatrixR& m, const Vector3R& v);
 
-MatrixR vector_transpose(Vector3R v);
+MatrixR vector_transpose(const Vector3R& v);
 
 MatrixR identity_matrix();
+
+// Assumindo que a matriz representa um vetor de 3 dimensões
+Vector3R matrix_to_vector(const MatrixR& m);
+
+MatrixR vector_to_matrix(const Vector3R& v);
 
 #endif // RENDERER_MATRIX_H

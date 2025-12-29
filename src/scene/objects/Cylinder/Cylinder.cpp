@@ -1,5 +1,4 @@
 #include "Cylinder.h"
-#include <iostream>
 
 Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_)
     :base(base_center_, -axis_dir_, radius_, false),
@@ -26,16 +25,16 @@ Collision Cylinder::get_surface_collision(RayR ray){
     Collision col;
     col.hit = false;
 
-    Vector3R w = base_center - ray.position;
+    Vector3R w = ray.position - base_center;
 
-    Vector3R MRay = vector_transform(ray.direction, M);
-    Vector3R MW = vector_transform(w, M);
+    Vector3R MRay = vector_transform(M, ray.direction);
+    Vector3R MW = vector_transform(M, w);
 
     float a = MRay * MRay;
-    float b = (MRay*2) * MW;
+    float b = 2*(MRay * MW);
     float c = (MW * MW) - powf(radius, 2);
 
-    col.distance = -modified_quadratic(a, b, c);
+    col.distance = modified_quadratic(a, b, c);
     if(col.distance < 0) return col;
 
     col.point = ray.position + (ray.direction*col.distance);
@@ -44,7 +43,7 @@ Collision Cylinder::get_surface_collision(RayR ray){
     float col_height = center_to_point * axis_dir;
     if(col_height < 0 || col_height > height) return col;
 
-    col.normal = vector_transform(center_to_point, M).normalize();
+    col.normal = vector_transform(M, center_to_point).normalize();
     col.hit = true;
 
     return col;

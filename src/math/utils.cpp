@@ -15,9 +15,9 @@ inline float min(float a, float b){
     return b;
 }
 
-// Não tou testando se a é 0
 float modified_quadratic(float a, float b, float c)
 {
+    if(a == 0) return -1; // Talvez esse teste deveria envolver um epsilon
     float delta = powf(b, 2) - (4*a*c);
 
     if(delta < 0) return delta;

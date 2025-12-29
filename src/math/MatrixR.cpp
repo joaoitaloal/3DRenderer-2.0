@@ -1,6 +1,6 @@
 #include "MatrixR.h"
 
-MatrixR::MatrixR( float _m0, float _m1, float _m2, float _m3,
+MatrixR::MatrixR(float _m0, float _m1, float _m2, float _m3,
                 float _m4, float _m5, float _m6, float _m7,
                 float _m8, float _m9, float _m10, float _m11,
                 float _m12, float _m13, float _m14, float _m15)
@@ -18,7 +18,7 @@ void MatrixR::print(){
     std::cout << "[ " << m12 << " " << m13 << " " << m14 << " " << m15 << " ]" << std::endl;
 }
 
-MatrixR subtract_matrix(MatrixR A, MatrixR B)
+MatrixR subtract_matrix(const MatrixR& A, const MatrixR& B)
 {
     return {
         A.m0 - B.m0, A.m1 - B.m1, A.m2 - B.m2, A.m3 - B.m3,
@@ -28,7 +28,7 @@ MatrixR subtract_matrix(MatrixR A, MatrixR B)
     };
 }
 
-MatrixR mul_mat(MatrixR A, MatrixR B)
+MatrixR mul_mat(const MatrixR& A, const MatrixR& B)
 {
     float _m0 = A.m0*B.m0  + A.m1*B.m4  + A.m2*B.m8  + A.m3*B.m12;
     float _m1 = A.m0*B.m1  + A.m1*B.m5  + A.m2*B.m9  + A.m3*B.m13;
@@ -55,7 +55,7 @@ MatrixR mul_mat(MatrixR A, MatrixR B)
     return resultado;
 }
 
-Vector3R vector_transform(Vector3R v, MatrixR m){
+Vector3R vector_transform(const MatrixR& m, const Vector3R& v){
     return {
         m.m0*v.x + m.m1*v.y + m.m2*v.z + m.m3,
         m.m4*v.x + m.m5*v.y + m.m6*v.z + m.m7,
@@ -63,18 +63,11 @@ Vector3R vector_transform(Vector3R v, MatrixR m){
     };
 }
 
-MatrixR matrix_by_vector(MatrixR m, Vector3R v){
-    MatrixR aux = {
-        v.x, v.y, v.z, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0
-    };
-
-    return mul_mat(m, aux);
+MatrixR matrix_by_vector(const MatrixR& m, const Vector3R& v){
+    return mul_mat(m, vector_to_matrix(v));
 }
 
-MatrixR vector_transpose(Vector3R v){
+MatrixR vector_transpose(const Vector3R& v){
     return {
         v.x, 0, 0, 0,
         v.y, 0, 0, 0,
@@ -90,5 +83,20 @@ MatrixR identity_matrix()
         0, 1, 0, 0,
         0, 0, 1, 0,
         0, 0, 0, 1
+    };
+}
+
+Vector3R matrix_to_vector(const MatrixR& m)
+{
+    return {m.m0, m.m1, m.m2};
+}
+
+MatrixR vector_to_matrix(const Vector3R& v)
+{
+    return {
+        v.x, v.y, v.z, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0
     };
 }
