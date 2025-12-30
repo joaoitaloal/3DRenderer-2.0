@@ -26,8 +26,6 @@ class Cone : public Shape{
         float radius;
         float height;
 
-        Material3 material;
-
         Collision get_surface_collision(RayR ray);
         
 };
