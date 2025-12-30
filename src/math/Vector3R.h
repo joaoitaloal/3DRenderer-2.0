@@ -24,10 +24,12 @@ Vector3R operator +(const Vector3R& v, const Vector3R& s);
 
 Vector3R operator -(const Vector3R& v, const Vector3R& s);
 
-// Dot product, talvez seria melhor ter uma função explicita no lugar do operador,
-// só pra ficar mais fácil de diferenciar vetor de float nos códigos
 Vector3R operator *(const Vector3R& v, float s);
 
+Vector3R operator /(const Vector3R& v, float s);
+
+// Dot product, talvez seria melhor ter uma função explicita no lugar do operador,
+// só pra ficar mais fácil de diferenciar vetor de float nos códigos
 float operator *(const Vector3R& v, const Vector3R& s);
 
 Vector3R cross_product(Vector3R p1, Vector3R p2);

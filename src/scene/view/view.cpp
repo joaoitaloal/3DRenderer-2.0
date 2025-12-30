@@ -6,7 +6,7 @@ inline float max(float a, float b){
 
 View::View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_)
     : camera(x_, y_, z_, 0, 0, 1),
-    world_to_camera(identity_matrix())
+    world_to_camera(MatrixR::identity_matrix())
 {
     view_width = view_width_;
     view_height = view_height_;

@@ -19,7 +19,7 @@ Mesh3* ParseOBJFile(string fileName){
 
     if(!file) throw 1;
 
-    vector<Triangle>* faces = new vector<Triangle>();
+    vector<Triangle*> faces;
 
     vector<Vector3R> vertices; 
     
@@ -78,7 +78,7 @@ Mesh3* ParseOBJFile(string fileName){
         
             FaceTriIndexes faceIndexes = ParseFace(vertices_info);
 
-            Triangle face(
+            Triangle* face = new Triangle(
                 vertices[faceIndexes.vertices[0]],
                 vertices[faceIndexes.vertices[1]],
                 vertices[faceIndexes.vertices[2]]
@@ -98,7 +98,7 @@ Mesh3* ParseOBJFile(string fileName){
             if(faceIndexes.v_tex[2] != -1)
             face.vt3 = v_texture[faceIndexes.v_tex[2]];*/
             
-            faces->push_back(face);
+            faces.push_back(face);
         }
     }
 

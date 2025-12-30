@@ -1,18 +1,34 @@
 #include "Plane.h"
 
-Plane::Plane(Vector3R normal_, Vector3R point_, bool culled = false){
+Plane::Plane(Vector3R normal_, Vector3R point_, bool culled = false)
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
+{
     normal = normal_;
     point = point_;
 
     backface_culled = culled;
+
+    world_to_object.m3 = -point.x;
+    world_to_object.m7 = -point.y;
+    world_to_object.m11 = -point.z;
+
+    object_to_world = world_to_object.invert_matrix();
 }
 
-Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled = false){
+Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled = false)
+    :Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
+{
     Vector3R p1 = v2-v1; Vector3R p2 = v3-v1;
     normal = cross_product(p1, p2).normalize();
 
     point = v1;
     backface_culled = culled;
+    
+    world_to_object.m3 = point.x;
+    world_to_object.m7 = point.y;
+    world_to_object.m11 = point.z;
+
+    object_to_world = world_to_object.invert_matrix();
 }
 
 Collision Plane::get_collision(RayR ray)
@@ -34,6 +50,25 @@ Collision Plane::get_collision(RayR ray)
     return col;
 }
 
-Plane* Plane::transform(MatrixR m){
+Plane* Plane::transform_return(const MatrixR& m){
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
 
+    return new Plane(
+        normal_transform(tr, normal), 
+        vector_transform(tr, point), 
+        backface_culled
+    );
+}
+
+void Plane::transform(const MatrixR& m){
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+
+    normal = normal_transform(tr, normal);
+    point = vector_transform(tr, point);
+    
+    world_to_object.m3 = point.x;
+    world_to_object.m7 = point.y;
+    world_to_object.m11 = point.z;
+
+    object_to_world = world_to_object.invert_matrix();
 }

@@ -30,13 +30,15 @@ App::App(int win_width_, int win_height_)
     // Malhas
     load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
     load_new_mesh("models/Cube.obj", {0.25, 0, 0});
+
+    Vector3R axis(0, 0.7, 0.5);
     // Cilindro
     shapes->push_back(new Cylinder(
         {-10, 0, 10},
-        {0, 1, 0},
+        axis.normalize(),
         3,
         10,
-        debug_temp_material({0, 0, 0})
+        debug_temp_material({0.25, 0, 0.25})
     ));
     // Esfera
     shapes->push_back(new Sphere(

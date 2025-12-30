@@ -16,6 +16,14 @@ class MatrixR {
                 float m8, float m9, float m10, float m11,
                 float m12, float m13, float m14, float m15);
 
+        static MatrixR identity_matrix();
+                
+        MatrixR invert_matrix();
+
+        MatrixR transpose_matrix();
+
+        float trace();
+
         void print();
 };
 
@@ -28,16 +36,17 @@ MatrixR mul_mat(const MatrixR& A, const MatrixR& B);
 // Equivalente a multiplicar uma matriz por um vetor
 Vector3R vector_transform(const MatrixR& m, const Vector3R& v);
 
+Vector3R normal_transform(MatrixR& m, const Vector3R& v);
+
 // Nome paia
 MatrixR matrix_by_vector(const MatrixR& m, const Vector3R& v);
 
 MatrixR vector_transpose(const Vector3R& v);
 
-MatrixR identity_matrix();
-
 // Assumindo que a matriz representa um vetor de 3 dimensões
 Vector3R matrix_to_vector(const MatrixR& m);
 
 MatrixR vector_to_matrix(const Vector3R& v);
+
 
 #endif // RENDERER_MATRIX_H

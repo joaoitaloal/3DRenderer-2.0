@@ -11,12 +11,75 @@ MatrixR::MatrixR(float _m0, float _m1, float _m2, float _m3,
     m12 = _m12; m13 = _m13; m14 = _m14; m15 = _m15;
 }
 
+MatrixR MatrixR::identity_matrix(){
+    return {
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    };
+}
+
+// Créditos dessa vão pra raylib
+// https://github.com/raysan5/raylib
+MatrixR MatrixR::invert_matrix(){
+    float b00 = m0*m5 - m4*m1;
+    float b01 = m0*m9 - m8*m1;
+    float b02 = m0*m13 - m12*m1;
+    float b03 = m4*m9 - m8*m5;
+    float b04 = m4*m13 - m12*m5;
+    float b05 = m8*m13 - m12*m9;
+    float b06 = m2*m7 - m6*m3;
+    float b07 = m2*m11 - m10*m3;
+    float b08 = m2*m15 - m14*m3;
+    float b09 = m6*m11 - m10*m7;
+    float b10 = m6*m15 - m14*m7;
+    float b11 = m10*m15 - m14*m11;
+
+    float invDet = 1.0f/(b00*b11 - b01*b10 + b02*b09 + b03*b08 - b04*b07 + b05*b06);
+
+    return {
+        (m5*b11 - m9*b10 + m13*b09)*invDet, 
+        (-m1*b11 + m9*b08 - m13*b07)*invDet, 
+        (m1*b10 - m5*b08 + m13*b06)*invDet, 
+        (-m1*b09 + m5*b07 - m9*b06)*invDet,
+        (-m4*b11 + m8*b10 - m12*b09)*invDet, 
+        (m0*b11 - m8*b08 + m12*b07)*invDet, 
+        (-m0*b10 + m4*b08 - m12*b06)*invDet, 
+        (m0*b09 - m4*b07 + m8*b06)*invDet,
+        (m7*b05 - m11*b04 + m15*b03)*invDet, 
+        (-m3*b05 + m11*b02 - m15*b01)*invDet, 
+        (m3*b04 - m7*b02 + m15*b00)*invDet, 
+        (-m3*b03 + m7*b01 - m11*b00)*invDet,
+        (-m6*b05 + m10*b04 - m14*b03)*invDet, 
+        (m2*b05 - m10*b02 + m14*b01)*invDet, 
+        (-m2*b04 + m6*b02 - m14*b00)*invDet, 
+        (m2*b03 - m6*b01 + m10*b00)*invDet
+    };
+}
+
+MatrixR MatrixR::transpose_matrix(){
+    return {
+        m0, m4, m8, m12,
+        m1, m5, m9, m13,
+        m2, m6, m10, m14,
+        m3, m7, m11, m15
+    };
+}
+
+float MatrixR::trace(){
+    return m0 + m5 + m10 + m15;
+}
+
+
 void MatrixR::print(){
     std::cout << "[ " << m0 << " " << m1 << " " << m2 << " " << m3 << " ]" << std::endl;
     std::cout << "[ " << m4 << " " << m5 << " " << m6 << " " << m7 << " ]" << std::endl;
     std::cout << "[ " << m8 << " " << m9 << " " << m10 << " " << m11 << " ]" << std::endl;
     std::cout << "[ " << m12 << " " << m13 << " " << m14 << " " << m15 << " ]" << std::endl;
 }
+
+// ========== Operadores ========== //
 
 MatrixR subtract_matrix(const MatrixR& A, const MatrixR& B)
 {
@@ -55,12 +118,18 @@ MatrixR mul_mat(const MatrixR& A, const MatrixR& B)
     return resultado;
 }
 
+
 Vector3R vector_transform(const MatrixR& m, const Vector3R& v){
     return {
         m.m0*v.x + m.m1*v.y + m.m2*v.z + m.m3,
         m.m4*v.x + m.m5*v.y + m.m6*v.z + m.m7,
         m.m8*v.x + m.m9*v.y + m.m10*v.z + m.m11,
     };
+}
+
+Vector3R normal_transform(MatrixR &m, const Vector3R &v){
+    // Pra transformar normais corretamente é só transformar a normal pela transposta da matriz inversa, trivial
+    return vector_transform(m.invert_matrix().transpose_matrix(), v).normalize();
 }
 
 MatrixR matrix_by_vector(const MatrixR& m, const Vector3R& v){
@@ -76,23 +145,11 @@ MatrixR vector_transpose(const Vector3R& v){
     };
 }
 
-MatrixR identity_matrix()
-{
-    return {
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    };
-}
-
-Vector3R matrix_to_vector(const MatrixR& m)
-{
+Vector3R matrix_to_vector(const MatrixR& m){
     return {m.m0, m.m1, m.m2};
 }
 
-MatrixR vector_to_matrix(const Vector3R& v)
-{
+MatrixR vector_to_matrix(const Vector3R& v){
     return {
         v.x, v.y, v.z, 0,
         0, 0, 0, 0,

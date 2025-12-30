@@ -3,7 +3,6 @@
 
 #include "../Shape.h"
 
-// Temporário enquanto não temos a classe matriz
 #include "../Circle/Circle.h"
 
 //ToDo
@@ -11,7 +10,9 @@ class Cylinder : public Shape{
     public:
         Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_);
         Collision get_collision(RayR ray) override;
-        Cylinder* transform(MatrixR m) override;
+
+        Cylinder* transform_return(const MatrixR& m) override;
+        void transform(const MatrixR& m) override;
     
     private:
         Vector3R base_center, axis_dir;

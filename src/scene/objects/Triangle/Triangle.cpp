@@ -3,11 +3,20 @@
 #include <limits>
 
 Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
-    : plane(v1_, v2_, v3_, true) // Usando backface culling por padrão
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()), 
+    plane(v1_, v2_, v3_, true) // Usando backface culling por padrão
 {
     v1 = v1_;
     v2 = v2_;
     v3 = v3_;
+
+    // Por enquanto o triângulo não existe sozinho, só em uma mesh
+    // ToDo: world_to_object = média dos três pontos? algo assim?
+    /*world_to_object.m3 = -v1.x;
+    world_to_object.m7 = -v1.y;
+    world_to_object.m11 = -v1.z;
+
+    object_to_world = world_to_object.invert_matrix();*/
 }
 
 // A reflexão e algumas outras coisas tão com alguns pontos vazios, 
@@ -36,8 +45,20 @@ Collision Triangle::get_collision(RayR ray){
     return col;
 }
 
-Triangle* Triangle::transform(MatrixR m){
+Triangle* Triangle::transform_return(const MatrixR& m){
+    return new Triangle(
+        vector_transform(m, v1),
+        vector_transform(m, v2),
+        vector_transform(m, v3)
+    );
+}
 
+void Triangle::transform(const MatrixR& m){
+    v1 = vector_transform(m, v1);
+    v2 = vector_transform(m, v2);
+    v3 = vector_transform(m, v3);
+
+    plane = Plane(v1, v2, v3, true);
 }
 
 /* 

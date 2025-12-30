@@ -32,8 +32,6 @@
 // ToDo: Mover o próprio renderizador pra uma classe separada pode ser bom tbm,
 // por ele ter uma width e heigth própria
 
-// ToDo: Criar classe e implementações pra operações com matrizes
-
 // ToDo: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
 // calculada e dividir todas as cores por ela, que parece bem legal
 
@@ -41,18 +39,15 @@
 
 // ToDo: Threading
 
-// Issue: O código de renderização de triangulo tem duas situações estranhas:
-// Quando tu vê um triangulo exatamente em paralelo, a colisão buga e renderiza a linha inteira paralela;
-// A aresta entre dois triangulos diferentes tem alguns buracos as vezes.
-// Dito isso a gente já vai mudar o algoritmo mesmo então tá ok.
-
-// Issue: O modelo do cubo tá colidindo com o raio do centro da tela, independente da posição do observador,
-// acho que tem relação com o problema de cima, o algoritmo do triangulo deve tá errado.
+// ToDo: Dá pra melhorar a performance de várias funções na pasta math, fazendo cache de acesso de objeto por exemplo.
 
 // Issue: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
 // mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
 // Acho que uma solução possível é guardar um ponteiro pro material na classe shape, daí quando tiver criando a mesh podemos criar
 // com todos os materiais iguais, ou um nullptr, só o gerenciamento de memória que ia ser meio complicadinho.
+
+// Issue: A gente não consegue fazer Transformação de normais ainda, uma forma é modificar nossos vetores pra terem 4 valores,
+// eu optei por uma solução temporária bem feia que é dizer que um vetor é normal no calculo de transformação, por favor mudar dps.
 
 using namespace std;
 
