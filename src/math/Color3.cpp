@@ -37,6 +37,6 @@ inline float min(float a, float b){
     return a < b?a:b;
 }
 
-Color3 Color3::clampMax(){
-    return (Color3){min(this->r, 1), min(this->g, 1), min(this->b, 1)};
+Color3 Color3::clampMax(float val){
+    return {min(this->r, val), min(this->g, val), min(this->b, val)};
 }

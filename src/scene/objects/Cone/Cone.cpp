@@ -6,8 +6,8 @@ Q(matrix_by_vector(vector_transpose(axis_dir_), axis_dir_)),
 M(subtract_matrix(MatrixR::identity_matrix(),Q)),
 base(base_center_, -axis_dir_, radius_, false)
 {
-    axis_dir = axis_dir_;
     base_center = base_center_;
+    axis_dir = axis_dir_;
     radius = radius_;
     height = height_;
     material = material_;
@@ -15,7 +15,7 @@ base(base_center_, -axis_dir_, radius_, false)
 }
 
 Collision Cone::get_collision(RayR ray)  {
-    return get_first_collision({base.get_collision(ray),get_surface_collision(ray)});
+    return get_first_collision({base.get_collision(ray), get_surface_collision(ray)});
 }
 
 Collision Cone::get_surface_collision(RayR ray) {
@@ -29,9 +29,15 @@ Collision Cone::get_surface_collision(RayR ray) {
     Vector3R Qw = vector_transform(Q, w);
     Vector3R hdc = axis_dir * height;
 
-    float a = ((Mdr * powf(height,2)) * Mdr) - ((Qdr * powf(radius,2)) * Qdr);
-    float b = 2.0 * (((Mdr * powf(height,2)) * Mw) + (Qdr * powf(radius,2)) * (hdc - Qw));
-    float c = ((Mw * powf(height,2)) *  Mw) - (((Qw - hdc) * powf(radius,2)) * (Qw - hdc));
+    float h2 = powf(height, 2);
+    float r2 = powf(radius, 2);
+
+    float a = h2*(Mdr * Mdr) - r2*(Qdr * Qdr);
+    float b = 2.0 * (h2*(Mdr * Mw) + r2*(Qdr * (hdc - Qw)));
+    
+    Vector3R qw_minus_hdc = (Qw - hdc);
+    float c = h2* (Mw * Mw) - r2*( qw_minus_hdc * qw_minus_hdc);
+
     col.distance = modified_quadratic(a,b,c);
     if(col.distance < 0) return col;
 

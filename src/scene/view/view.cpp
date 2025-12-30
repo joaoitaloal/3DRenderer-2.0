@@ -48,7 +48,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
 
         for(Shape* shadowShape : *shapes){
             if(shadowShape->get_collision(shadowRay).hit){
-                return color;
+                return color.clampMax(1);
             }
         }
 
@@ -78,7 +78,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
         color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
     }
 
-    return color.clampMax();
+    return color.clampMax(1);
 }
 
 // Funções que usam interpolação, acho que não vamos mais usar

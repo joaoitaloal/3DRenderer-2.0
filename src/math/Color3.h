@@ -17,7 +17,7 @@ class Color3 {
         Color3 operator* (float scalar);
         Color3 operator/ (float scalar);
 
-        Color3 clampMax();
+        Color3 clampMax(float val);
 };
 
 #endif // RENDERER_COLOR3_H
