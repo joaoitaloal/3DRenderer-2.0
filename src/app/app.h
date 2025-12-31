@@ -41,6 +41,8 @@
 
 // ToDo: Dá pra melhorar a performance de várias funções na pasta math, fazendo cache de acesso de objeto por exemplo.
 
+// ToDo: Tou passando um ponteiro pra um vetor de ponteiros como as shapes, isso parece desnecessário.
+
 // Issue: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
 // mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
 // Acho que uma solução possível é guardar um ponteiro pro material na classe shape, daí quando tiver criando a mesh podemos criar

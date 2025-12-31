@@ -25,6 +25,8 @@ class Cylinder : public Shape{
         Circle roof;
 
         Collision get_surface_collision(RayR ray);
+
+        void update_transformation_matrices() override;
 };
 
 #endif // RENDERER_CYLINDER_H

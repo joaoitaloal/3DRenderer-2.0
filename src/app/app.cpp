@@ -14,7 +14,7 @@ Material3 debug_temp_material(Color3 color){
 }
 
 App::App(int win_width_, int win_height_)
-    : view(0, 2, -10, 1, 1, 1)
+    : view(0, 2, -10, 2, 2, 1)
 {
     win_width = win_width_;
     win_height = win_height_;
@@ -30,10 +30,9 @@ App::App(int win_width_, int win_height_)
     // ========= Criando objetos =========
     // Malhas
     load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    load_new_mesh("models/Cube.obj", {0.25, 0, 0});
+    //load_new_mesh("models/Cube.obj", {0.25, 0, 0});
 
-    Vector3R axis(0, 0.7, 0.5);
-    Vector3R axis_(0, 0.7, 0.5);
+    Vector3R axis(0.5, 0.7, 0.5);
     // Cilindro
     shapes->push_back(new Cylinder(
         {-10, 0, 10},
@@ -43,25 +42,26 @@ App::App(int win_width_, int win_height_)
         debug_temp_material({0.25, 0, 0.25})
     ));
     // Esfera
-    shapes->push_back(new Sphere(
+    /*shapes->push_back(new Sphere(
         {0, 10, 0},
         3,
-        debug_temp_material({0, 0, 0})
+        debug_temp_material({1, 1, 0})
     ));
     // Cone
     shapes->push_back(new Cone(
         {5, 0, 0},
-        axis_.normalize(),
+        axis.normalize(),
         3,
         4,
         debug_temp_material({0, 0, 0.9})
-    ));
+    ));*/
 
     // Rendered image dimensions
     render_witdh = 720; render_height = 720;
     render_offset = win_width-render_witdh; // Offset por causa da UI
 
     // Window configuration
+    SetTraceLogLevel(LOG_WARNING);
     InitWindow(win_width, win_height, "Raytracer!!!!!!!!!!!");
     SetTargetFPS(60);
 

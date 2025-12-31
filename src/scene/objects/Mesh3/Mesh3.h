@@ -11,7 +11,7 @@ using namespace std;
 // Classe de malha, use o método estático pra criar instancias, não o construtor
 class Mesh3 : public Shape {
     public:
-        Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_);
+        Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_);
         ~Mesh3();
 
         static Mesh3* create_from_obj_file(string filename, Material3 material_);
@@ -27,8 +27,10 @@ class Mesh3 : public Shape {
 
         // Criar uma classe BoundingBox nossa
         BoundingBoxR bbox;
+
+        void update_transformation_matrices() override;
 };
 
-Mesh3* ParseOBJFile(string filename);
+Mesh3* ParseOBJFile(string filename, Material3 material_);
 
 #endif // RENDERER_MESH3_H

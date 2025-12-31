@@ -65,13 +65,35 @@ Color* TextureCPU::getPixelsRec(Rectangle rec){
 }
 
 void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
-    for(int x = 0; x < WIDTH; x++){
-        for(int y = 0; y < HEIGHT; y++){
-            Color3 color = view.calculate_pixel_color(x, y, WIDTH, HEIGHT, shapes, lights);
+    vector<Shape*>* shapes_transformed = new vector<Shape*>();
 
-            setPixelColor(x, y, {color.r*255, color.g*255, color.b*255});
+    for(Shape* shape : *shapes){
+        shapes_transformed->push_back(shape->transform_return(view.get_world_to_camera()));
+    }
+
+    float Dy = view.get_height()/HEIGHT;
+    float Dx = view.get_width()/WIDTH;
+
+    for(int l = 0; l < HEIGHT; l++){
+        float y = view.get_height()/2 - Dy/2 - l*Dy;
+        for(int c = 0; c < WIDTH; c++){
+            float x = view.get_width()/2 - Dx/2 - c*Dx;
+ 
+            Vector3R window_point = {x, y, view.get_plane_distance()};
+            Vector3R dir = window_point.normalize();
+ 
+            RayR ray = {window_point, dir};
+
+            Color3 color = view.raycast(ray, shapes_transformed, lights);
+
+            setPixelColor(c, l, {color.r*255, color.g*255, color.b*255});
         }
     }
+
+    for(Shape* shape : *shapes_transformed){
+        delete shape;
+    }
+    delete shapes_transformed;
 }
 
 // Versão nova, falta terminar

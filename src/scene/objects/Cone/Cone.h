@@ -27,6 +27,8 @@ class Cone : public Shape{
         float height;
 
         Collision get_surface_collision(RayR ray);
+
+        void update_transformation_matrices() override;
         
 };
 

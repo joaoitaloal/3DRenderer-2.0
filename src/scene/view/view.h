@@ -27,7 +27,7 @@ class View{
         Color3 calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights);
 
         // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-        Color3 raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_depth = RECURSION_DEPTH);
+        Color3 raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index = RECURSION_DEPTH);
 
         //temp
         void move(float x, float y, float z);
@@ -38,6 +38,8 @@ class View{
 
         Vector3R get_camera_position();
 
+        MatrixR get_world_to_camera();
+
     private:
         Camera3 camera;
         PlaneV plane; // Temp, lembrar de tirar
@@ -45,6 +47,8 @@ class View{
         float plane_distance;
 
         MatrixR world_to_camera;
+
+        void update_world_to_camera();
 };
 
 #endif // RENDERER_VIEW_H

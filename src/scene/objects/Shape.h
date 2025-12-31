@@ -30,6 +30,8 @@ class Shape{
         // Leva o objeto pro centro do mundo
         MatrixR world_to_object;
         MatrixR object_to_world;
+
+        virtual void update_transformation_matrices() = 0;
 };
 
 #endif // RENDERER_SHAPE_H

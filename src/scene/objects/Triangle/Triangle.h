@@ -14,6 +14,8 @@ class Triangle : public Shape {
     protected:
         Vector3R v1, v2, v3; // vertices
         Plane plane;
+
+        void update_transformation_matrices() override;
         
         // Coisas de mesh, só vai precisar se a gente colocar texturas em mesh
         // Vector3 vn1, vn2, vn3; // vertex normals

@@ -13,6 +13,8 @@ View::View(float x_, float y_, float z_, float view_width_, float view_height_, 
     plane_distance = plane_distance_;
 
     plane = {view_width_, view_height_, &camera};
+
+    update_world_to_camera();
 }
 
 // Not implemented yet
@@ -82,7 +84,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
 }
 
 // Funções que usam interpolação, acho que não vamos mais usar
-RayR View::createRay(float alpha, float beta){
+/*RayR View::createRay(float alpha, float beta){
     Vector3R t = plane.p1*(1.0f-alpha) + plane.p2*alpha;
 
     Vector3R b = plane.p3*(1.0f-alpha) + plane.p4*alpha;
@@ -96,14 +98,13 @@ RayR View::createRay(float alpha, float beta){
     return ray;
 }
 
-Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights)
-{
+Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
     float alpha = origin_x/WIDTH;
     float beta = origin_y/HEIGHT;
 
     RayR ray = createRay(alpha, beta);
     return raycast(ray, shapes, lights, RECURSION_DEPTH);
-}
+}*/
 
 //temp
 void View::move(float x, float y, float z){
@@ -116,6 +117,8 @@ void View::move(float x, float y, float z){
     //position.z += z;
 
     plane.updatePosition();
+
+    update_world_to_camera();
 }
 
 float View::get_width(){
@@ -134,4 +137,15 @@ float View::get_plane_distance()
 Vector3R View::get_camera_position()
 {
     return camera.position;
+}
+
+MatrixR View::get_world_to_camera()
+{
+    return world_to_camera;
+}
+
+void View::update_world_to_camera(){
+    world_to_camera.m3 = -camera.position.x;
+    world_to_camera.m7 = -camera.position.y;
+    world_to_camera.m11 = -camera.position.z;
 }

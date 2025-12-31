@@ -15,6 +15,8 @@ class Sphere : public Shape{
     private:
         Vector3R sphere_center;
         float radius;
+
+        void update_transformation_matrices() override;
 };
 
 #endif // RENDERER_SPHERE_H

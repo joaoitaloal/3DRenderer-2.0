@@ -11,7 +11,10 @@ base(base_center_, -axis_dir_, radius_, false)
     radius = radius_;
     height = height_;
     material = material_;
-    vertice = base_center_ + (axis_dir_ * height_);
+
+    vertice = base_center + (axis_dir * height);
+
+    update_transformation_matrices();
 }
 
 Collision Cone::get_collision(RayR ray)  {
@@ -58,9 +61,38 @@ Collision Cone::get_surface_collision(RayR ray) {
     return col;
 }
 
+void Cone::update_transformation_matrices(){
+    world_to_object.m3 = -base_center.x;
+    world_to_object.m7 = -base_center.y;
+    world_to_object.m11 = -base_center.z;
+
+    object_to_world = world_to_object.invert_matrix();
+}
+
 Cone* Cone::transform_return(const MatrixR& m){
-    return nullptr;
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    
+    return new Cone(
+        vector_transform(tr, base_center),
+        normal_transform(tr, axis_dir),
+        radius,
+        height,
+        material
+    );
 }
 
 void Cone::transform(const MatrixR& m){
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    // Falta atualizar raio e altura
+
+    base_center = vector_transform(tr, base_center);
+    axis_dir = normal_transform(tr, axis_dir);
+
+    base = {base_center, -axis_dir, radius, false};
+    vertice = base_center + (axis_dir * height);
+
+    Q = matrix_by_vector(vector_transpose(axis_dir), axis_dir);
+    M = subtract_matrix(MatrixR::identity_matrix(), Q);
+
+    update_transformation_matrices();
 }

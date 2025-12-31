@@ -1,17 +1,13 @@
 #include "Mesh3.h"
 
-Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_)
+Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
 {
     faces = faces_;
     bbox = bbox_;
+    material = material_;
 
-    Vector3R bbox_center = (bbox.min+bbox.max)/2;
-    world_to_object.m3 = -bbox_center.x;
-    world_to_object.m7 = -bbox_center.y;
-    world_to_object.m11 = -bbox_center.z;
-
-    object_to_world = world_to_object.invert_matrix();
+    update_transformation_matrices();
 
     // Testando transformações
     /*transform({
@@ -38,7 +34,7 @@ Mesh3::~Mesh3(){
 
 Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_)
 {
-    Mesh3* mesh = ParseOBJFile(filename);
+    Mesh3* mesh = ParseOBJFile(filename, material_);
     mesh->material = material_;
     
     return mesh;
@@ -70,19 +66,20 @@ Collision Mesh3::get_collision(RayR ray){
 Mesh3* Mesh3::transform_return(const MatrixR& m){
     MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
 
-    vector<Triangle*> faces_;
+    vector<Triangle*> new_faces;
 
     for(Triangle* tri : faces){
         Triangle* new_tri = tri->transform_return(tr);
-        faces_.push_back(new_tri);
+        new_faces.push_back(new_tri);
     }
 
     return new Mesh3(
-        faces_, 
+        new_faces, 
         {
             vector_transform(tr, bbox.min), 
             vector_transform(tr, bbox.max)
-        }
+        },
+        material
     );
 }
 
@@ -96,6 +93,10 @@ void Mesh3::transform(const MatrixR& m){
     bbox.min = vector_transform(tr, bbox.min);
     bbox.max = vector_transform(tr, bbox.max);
 
+    update_transformation_matrices();
+}
+
+void Mesh3::update_transformation_matrices(){
     Vector3R bbox_center = (bbox.min+bbox.max)/2;
     world_to_object.m3 = -bbox_center.x;
     world_to_object.m7 = -bbox_center.y;

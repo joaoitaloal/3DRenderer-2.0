@@ -13,12 +13,7 @@ Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, flo
     height = height_;
     material = material_;
 
-    // Isso deveria ser o centro da base ou o centro do cilindro?
-    world_to_object.m3 = -base_center.x;
-    world_to_object.m7 = -base_center.y;
-    world_to_object.m11 = -base_center.z;
-
-    object_to_world = world_to_object.invert_matrix();
+    update_transformation_matrices();
 }
 
 Collision Cylinder::get_collision(RayR ray){
@@ -46,19 +41,15 @@ void Cylinder::transform(const MatrixR& m){
     axis_dir = normal_transform(tr, axis_dir);
 
     // Provavelmente mais rápido criar dois circulos novos
-    base.transform(tr);
-    roof.transform(tr);
+    //base.transform(tr);
+    //roof.transform(tr);
+    base = {base_center, -axis_dir, radius, false};
+    roof = {base_center + axis_dir*height, axis_dir, radius, false};
 
     Q = matrix_by_vector(vector_transpose(axis_dir), axis_dir);
     M = subtract_matrix(MatrixR::identity_matrix(), Q);
 
-    // Falta atualizar o raio e a altura
-
-    world_to_object.m3 = -base_center.x;
-    world_to_object.m7 = -base_center.y;
-    world_to_object.m11 = -base_center.z;
-
-    object_to_world = world_to_object.invert_matrix();
+    update_transformation_matrices();
 }
 
 // ToDo: caso a colisão ocorra na parte de dentro, inverter a normal, ou enfim fazer mudanças necessárias pra ver a parte de dentro
@@ -88,4 +79,24 @@ Collision Cylinder::get_surface_collision(RayR ray){
     col.hit = true;
 
     return col;
+}
+
+void Cylinder::update_transformation_matrices(){
+    // Isso deveria ser o centro da base ou o centro do cilindro?
+    world_to_object.m3 = -base_center.x;
+    world_to_object.m7 = -base_center.y;
+    world_to_object.m11 = -base_center.z;
+
+    /* // Testes para atualizar a altura e raio
+    Vector3R up(0, 1, 0);
+    float u_angle = angle_from_vectors(axis_dir, up);
+    
+    // Provavelmente tem como fazer isso de forma mais eficiente,
+    // Talvez usando aquela matriz de rotação unica ao invés de uma pra cada eixo
+    MatrixR rotation_y = get_y_rotation(u_angle);
+    MatrixR rotation_z = get_z_rotation(u_angle);
+    world_to_object = mul_mat(rotation_y, world_to_object);
+    world_to_object = mul_mat(rotation_z, world_to_object);*/ 
+
+    object_to_world = world_to_object.invert_matrix();
 }

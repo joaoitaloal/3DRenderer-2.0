@@ -14,7 +14,7 @@ struct FaceTriIndexes{
 
 FaceTriIndexes ParseFace(vector<string> vertices_info);
 
-Mesh3* ParseOBJFile(string fileName){
+Mesh3* ParseOBJFile(string fileName, Material3 material_){
     ifstream file(fileName);
 
     if(!file) throw 1;
@@ -109,7 +109,7 @@ Mesh3* ParseOBJFile(string fileName){
         {max_x, max_y, max_z}
     };
 
-    Mesh3* mesh = new Mesh3(faces, bbox); // this is probably inneficient(i think it copies the vector), need to check later
+    Mesh3* mesh = new Mesh3(faces, bbox, material_); // this is probably inneficient(i think it copies the vector), need to check later
     //mesh->faces = faces;
     //mesh->bbox = bbox;
     //mesh->material = mat;

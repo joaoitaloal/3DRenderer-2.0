@@ -15,6 +15,8 @@ class Circle : public Plane {
 
     private:
         float radius;
+
+        void update_transformation_matrices() override;
 };
 
 #endif // RENDERER_CIRCLE_H

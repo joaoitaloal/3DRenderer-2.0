@@ -48,5 +48,10 @@ Vector3R matrix_to_vector(const MatrixR& m);
 
 MatrixR vector_to_matrix(const Vector3R& v);
 
+MatrixR get_rotation_matrix(float x_angle, float y_angle, float z_angle);
+
+MatrixR get_x_rotation(float angle);
+MatrixR get_y_rotation(float angle);
+MatrixR get_z_rotation(float angle);
 
 #endif // RENDERER_MATRIX_H

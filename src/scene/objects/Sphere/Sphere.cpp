@@ -7,11 +7,7 @@ Sphere::Sphere(Vector3R sphere_center_, float radius_, Material3 material_)
 {
     material = material_;
 
-    world_to_object.m3 = -sphere_center.x;
-    world_to_object.m7 = -sphere_center.y;
-    world_to_object.m11 = -sphere_center.z;
-
-    object_to_world = world_to_object.invert_matrix();
+    update_transformation_matrices();
 }
 
 Collision Sphere::get_collision(RayR ray){
@@ -55,6 +51,10 @@ void Sphere::transform(const MatrixR& m){
     // Gambiarrinha, a escala é aplicada pegando a média da diagonal da matriz
     radius = radius * (tr.trace()-m.m15)/3;
     
+    update_transformation_matrices();
+}
+
+void Sphere::update_transformation_matrices(){
     world_to_object.m3 = -sphere_center.x;
     world_to_object.m7 = -sphere_center.y;
     world_to_object.m11 = -sphere_center.z;

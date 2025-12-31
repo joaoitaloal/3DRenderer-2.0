@@ -4,6 +4,8 @@ Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, bool culled = f
     :Plane(normal_, point_, culled)
 {
     radius = radius_;
+
+    update_transformation_matrices();
 }
 
 Circle::Circle(Plane plane, float radius_)
@@ -36,6 +38,12 @@ void Circle::transform(const MatrixR& m){
     MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
 
     Plane::transform(tr);
+
+    // Atualizar raio
     
-    // Falta atualizar o raio do circulo
+    update_transformation_matrices();
+}
+
+void Circle::update_transformation_matrices(){
+    // Situação parecida com a do triangulo, não existe sem um objeto pai, talvez mudar a classe disso
 }

@@ -61,6 +61,11 @@ void Triangle::transform(const MatrixR& m){
     plane = Plane(v1, v2, v3, true);
 }
 
+void Triangle::update_transformation_matrices(){
+    // Essa implementação do triangulo, pelo menos por enquanto, não suporta triangulos isolados,
+    // portanto essa função não precisa ter nada.
+}
+
 /* 
     Most of the math for this code comes from chapter 4 and 5 of Fundamentals of Computer Graphics by Peter Shirley
     After a very simple and quick test this seems to be as fast as the raylib version??

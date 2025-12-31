@@ -8,11 +8,7 @@ Plane::Plane(Vector3R normal_, Vector3R point_, bool culled = false)
 
     backface_culled = culled;
 
-    world_to_object.m3 = -point.x;
-    world_to_object.m7 = -point.y;
-    world_to_object.m11 = -point.z;
-
-    object_to_world = world_to_object.invert_matrix();
+    update_transformation_matrices();
 }
 
 Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled = false)
@@ -24,11 +20,7 @@ Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled = false)
     point = v1;
     backface_culled = culled;
     
-    world_to_object.m3 = point.x;
-    world_to_object.m7 = point.y;
-    world_to_object.m11 = point.z;
-
-    object_to_world = world_to_object.invert_matrix();
+    update_transformation_matrices();
 }
 
 Collision Plane::get_collision(RayR ray)
@@ -65,7 +57,11 @@ void Plane::transform(const MatrixR& m){
 
     normal = normal_transform(tr, normal);
     point = vector_transform(tr, point);
-    
+
+    update_transformation_matrices();
+}
+
+void Plane::update_transformation_matrices(){
     world_to_object.m3 = point.x;
     world_to_object.m7 = point.y;
     world_to_object.m11 = point.z;

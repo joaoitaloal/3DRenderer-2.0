@@ -157,3 +157,46 @@ MatrixR vector_to_matrix(const Vector3R& v){
         0, 0, 0, 0
     };
 }
+
+MatrixR get_rotation_matrix(float x_angle, float y_angle, float z_angle){
+    float cos_x = cosf(x_angle); float sin_x = sinf(x_angle);
+    float cos_y = cosf(y_angle); float sin_y = sinf(y_angle);
+    float cos_z = cosf(z_angle); float sin_z = sinf(z_angle);
+
+    return {
+        cos_x*cos_y, cos_x*sin_y*sin_z - sin_x*cos_z, cos_x*sin_y*cos_z + sin_x*sin_z, 0,
+        sin_x*cos_y, sin_x*sin_y*sin_z + cos_x*cos_z, sin_x*sin_y*cos_z + cos_x*sin_z, 0,
+        -sin_y, cos_y*sin_z, cos_y*cos_z, 0,
+        0, 0, 0, 1
+    };
+}
+
+MatrixR get_x_rotation(float angle){
+    float cos_a = cosf(angle); float sin_a = sinf(angle);
+    return {
+        1, 0, 0, 0,
+        0, cos_a, -sin_a, 0,
+        0, sin_a, cos_a, 0,
+        0, 0, 0, 1
+    };
+}
+
+MatrixR get_y_rotation(float angle){
+    float cos_a = cosf(angle); float sin_a = sinf(angle);
+    return {
+        cos_a, 0, sin_a, 0,
+        0, 1, 0, 0,
+        -sin_a, 0, cos_a, 0,
+        0, 0, 0, 1
+    };
+}
+
+MatrixR get_z_rotation(float angle){
+    float cos_a = cosf(angle); float sin_a = sinf(angle);
+    return {
+        cos_a, -sin_a, 0, 0,
+        sin_a, cos_a, 0, 0,
+        0, 0, 1 , 0,
+        0, 0, 0, 1
+    };
+}

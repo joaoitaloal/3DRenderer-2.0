@@ -36,4 +36,6 @@ Vector3R cross_product(Vector3R p1, Vector3R p2);
 
 Vector3R operator -(const Vector3R& v);
 
+float angle_from_vectors(Vector3R& v, Vector3R& s);
+
 #endif // RENDERER_VECTOR3R_H
