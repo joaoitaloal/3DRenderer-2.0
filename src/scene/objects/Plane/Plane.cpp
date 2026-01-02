@@ -43,7 +43,8 @@ Collision Plane::get_collision(RayR ray)
 }
 
 Plane* Plane::transform_return(const MatrixR& m){
-    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    MatrixR tr = m;
 
     return new Plane(
         normal_transform(tr, normal), 

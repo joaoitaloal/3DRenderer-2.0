@@ -5,16 +5,14 @@ inline float max(float a, float b){
 }
 
 View::View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_)
-    : camera(x_, y_, z_, 0, 0, 1),
+    : camera(x_, y_, z_, view_width_, view_height_, plane_distance_),
     world_to_camera(MatrixR::identity_matrix())
 {
-    view_width = view_width_;
-    view_height = view_height_;
-    plane_distance = plane_distance_;
+    //view_width = view_width_;
+    //view_height = view_height_;
+    //plane_distance = plane_distance_;
 
-    plane = {view_width_, view_height_, &camera};
-
-    update_world_to_camera();
+    //update_world_to_camera();
 }
 
 // Not implemented yet
@@ -54,7 +52,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
             }
         }
 
-        Vector3R v = (camera.position - col.point).normalize();
+        Vector3R v = (camera.get_position() - col.point).normalize();
         Vector3R r = ((col.normal*(l*col.normal)*2) - l).normalize();
 
         float dotnl = col.normal * l;
@@ -84,14 +82,10 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
 }
 
 // Funções que usam interpolação, acho que não vamos mais usar
-/*RayR View::createRay(float alpha, float beta){
-    Vector3R t = plane.p1*(1.0f-alpha) + plane.p2*alpha;
+RayR View::createRay(float alpha, float beta){
+    Vector3R origin = camera.bi_interpolate(alpha, beta);
 
-    Vector3R b = plane.p3*(1.0f-alpha) + plane.p4*alpha;
-
-    Vector3R origin = t*(1.0f-beta) + b*beta;
-
-    Vector3R dir = (origin - camera.position).normalize();
+    Vector3R dir = (origin - camera.get_position()).normalize();
 
     RayR ray = {origin, dir};
 
@@ -104,24 +98,31 @@ Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, in
 
     RayR ray = createRay(alpha, beta);
     return raycast(ray, shapes, lights, RECURSION_DEPTH);
-}*/
-
-//temp
-void View::move(float x, float y, float z){
-    camera.position.x += x;
-    camera.position.y += y;
-    camera.position.z += z;
-
-    //position.x += x;
-    //position.y += y;
-    //position.z += z;
-
-    plane.updatePosition();
-
-    update_world_to_camera();
 }
 
-float View::get_width(){
+void View::move(float x, float y, float z){
+    camera.move(x, y, z);
+}
+
+void View::rotate(float x_angle, float y_angle, float z_angle){
+    camera.rotate(x_angle, y_angle, z_angle);
+}
+
+/*void View::rotate(float x_angle, float y_angle, float z_angle){
+    MatrixR rotation_y = get_y_rotation(x_angle);
+    camera.direction = normal_transform(rotation_y, camera.direction);
+
+    MatrixR rotation_z = get_z_rotation(y_angle);
+    camera.direction = normal_transform(rotation_z, camera.direction);
+
+    MatrixR rotation_x = get_x_rotation(z_angle);
+    camera.direction = normal_transform(rotation_x, camera.direction);
+
+    update_world_to_camera();
+    camera.direction.print();
+}*/
+
+/*float View::get_width(){
     return view_width;
 }
 
@@ -132,11 +133,11 @@ float View::get_height(){
 float View::get_plane_distance()
 {
     return plane_distance;
-}
+}*/
 
 Vector3R View::get_camera_position()
 {
-    return camera.position;
+    return camera.get_position();
 }
 
 MatrixR View::get_world_to_camera()
@@ -144,8 +145,22 @@ MatrixR View::get_world_to_camera()
     return world_to_camera;
 }
 
-void View::update_world_to_camera(){
+/*void View::update_world_to_camera(){
+    world_to_camera = MatrixR::identity_matrix();
+
     world_to_camera.m3 = -camera.position.x;
     world_to_camera.m7 = -camera.position.y;
     world_to_camera.m11 = -camera.position.z;
-}
+    
+    Vector3R forward(0, 0, 1); Vector3R left(1, 0, 0); Vector3R up(0, 1, 0);
+    float f_angle = angle_from_vectors(camera.direction, forward);
+    float l_angle = angle_from_vectors(camera.direction, left);
+    float u_angle = angle_from_vectors(camera.direction, up);
+
+    //MatrixR rotation_x = get_x_rotation(-l_angle);
+    MatrixR rotation_y = get_y_rotation(-sign(camera.direction.x)*f_angle);
+    MatrixR rotation_z = get_z_rotation(-u_angle);
+    
+    world_to_camera = mul_mat(rotation_y, world_to_camera);
+    world_to_camera = mul_mat(rotation_z, world_to_camera);
+}*/

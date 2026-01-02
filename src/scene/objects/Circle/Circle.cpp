@@ -23,7 +23,8 @@ Collision Circle::get_collision(RayR ray){
 }
 
 Circle *Circle::transform_return(const MatrixR& m){
-    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    MatrixR tr = m;
 
     Plane plane = *Plane::transform_return(tr);
 

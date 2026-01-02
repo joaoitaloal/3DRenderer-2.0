@@ -3,6 +3,7 @@
 
 #include <raylib.h>
 #include <vector>
+#include <thread>
 
 #include "../scene/view/view.h"
 #include "../scene/objects/Shape.h"

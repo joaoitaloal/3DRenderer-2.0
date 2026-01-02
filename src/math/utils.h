@@ -43,4 +43,6 @@ float modified_quadratic(float a, float b, float c);
 
 Collision get_first_collision(std::vector<Collision> cols);
 
+float sign(float val);
+
 #endif // RENDERER_UTILS_H

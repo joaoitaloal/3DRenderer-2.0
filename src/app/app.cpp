@@ -14,7 +14,7 @@ Material3 debug_temp_material(Color3 color){
 }
 
 App::App(int win_width_, int win_height_)
-    : view(0, 2, -10, 2, 2, 1)
+    : view(-10, 2, 0, 2, 2, 1)
 {
     win_width = win_width_;
     win_height = win_height_;
@@ -30,7 +30,7 @@ App::App(int win_width_, int win_height_)
     // ========= Criando objetos =========
     // Malhas
     load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    //load_new_mesh("models/Cube.obj", {0.25, 0, 0});
+    load_new_mesh("models/Cube.obj", {0.25, 0, 0});
 
     Vector3R axis(0.5, 0.7, 0.5);
     // Cilindro
@@ -42,7 +42,7 @@ App::App(int win_width_, int win_height_)
         debug_temp_material({0.25, 0, 0.25})
     ));
     // Esfera
-    /*shapes->push_back(new Sphere(
+    shapes->push_back(new Sphere(
         {0, 10, 0},
         3,
         debug_temp_material({1, 1, 0})
@@ -53,11 +53,11 @@ App::App(int win_width_, int win_height_)
         axis.normalize(),
         3,
         4,
-        debug_temp_material({0, 0, 0.9})
-    ));*/
+        debug_temp_material({0, 0, 0.25})
+    ));
 
     // Rendered image dimensions
-    render_witdh = 720; render_height = 720;
+    render_witdh = 500; render_height = 500;
     render_offset = win_width-render_witdh; // Offset por causa da UI
 
     // Window configuration
@@ -77,8 +77,6 @@ App::App(int win_width_, int win_height_)
 // Falta ajeitar muita coisa aqui, principalmente coisas da UI que precisam sair desse método
 void App::start()
 {
-    //std::chrono::duration<double, std::milli> time_elapsed(0);
-
     // Temporary manual light creation:
     Light* light = new PointLight({20, 20, 20}, {1, 1, 1});
     lights->push_back(light);
@@ -119,29 +117,44 @@ void App::process(){
             view.move(0, 0, -USER_SPEED);
         }
         if(IsKeyDown(KEY_A)){
-            view.move(USER_SPEED, 0, 0);
-        }else if(IsKeyDown(KEY_D)){
             view.move(-USER_SPEED, 0, 0);
+        }else if(IsKeyDown(KEY_D)){
+            view.move(USER_SPEED, 0, 0);
         }
         if(IsKeyDown(KEY_SPACE)){
             view.move(0, USER_SPEED, 0);
         }else if(IsKeyDown(KEY_LEFT_SHIFT)){
             view.move(0, -USER_SPEED, 0);
         }
-        if(IsKeyDown(KEY_ENTER)){
-            //auto start = std::chrono::high_resolution_clock().now();
+        if(IsKeyDown(KEY_LEFT)){
+            view.rotate(0.1, 0, 0);
+        }else if(IsKeyDown(KEY_RIGHT)){
+            view.rotate(-0.1, 0, 0);
+        }if(IsKeyDown(KEY_UP)){
+            view.rotate(0, 0.1, 0);
+        }else if(IsKeyDown(KEY_DOWN)){
+            view.rotate(0, -0.1, 0);
+        }
+        if(IsKeyDown(KEY_Q)){
+            view.rotate(0, 0, -0.1);
+        }else if(IsKeyDown(KEY_E)){
+            view.rotate(0, 0, 0.1);
+        }
+        /*if(IsKeyDown(KEY_ENTER)){
+            auto start = std::chrono::high_resolution_clock().now();
             tex->update(view, render_witdh, render_height, shapes, lights);
-            //auto end = std::chrono::high_resolution_clock().now();
+            auto end = std::chrono::high_resolution_clock().now();
 
             // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
-           // time_elapsed = end - start; 
-        }
+           time_elapsed = end - start; 
+        }*/
     }
 
     BeginDrawing();
 
     ClearBackground(BLACK);
 
+    tex->update(view, render_witdh, render_height, shapes, lights);
     UpdateTexture(tex->texture, tex->pixels);
 
     DrawTexture(tex->texture, 0 + render_offset, 0, WHITE);
@@ -162,14 +175,14 @@ void App::process(){
         load_new_mesh(obj_file_entry); 
     }*/
 
-    if(GuiButton((Rectangle){ui_width/2 - 90, ui_height - 64 - ui_padding, 180, 64}, "Render Image")){
-        //auto start = std::chrono::high_resolution_clock().now();
+    /*if(GuiButton((Rectangle){ui_width/2 - 90, ui_height - 64 - ui_padding, 180, 64}, "Render Image")){
+        auto start = std::chrono::high_resolution_clock().now();
         tex->update(view, render_witdh, render_height, shapes, lights);
-        //auto end = std::chrono::high_resolution_clock().now();
+        auto end = std::chrono::high_resolution_clock().now();
 
         // The animation time is included, from my tests the animation takes 10/anim_speed seconds, this probably changes between different hardware since it is not on a fixed delay
-        //time_elapsed = end - start;
-    }
+        time_elapsed = end - start;
+    }*/
 
 
     // Render image displays

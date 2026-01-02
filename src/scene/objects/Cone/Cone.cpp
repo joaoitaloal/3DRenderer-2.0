@@ -70,7 +70,8 @@ void Cone::update_transformation_matrices(){
 }
 
 Cone* Cone::transform_return(const MatrixR& m){
-    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    MatrixR tr = m;
     
     return new Cone(
         vector_transform(tr, base_center),

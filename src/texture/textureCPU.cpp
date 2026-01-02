@@ -65,10 +65,38 @@ Color* TextureCPU::getPixelsRec(Rectangle rec){
 }
 
 void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
+    // essa quantidade de threads tá bem exagerada, o overhead é mt grande, dá pra melhorar isso
+    vector<thread> threads;
+
+    for(int x = 0; x < WIDTH; x++){
+        threads.push_back(thread([this, &view, x, WIDTH, HEIGHT, shapes, lights](){
+            for(int y = 0; y < HEIGHT; y++){
+                Color3 color = view.calculate_pixel_color(x, y, WIDTH, HEIGHT, shapes, lights);
+                //Color3 color = {0, 0, 0};
+
+                setPixelColor(x, y, {color.r*255, color.g*255, color.b*255});
+            }
+        }));
+    }
+    
+    for(thread& t : threads){
+        t.join();
+    }
+}
+
+// Versão nova, mas não gostei então não tou usando
+/*void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
+    vector<thread> threads;
+
     vector<Shape*>* shapes_transformed = new vector<Shape*>();
+    vector<Light*>* lights_transformed = new vector<Light*>();
 
     for(Shape* shape : *shapes){
         shapes_transformed->push_back(shape->transform_return(view.get_world_to_camera()));
+    }
+    
+    for(Light* light : *lights){
+        lights_transformed->push_back(light->transform_return(view.get_world_to_camera()));
     }
 
     float Dy = view.get_height()/HEIGHT;
@@ -76,47 +104,35 @@ void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes
 
     for(int l = 0; l < HEIGHT; l++){
         float y = view.get_height()/2 - Dy/2 - l*Dy;
-        for(int c = 0; c < WIDTH; c++){
-            float x = view.get_width()/2 - Dx/2 - c*Dx;
- 
-            Vector3R window_point = {x, y, view.get_plane_distance()};
-            Vector3R dir = window_point.normalize();
- 
-            RayR ray = {window_point, dir};
+        threads.push_back(thread([this, Dx, WIDTH, l, y, &view, shapes_transformed, lights_transformed](){
+            for(int c = 0; c < WIDTH; c++){
+                float x = view.get_width()/2 - Dx/2 - c*Dx;
+    
+                    Vector3R window_point = {x, y, view.get_plane_distance()};
+                    Vector3R dir = window_point.normalize();
+        
+                    RayR ray = {window_point, dir};
 
-            Color3 color = view.raycast(ray, shapes_transformed, lights);
+                    Color3 color = view.raycast(ray, shapes_transformed, lights_transformed);
 
-            setPixelColor(c, l, {color.r*255, color.g*255, color.b*255});
-        }
+                    setPixelColor(c, l, {color.r*255, color.g*255, color.b*255});
+            }
+        }));
+    }
+
+    for(thread& t : threads){
+        t.join();
     }
 
     for(Shape* shape : *shapes_transformed){
         delete shape;
     }
     delete shapes_transformed;
-}
-
-// Versão nova, falta terminar
-/*void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
-    float Dx = view.get_width()/WIDTH;
-    float Dy = view.get_height()/HEIGHT;
-
-    for(int l = 0; l < HEIGHT; l++){
-        float y = view.get_height()/2 - Dy/2 - l*Dy;
-
-        for(int c = 0; c < WIDTH; c++){
-            float x = -view.get_width()/2 + Dx/2 + c*Dx;
-            
-            Vector3R pontoJanela = {x, y, -view.get_plane_distance()};
-            Vector3R dir = pontoJanela.normalize();
- 
-            RayR ray = {{0, 0, 0}, dir};
-
-            Color3 color = view.raycast(ray, shapes, lights);
-
-            setPixelColor(c, l, {color.r*255, color.g*255, color.b*255});
-        }
+    
+    for(Light* light : *lights_transformed){
+        delete light;
     }
+    delete lights_transformed;
 }*/
 
 // Função de renderização com uma animaçãozinha

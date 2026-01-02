@@ -8,10 +8,11 @@
 #include "../objects/Lights/Light.h"
 #include "../../math/Color3.h"
 #include "../../math/MatrixR.h"
+#include "Camera3.h"
 
 using namespace std;
 
-#define RECURSION_DEPTH 3
+#define RECURSION_DEPTH 2
 #define EPSILON 0.001f // Usando pra evitar problemas com a precisão no raycasting, talvez pensar uma forma melhor de consertar isso
 
 // Tá meio godclass isso aqui
@@ -31,8 +32,9 @@ class View{
 
         //temp
         void move(float x, float y, float z);
+        void rotate(float x_angle, float y_angle, float z_angle);
 
-        float get_width();
+        float get_width(); // Desnecessários nesse modelo de camera
         float get_height();
         float get_plane_distance();
 
@@ -42,13 +44,13 @@ class View{
 
     private:
         Camera3 camera;
-        PlaneV plane; // Temp, lembrar de tirar
+        
         float view_width, view_height;
         float plane_distance;
 
         MatrixR world_to_camera;
 
-        void update_world_to_camera();
+        //void update_world_to_camera();
 };
 
 #endif // RENDERER_VIEW_H

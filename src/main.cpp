@@ -17,7 +17,7 @@
 #include "./app/app.h"
 
 int main(){
-    App app(1080, 720);
+    App app(860, 500);
     
     app.start();
 

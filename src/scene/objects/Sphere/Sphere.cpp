@@ -34,7 +34,8 @@ Collision Sphere::get_collision(RayR ray){
 }
 
 Sphere* Sphere::transform_return(const MatrixR& m){
-    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    MatrixR tr = m;
 
     return new Sphere(
         vector_transform(tr, sphere_center), 

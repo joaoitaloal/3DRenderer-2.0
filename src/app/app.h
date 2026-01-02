@@ -4,7 +4,7 @@
 #include <raygui.h>
 
 #include <string>
-//#include <chrono>
+#include <chrono>
 
 #include "../texture/texture.h"
 #include "../scene/view/view.h"
@@ -84,6 +84,8 @@ class App{
         View view;
         std::vector<Shape*>* shapes;
         std::vector<Light*>* lights;
+
+        std::chrono::duration<double, std::milli> time_elapsed;
 
         // Função chamada todo frame
         void process();

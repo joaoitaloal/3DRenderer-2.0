@@ -200,3 +200,13 @@ MatrixR get_z_rotation(float angle){
         0, 0, 0, 1
     };
 }
+
+MatrixR get_rotation_around_axis(float angle, Vector3R axis){
+    float cos_a = cosf(angle); float sin_a = sinf(angle);
+    return {
+        powf(axis.x, 2)*(1-cos_a) + cos_a, axis.x*axis.y*(1-cos_a) - axis.z*sin_a, axis.x*axis.z*(1-cos_a) + axis.y*sin_a, 0,
+        axis.x*axis.y*(1-cos_a) + axis.z*sin_a, powf(axis.y, 2)*(1-cos_a) + cos_a, axis.y*axis.z*(1-cos_a) - axis.x*sin_a, 0,
+        axis.x*axis.z*(1-cos_a) - axis.y*sin_a, axis.y*axis.z*(1-cos_a) + axis.x*sin_a, powf(axis.z, 2)*(1-cos_a) + cos_a, 0,
+        0, 0, 0, 1
+    };
+}
