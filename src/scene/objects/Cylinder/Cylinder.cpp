@@ -53,6 +53,14 @@ void Cylinder::transform(const MatrixR& m){
     update_transformation_matrices();
 }
 
+void Cylinder::update_radius(float radius_){
+    radius = radius_;
+}
+
+void Cylinder::update_height(float height_){
+    height = height_;
+}
+
 // ToDo: caso a colisão ocorra na parte de dentro, inverter a normal, ou enfim fazer mudanças necessárias pra ver a parte de dentro
 Collision Cylinder::get_surface_collision(RayR ray){
     Collision col;

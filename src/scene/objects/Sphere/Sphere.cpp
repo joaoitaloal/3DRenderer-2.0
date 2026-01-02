@@ -50,6 +50,7 @@ void Sphere::transform(const MatrixR& m){
     sphere_center = vector_transform(tr, sphere_center);
 
     // Gambiarrinha, a escala é aplicada pegando a média da diagonal da matriz
+    // Tá erradissimo inclusive, rotação e cisalhamento tá modificando o raio 
     radius = radius * (tr.trace()-m.m15)/3;
     
     update_transformation_matrices();

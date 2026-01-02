@@ -45,6 +45,10 @@ void Circle::transform(const MatrixR& m){
     update_transformation_matrices();
 }
 
+void Circle::update_radius(float radius_){
+    radius = radius_;
+}
+
 void Circle::update_transformation_matrices(){
     // Situação parecida com a do triangulo, não existe sem um objeto pai, talvez mudar a classe disso
 }

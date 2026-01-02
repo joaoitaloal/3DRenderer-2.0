@@ -97,3 +97,11 @@ void Cone::transform(const MatrixR& m){
 
     update_transformation_matrices();
 }
+
+void Cone::update_radius(float radius_){
+    radius = radius_;
+}
+
+void Cone::update_height(float height_){
+    height = height_;
+}

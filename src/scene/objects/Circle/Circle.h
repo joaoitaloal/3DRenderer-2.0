@@ -13,6 +13,9 @@ class Circle : public Plane {
         Circle* transform_return(const MatrixR& m) override;
         void transform(const MatrixR& m) override;
 
+        // Temporário, eu espero
+        void update_radius(float radius_);
+
     private:
         float radius;
 

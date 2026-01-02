@@ -13,6 +13,10 @@ class Cone : public Shape{
         Cone *transform_return(const MatrixR &m);
         void transform(const MatrixR& m) override;
 
+        // Temporário, espero
+        void update_radius(float radius_);
+        void update_height(float height_);
+
     private:
         Vector3R base_center;
         Vector3R axis_dir;
