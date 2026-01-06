@@ -8,9 +8,6 @@ class PointLight : public Light{
         PointLight(Vector3R position_, Color3 intensity_);
 
         Vector3R get_light_vector(Vector3R origin);
-
-        // ToDo
-        // void translate() override {};
         
         PointLight* transform_return(const MatrixR& m) override;
         void transform(const MatrixR& m) override;

@@ -12,13 +12,14 @@ class Light{
         virtual Vector3R get_light_vector(Vector3R origin) = 0;
 
         // Retorna um ponteiro para uma nova Luz, DELETAR DEPOIS DE USAR!!!!!!
-        // Não confundir com o transform da interface Transformable(talvez seria melhor mudar de nome)
         virtual Light* transform_return(const MatrixR& m) = 0;
 
-        // Mesma coisa do de cima mas transforma a instância de fato
+        // Mesma coisa do transform_return mas transforma a instância atual de fato
         virtual void transform(const MatrixR& m) = 0;
 
         Color3 get_intensity() { return intensity; }
+
+        virtual ~Light() = default;
     protected:
         Light(MatrixR world_to_object_, MatrixR object_to_world_) : world_to_object(world_to_object_), object_to_world(object_to_world_){}
         Color3 intensity;

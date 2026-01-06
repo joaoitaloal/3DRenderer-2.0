@@ -1,13 +1,5 @@
 #include "texture.h"
 
-inline float max(float a, float b){
-    return a > b?a:b;
-}
-
-inline int min(int a, int b){
-    return a < b?a:b;
-}
-
 TextureCPU::TextureCPU(Image &img) 
     : texture(LoadTextureFromImage(img)),
     pixels(LoadImageColors(img)){};
@@ -42,37 +34,15 @@ Color* TextureCPU::getPixelsRec(int x, int y, int WIDTH, int HEIGHT){
     return newPixels;
 }
 
-Color* TextureCPU::getPixelsRec(Rectangle rec){
-    int x = (int)rec.x;
-    int y = (int)rec.y;
-    int WIDTH = (int)rec.width;
-    int HEIGHT = (int)rec.height;
-
-    if(x + WIDTH > texture.width || y + HEIGHT > texture.height){
-        // Out of bounds
-        throw 3;
-    }
-
-    Color* newPixels = new Color[WIDTH*HEIGHT];
-
-    for(int i = 0; i < WIDTH; i++){
-        for(int i2 = 0; i2 < HEIGHT; i2++){
-            newPixels[i2*WIDTH + i] = pixels[(y + i2) * texture.width + x + i];
-        }
-    }
-
-    return newPixels;
-}
-
 void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
-    // essa quantidade de threads tá bem exagerada, o overhead é mt grande, dá pra melhorar isso
+    // FIXME: Essa quantidade de threads tá bem exagerada, o overhead é mt grande, dá pra melhorar isso
+    // Acho que a melhor ideia é fazer uma pool fixa de threads?
     vector<thread> threads;
 
     for(int x = 0; x < WIDTH; x++){
         threads.push_back(thread([this, &view, x, WIDTH, HEIGHT, shapes, lights](){
             for(int y = 0; y < HEIGHT; y++){
                 Color3 color = view.calculate_pixel_color(x, y, WIDTH, HEIGHT, shapes, lights);
-                //Color3 color = {0, 0, 0};
 
                 setPixelColor(x, y, {color.r*255, color.g*255, color.b*255});
             }
@@ -84,6 +54,16 @@ void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes
     }
 }
 
+Texture TextureCPU::get_texture(){
+    // Texture é uma strcut bem pequena, não tem muito problema passar por valor
+    return texture;
+}
+
+Color * TextureCPU::get_pixels(){
+    return pixels;
+}
+
+// TODO: Ver o que quero apagar e o que manter aqui
 // Versão nova, mas não gostei então não tou usando
 /*void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
     vector<thread> threads;

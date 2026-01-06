@@ -2,7 +2,7 @@
 
 Camera3::Camera3(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_)
     : position(x_, y_, z_), 
-    win(view_width_, view_height_, position) 
+    win(view_width_, view_height_, plane_distance_, position)
 {
     left = win.calculate_left();
     forwards = win.calculate_forward();
@@ -33,13 +33,14 @@ Vector3R Camera3::bi_interpolate(float alpha, float beta){
 
 // ============= WorldWindow ============= //
 
-WorldWindow::WorldWindow(float set_width, float set_height, Vector3R parent_pos){
-    width = set_width; height = set_height;
+WorldWindow::WorldWindow(float set_width, float set_height, float depth_, Vector3R parent_pos){
+    width = set_width; height = set_height; depth = depth_;
 
-    p1 = {width + parent_pos.x, height + parent_pos.y, 1 + parent_pos.z};
-    p2 = {-width + parent_pos.x, height + parent_pos.y, 1 + parent_pos.z};
-    p3 = {width + parent_pos.x, -height + parent_pos.y, 1 + parent_pos.z};
-    p4 = {-width + parent_pos.x, -height + parent_pos.y, 1 + parent_pos.z};
+    float hwidth = width/2; float hheight = height/2;
+    p1 = {hwidth + parent_pos.x, hheight + parent_pos.y, depth + parent_pos.z};
+    p2 = {-hwidth + parent_pos.x, hheight + parent_pos.y, depth + parent_pos.z};
+    p3 = {hwidth + parent_pos.x, -hheight + parent_pos.y, depth + parent_pos.z};
+    p4 = {-hwidth + parent_pos.x, -hheight + parent_pos.y, depth + parent_pos.z};
 }
 
 void WorldWindow::move(float x, float y, float z, Vector3R left, Vector3R forwards, Vector3R up){
@@ -52,7 +53,7 @@ void WorldWindow::move(float x, float y, float z, Vector3R left, Vector3R forwar
 }
 
 void WorldWindow::rotate(float x_angle, float y_angle, float z_angle, Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up){
-    // Tem como fazer isso de forma mais eficiente,
+    // TODO: Tem como fazer isso de forma mais eficiente,
     // melhorar quando sobrar tempo
     p1 = p1 - parent_pos;
     p2 = p2 - parent_pos;

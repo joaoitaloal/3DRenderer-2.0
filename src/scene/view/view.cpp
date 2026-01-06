@@ -1,9 +1,5 @@
 #include "view.h"
 
-inline float max(float a, float b){
-    return a > b?a:b;
-}
-
 View::View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_)
     : camera(x_, y_, z_, view_width_, view_height_, plane_distance_),
     world_to_camera(MatrixR::identity_matrix())
@@ -14,9 +10,6 @@ View::View(float x_, float y_, float z_, float view_width_, float view_height_, 
 
     //update_world_to_camera();
 }
-
-// Not implemented yet
-void View::setFov(float fov){};
 
 Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
     if(recursion_index <= 0) return {0, 0, 0};
@@ -42,34 +35,37 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
     color = color + shape->get_material().ka*ALI;
 
     for(Light* light : *lights){
+        bool shadow = false;
         Vector3R l = light->get_light_vector(col.point);
 
         RayR shadowRay = {col.point + l*EPSILON, l};
 
         for(Shape* shadowShape : *shapes){
             if(shadowShape->get_collision(shadowRay).hit){
-                return color.clampMax(1);
+                shadow = true;
+                break;
             }
         }
+        if(shadow) continue;
 
         Vector3R v = (camera.get_position() - col.point).normalize();
         Vector3R r = ((col.normal*(l*col.normal)*2) - l).normalize();
 
         float dotnl = col.normal * l;
-        if(dotnl > 0){
-            color = (
-                color + 
-                light->get_intensity() * shape->get_material().kd * dotnl
-            );
-        }
+        if(dotnl < 0) continue;
+        
+        color = (
+            color + 
+            light->get_intensity() * shape->get_material().kd * dotnl
+        );
 
         float dotvr = v * r;
-        if(dotvr > 0){
-            color = (
-                color + 
-                light->get_intensity() * shape->get_material().ks * powf(dotvr, shape->get_material().km)
-            );
-        }
+        if(dotvr < 0) continue;
+        
+        color = (
+            color + 
+            light->get_intensity() * shape->get_material().ks * powf(dotvr, shape->get_material().km)
+        );
 
         // Specular Reflection
         Vector3R reflection_vec = (col.normal*((v*col.normal)*2) - v).normalize();

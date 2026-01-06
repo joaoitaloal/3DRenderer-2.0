@@ -1,9 +1,9 @@
 #ifndef RENDERER_SHAPE_H
 #define RENDERER_SHAPE_H
 
-#include "Transformable.h"
 #include "Material3.h"
 #include "../../math/Vector3R.h"
+#include "../../math/MatrixR.h"
 #include "../../math/utils.h"
 
 // Classe de forma genérica

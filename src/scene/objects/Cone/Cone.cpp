@@ -4,7 +4,7 @@ Cone::Cone(Vector3R base_center_, Vector3R axis_dir_, float radius_, float heigh
 Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
 Q(matrix_by_vector(vector_transpose(axis_dir_), axis_dir_)),
 M(subtract_matrix(MatrixR::identity_matrix(),Q)),
-base(base_center_, -axis_dir_, radius_, false)
+base(base_center_, -axis_dir_, radius_, material_, false)
 {
     base_center = base_center_;
     axis_dir = axis_dir_;
@@ -53,9 +53,9 @@ Collision Cone::get_surface_collision(RayR ray) {
     Vector3R u = (vertice - p).normalize();
     MatrixR ut = matrix_by_vector(vector_transpose(u), u);
     MatrixR Mu = subtract_matrix(MatrixR::identity_matrix(),ut);
-    Vector3R normal = vector_transform(Mu, axis_dir);
+
+    col.normal = vector_transform(Mu, axis_dir).normalize();
     col.hit = true;
-    col.normal = normal.normalize();
     col.point = p;
 
     return col;
@@ -70,8 +70,7 @@ void Cone::update_transformation_matrices(){
 }
 
 Cone* Cone::transform_return(const MatrixR& m){
-    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
-    MatrixR tr = m;
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
     
     return new Cone(
         vector_transform(tr, base_center),
@@ -84,12 +83,11 @@ Cone* Cone::transform_return(const MatrixR& m){
 
 void Cone::transform(const MatrixR& m){
     MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
-    // Falta atualizar raio e altura
 
     base_center = vector_transform(tr, base_center);
     axis_dir = normal_transform(tr, axis_dir);
 
-    base = {base_center, -axis_dir, radius, false};
+    base = {base_center, -axis_dir, radius, material, false};
     vertice = base_center + (axis_dir * height);
 
     Q = matrix_by_vector(vector_transpose(axis_dir), axis_dir);

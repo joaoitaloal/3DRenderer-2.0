@@ -4,13 +4,9 @@
 #include "Vector3R.h"
 #include <vector>
 
-// Provavelmente melhor mover isso, de preferencia fazer uma classe matriz
-//float matrixDeterminant3x3(Matrix mat);
-
-
 // Mesmas definições da raylib, pelo menos por enquanto
 
-// Mudar pra esse raio aqui dps, mais bonitinho
+// TODO: Mudar pra esse raio aqui dps, mais bonitinho
 /*class RayR {
     public:
         RayR(Vector3R position_, Vector3R direction_) { position = position_; direction = direction_; }

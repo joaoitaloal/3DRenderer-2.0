@@ -15,13 +15,12 @@ using namespace std;
 #define RECURSION_DEPTH 2
 #define EPSILON 0.001f // Usando pra evitar problemas com a precisão no raycasting, talvez pensar uma forma melhor de consertar isso
 
-// Tá meio godclass isso aqui
+// TODO: Ver o que precisa manter dos testes de mudar o modelo de coordenadas e remover o que não precisar
+
+// FIXME: Tá meio godclass isso aqui
 class View{
     public:
         View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_);
-
-        // Not implemented yet
-        void setFov(float fov);
 
         RayR createRay(float alpha, float beta);
 

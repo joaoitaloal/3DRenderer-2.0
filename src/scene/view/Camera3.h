@@ -7,7 +7,7 @@
 // Plano de visão
 class WorldWindow {
     public:
-        WorldWindow(float set_width, float set_height, Vector3R parent_pos);
+        WorldWindow(float set_width, float set_height, float depth_, Vector3R parent_pos);
 
         void move(float x, float y, float z, Vector3R left, Vector3R forwards, Vector3R up);
         void rotate(float x_angle, float y_angle, float z_angle, Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up);
@@ -19,8 +19,8 @@ class WorldWindow {
         Vector3R calculate_left();
 
     protected:
-        Vector3R p1; Vector3R p2; Vector3R p3; Vector3R p4;
-        float width; float height;
+        Vector3R p1, p2, p3, p4;
+        float width, height, depth;
 };
 
 class Camera3 {
@@ -37,9 +37,7 @@ class Camera3 {
         Vector3R position;
         WorldWindow win;
 
-        Vector3R left;
-        Vector3R forwards;
-        Vector3R up;
+        Vector3R left, forwards, up;
 };
 
 #endif // RENDERER_CAMERA3_H

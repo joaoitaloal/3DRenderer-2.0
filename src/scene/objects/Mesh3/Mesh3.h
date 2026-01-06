@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// TODO: inserir um vetor pivô para as transformações, ao invés de usar a bbox
+
 // Classe de malha, use o método estático pra criar instancias, não o construtor
 class Mesh3 : public Shape {
     public:
@@ -25,7 +27,7 @@ class Mesh3 : public Shape {
         // O gerenciamento de memória do vetor faces é feito pela classe
         vector<Triangle*> faces;
 
-        // Criar uma classe BoundingBox nossa
+        // TODO: Criar uma classe BoundingBox nossa
         BoundingBoxR bbox;
 
         void update_transformation_matrices() override;

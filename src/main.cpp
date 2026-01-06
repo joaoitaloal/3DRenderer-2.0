@@ -2,8 +2,6 @@
 
 // ToDo list antiga, vou manter por enquanto mas ignore!!!
 /* ToDo:
-    - Make rotation code(maybe try to make a Transform class)
-        Clearly too dificult for now, spent a long time reading and still dont understand enough to implement it, gonna stick to a fixed camera and single object for now
     - Implement a better acceleration structure than the bounding box
     - Give more live control to the renderer using the UI
     - Implement threading so that the UI is not paused while rendering

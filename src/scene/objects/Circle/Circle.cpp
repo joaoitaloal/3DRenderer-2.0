@@ -1,9 +1,10 @@
 #include "Circle.h"
 
-Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, bool culled = false)
-    :Plane(normal_, point_, culled)
+Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 material_, bool culled = false)
+    :Plane(normal_, point_, material_, culled )
 {
     radius = radius_;
+    material = material_;
 
     update_transformation_matrices();
 }
@@ -23,12 +24,10 @@ Collision Circle::get_collision(RayR ray){
 }
 
 Circle *Circle::transform_return(const MatrixR& m){
-    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
-    MatrixR tr = m;
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
 
     Plane plane = *Plane::transform_return(tr);
 
-    // Falta atualizar o raio do circulo
     return new Circle(
         plane,
         radius
@@ -39,8 +38,6 @@ void Circle::transform(const MatrixR& m){
     MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
 
     Plane::transform(tr);
-
-    // Atualizar raio
     
     update_transformation_matrices();
 }

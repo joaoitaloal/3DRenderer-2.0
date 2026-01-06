@@ -12,7 +12,7 @@ class Triangle : public Shape {
         void transform(const MatrixR& m) override;
 
     protected:
-        Vector3R v1, v2, v3; // vertices
+        Vector3R v1, v2, v3;
         Plane plane;
 
         void update_transformation_matrices() override;

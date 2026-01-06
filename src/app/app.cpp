@@ -19,7 +19,7 @@ App::App(int win_width_, int win_height_)
     win_width = win_width_;
     win_height = win_height_;
 
-    shapes = new vector<Shape*>;
+    shapes = new vector<Shape*>; // Isso tá certo sem os parenteses??
     lights = new vector<Light*>;
 
     ui_width = 360; ui_height = 720;
@@ -30,12 +30,12 @@ App::App(int win_width_, int win_height_)
     // ========= Criando objetos =========
     // Malhas
     load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    load_new_mesh("models/Cube.obj", {0.25, 0, 0});
+    //load_new_mesh("models/Cube.obj", {0.25, 0, 0});
 
     Vector3R axis(0.5, 0.7, 0.5);
     // Cilindro
     shapes->push_back(new Cylinder(
-        {-10, 0, 10},
+        {-10, 5, 10},
         axis.normalize(),
         3,
         10,
@@ -43,17 +43,24 @@ App::App(int win_width_, int win_height_)
     ));
     // Esfera
     shapes->push_back(new Sphere(
-        {0, 10, 0},
+        {0, 15, 0},
         3,
         debug_temp_material({1, 1, 0})
     ));
     // Cone
     shapes->push_back(new Cone(
-        {5, 0, 0},
+        {5, 5, 0},
         axis.normalize(),
         3,
         4,
         debug_temp_material({0, 0, 0.25})
+    ));
+    // Plano
+    shapes->push_back(new Plane(
+        {0, 1, 0},
+        {0, -10, 0},
+        debug_temp_material({0, 0.25, 0}),
+        false
     ));
 
     // Rendered image dimensions
@@ -155,9 +162,9 @@ void App::process(){
     ClearBackground(BLACK);
 
     tex->update(view, render_witdh, render_height, shapes, lights);
-    UpdateTexture(tex->texture, tex->pixels);
+    UpdateTexture(tex->get_texture(), tex->get_pixels());
 
-    DrawTexture(tex->texture, 0 + render_offset, 0, WHITE);
+    DrawTexture(tex->get_texture(), 0 + render_offset, 0, WHITE);
 
     // UI
 

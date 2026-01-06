@@ -5,7 +5,7 @@
 
 class Plane : public Shape {
     public:
-        Plane(Vector3R normal_, Vector3R point_, bool culled);
+        Plane(Vector3R normal_, Vector3R point_, Material3 material_, bool culled);
         Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled);
 
         Collision get_collision(RayR ray) override;

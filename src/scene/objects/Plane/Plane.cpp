@@ -1,10 +1,11 @@
 #include "Plane.h"
 
-Plane::Plane(Vector3R normal_, Vector3R point_, bool culled = false)
+Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, bool culled = false)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
 {
     normal = normal_;
     point = point_;
+    material = material_;
 
     backface_culled = culled;
 
@@ -43,12 +44,12 @@ Collision Plane::get_collision(RayR ray)
 }
 
 Plane* Plane::transform_return(const MatrixR& m){
-    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
-    MatrixR tr = m;
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
 
     return new Plane(
         normal_transform(tr, normal), 
         vector_transform(tr, point), 
+        material,
         backface_culled
     );
 }
@@ -63,9 +64,10 @@ void Plane::transform(const MatrixR& m){
 }
 
 void Plane::update_transformation_matrices(){
-    world_to_object.m3 = point.x;
-    world_to_object.m7 = point.y;
-    world_to_object.m11 = point.z;
+    world_to_object.m3 = -point.x;
+    world_to_object.m7 = -point.y;
+    world_to_object.m11 = -point.z;
 
+    // Tecnicamente não precisa dessa função, mas a gente usa transformações tão raramente que tá ok
     object_to_world = world_to_object.invert_matrix();
 }

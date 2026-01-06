@@ -10,46 +10,62 @@
 #include "../scene/view/view.h"
 #include "../scene/objects/Shape.h"
 
-#define USER_SPEED 0.5f
+#define USER_SPEED 2.0f
 
-/* ToDo: Especificações do trabalho:
-    - Esfera, cilindro, cone e malha(tá feita, só falta mudar o algoritmo do triangulo);
+/* TODO: Especificações do trabalho(Separado por dificuldade):
+    Díficil(ou trabalhoso):
     - Aplicação de textura
-    - Transformações(tem só as interfaces, falta implementar)
     - Fonte spot e direcional, a ambiente tá hardcoded, tem que ajeitar também
-    - Função de selecionar um objeto com o clique
     - Determinar o cenário
+    - perspectiva com pontos de fuga? não lembro o que é isso
 
+    Médio:
+    - Criar uma função que define a direção up da camêra(o look at deixa o up = (0, 1, 0) obrigatoriamente, no momento)
+    - Função de selecionar um objeto com o clique
+    - projeção ortográfica e obliqua
+    
+    Fácil(Alguns tão quase prontos):
+    - Transformações, falta cisalhamento e espelho em relação a um plano.
+    - Campo de visão, provavelmente dar a opção de modificar proporções do plano de visão é suficiente
+    - Distancia focal, pesquisar o que isso quer dizer??(Provavelmente é a distância do plano pra camera)
+    - zoom in e zoom out
+
+    Não vai rolar:
     - Mudar o sistema de camera pra usar aquele modelo que ele usa, centrado na origem e com as transformações world-to-camera e etc.
 */
 
+// TODO: mover os todos pros arquivos relevantes :P
 // ---------------- Outros ToDos ---------------- //
 
-// ToDo: Mover tudo que é da UI aqui pra uma classe separada, talvez convenha modificar a posição da UI,
+// TODO: Mover tudo que é da UI aqui pra uma classe separada, talvez convenha modificar a posição da UI,
 // do jeito que tá agora o renderizador inteiro precisa de um offset, 
 // acho que uma opção decente é manter toda a UI sobreposta no próprio renderizador
 
-// ToDo: Mover o próprio renderizador pra uma classe separada pode ser bom tbm,
+// TODO: Mover o próprio renderizador pra uma classe separada pode ser bom tbm,
 // por ele ter uma width e heigth própria
 
-// ToDo: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
+// TODO: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
 // calculada e dividir todas as cores por ela, que parece bem legal
 
-// ToDo: Colisão com boundingbox
+// TODO: Colisão com boundingbox
 
-// ToDo: Threading
+// TODO: Criar uma classe cena, passar algumas funções daqui pra lá
 
-// ToDo: Dá pra melhorar a performance de várias funções na pasta math, fazendo cache de acesso de objeto por exemplo.
+// TODO: Dá pra melhorar a performance de várias funções na pasta math, fazendo cache de acesso de objeto por exemplo.
 
-// ToDo: Tou passando um ponteiro pra um vetor de ponteiros como as shapes, isso parece desnecessário.
+// TODO: Análise melhor do que tá rodando rápido e do que não tá, tive um teste estranho onde olhar pra um lugar sem objetos nada melhorou muito o fps,
+// e a reflexão tava desativada, com a reflexão ativada isso deveria acontecer mas sem reflexão não devia(eu acho).
+// Nesse mesmo caminho seria legal fazer uma shape group pra agrupar objetos próximos(e testar eles com uma bounding box), 
+// teria que manualmente adicionar objetos a grupos então não é muito legal, mas enquanto não tenho formas de automatizar isso, é uma ideia.
 
-// Issue: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
+// TODO: Dar uma melhorada no tratamento de erro
+
+// FIXME: Tou passando um ponteiro pra um vetor de ponteiros como as shapes, isso parece desnecessário.
+
+// FIXME: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
 // mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
 // Acho que uma solução possível é guardar um ponteiro pro material na classe shape, daí quando tiver criando a mesh podemos criar
 // com todos os materiais iguais, ou um nullptr, só o gerenciamento de memória que ia ser meio complicadinho.
-
-// Issue: A gente não consegue fazer Transformação de normais ainda, uma forma é modificar nossos vetores pra terem 4 valores,
-// eu optei por uma solução temporária bem feia que é dizer que um vetor é normal no calculo de transformação, por favor mudar dps.
 
 using namespace std;
 

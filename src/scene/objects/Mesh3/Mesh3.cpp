@@ -8,22 +8,6 @@ Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_)
     material = material_;
 
     update_transformation_matrices();
-
-    // Testando transformações
-    /*transform({
-        1, 0, 0, 0,
-        0, 5, 0, -10,
-        0, 0, 1, 50,
-        0, 0, 0, 1
-    });
-
-    float cos_sin45 = 0.70710678118654;
-    transform({
-        cos_sin45, 0, cos_sin45, 0,
-        0, 1, 0, 0,
-       -cos_sin45, 0, cos_sin45, 0,
-        0, 0, 0, 1
-    });*/
 }
 
 Mesh3::~Mesh3(){
@@ -44,7 +28,7 @@ Collision Mesh3::get_collision(RayR ray){
     Collision col;
     col.hit = false;
 
-    // ToDo: Implementar a colisão com caixa regular(Bounding box) pra usar aqui
+    // TODO: Implementar a colisão com caixa regular(Bounding box) pra usar aqui
     // Collision boxCol = GetRayCollisionBox(ray, bbox);
 
     /*if(!boxCol.hit || mesh->faces.size() == 0){
@@ -52,7 +36,6 @@ Collision Mesh3::get_collision(RayR ray){
     }*/
 
     for(Triangle* tri : faces){
-        //RayCollision temp = GetRayCollisionTriangle(ray, tri.v1, tri.v2, tri.v3);
         Collision temp = tri->get_collision(ray);
 
         if(!col.hit || (temp.hit && col.distance > temp.distance)){ 
@@ -64,8 +47,7 @@ Collision Mesh3::get_collision(RayR ray){
 }
 
 Mesh3* Mesh3::transform_return(const MatrixR& m){
-    //MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
-    MatrixR tr = m;
+    MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
 
     vector<Triangle*> new_faces;
 

@@ -10,17 +10,9 @@ Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
     v2 = v2_;
     v3 = v3_;
 
-    // Por enquanto o triângulo não existe sozinho, só em uma mesh
-    // ToDo: world_to_object = média dos três pontos? algo assim?
-    /*world_to_object.m3 = -v1.x;
-    world_to_object.m7 = -v1.y;
-    world_to_object.m11 = -v1.z;
-
-    object_to_world = world_to_object.invert_matrix();*/
+    update_transformation_matrices();
 }
 
-// A reflexão e algumas outras coisas tão com alguns pontos vazios, 
-// deve ser problema de precisão ou aqui ou na colisão do plano, dar uma olhada depois.
 Collision Triangle::get_collision(RayR ray){
     Collision col = plane.get_collision(ray);
     if(!col.hit) return col;
@@ -59,11 +51,18 @@ void Triangle::transform(const MatrixR& m){
     v3 = vector_transform(m, v3);
 
     plane = Plane(v1, v2, v3, true);
+
+    update_transformation_matrices();
 }
 
 void Triangle::update_transformation_matrices(){
-    // Essa implementação do triangulo, pelo menos por enquanto, não suporta triangulos isolados,
-    // portanto essa função não precisa ter nada.
+    // Por enquanto o triângulo não existe sozinho, só em uma mesh
+    // ToDo: world_to_object = média dos três pontos? algo assim?
+    /*world_to_object.m3 = -v1.x;
+    world_to_object.m7 = -v1.y;
+    world_to_object.m11 = -v1.z;
+
+    object_to_world = world_to_object.invert_matrix();*/
 }
 
 /* 

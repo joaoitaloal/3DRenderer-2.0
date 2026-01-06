@@ -2,13 +2,13 @@
 #define RENDERER_MOVABLELIGHT_H
 
 #include "./Light.h"
-#include "../Transformable.h"
 
 // Parei de usar, tem que ver como vamos fazer as transformações nas luzes
-class MovableLight : public Light, public Transformable {
+// TODO
+class MovableLight : public Light {
     public:
         Vector3R get_position() { return position; }
-        void transform(MatrixR m) override;
+        void transform(const MatrixR& m) override;
     protected:
         Vector3R position;
 };
