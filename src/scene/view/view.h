@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include "../scene.h"
 #include "../objects/Shape.h"
 #include "../objects/Lights/Light.h"
 #include "../../math/Color3.h"
@@ -14,16 +13,18 @@ using namespace std;
 
 #define RECURSION_DEPTH 2
 #define EPSILON 0.001f // Usando pra evitar problemas com a precisão no raycasting, talvez pensar uma forma melhor de consertar isso
+// Eu aumentei bastante esse epsilon, o resultado é que objetos muito finos tem a sombra e reflexão meio erradas
 
 // TODO: Ver o que precisa manter dos testes de mudar o modelo de coordenadas e remover o que não precisar
 
 // FIXME: Tá meio godclass isso aqui
 class View{
     public:
-        View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_);
+        View(Vector3R position_, float view_width_, float view_height_, float plane_distance_);
 
         RayR createRay(float alpha, float beta);
 
+        // Não gosto desse nome
         Color3 calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights);
 
         // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel

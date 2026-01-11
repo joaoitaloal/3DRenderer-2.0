@@ -1,7 +1,7 @@
 #include "view.h"
 
-View::View(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_)
-    : camera(x_, y_, z_, view_width_, view_height_, plane_distance_),
+View::View(Vector3R position_, float view_width_, float view_height_, float plane_distance_)
+    : camera(position_, view_width_, view_height_, plane_distance_),
     world_to_camera(MatrixR::identity_matrix())
 {
     //view_width = view_width_;

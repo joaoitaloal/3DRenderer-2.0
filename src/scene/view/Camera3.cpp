@@ -1,7 +1,7 @@
 #include "Camera3.h"
 
-Camera3::Camera3(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_)
-    : position(x_, y_, z_), 
+Camera3::Camera3(Vector3R position_, float view_width_, float view_height_, float plane_distance_)
+    : position(position_), 
     win(view_width_, view_height_, plane_distance_, position)
 {
     left = win.calculate_left();

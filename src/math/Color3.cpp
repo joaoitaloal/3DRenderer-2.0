@@ -40,3 +40,7 @@ inline float min(float a, float b){
 Color3 Color3::clampMax(float val){
     return {min(this->r, val), min(this->g, val), min(this->b, val)};
 }
+
+void Color3::print(){
+    std::cout << "( " << r << " " << g << " " << b << " )" << std::endl;
+}

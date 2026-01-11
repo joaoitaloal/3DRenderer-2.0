@@ -25,7 +25,7 @@ class WorldWindow {
 
 class Camera3 {
     public:
-        Camera3(float x_, float y_, float z_, float view_width_, float view_height_, float plane_distance_);
+        Camera3(Vector3R position_, float view_width_, float view_height_, float plane_distance_);
         void move(float x, float y, float z);
         void rotate(float x_angle, float y_angle, float z_angle);
 

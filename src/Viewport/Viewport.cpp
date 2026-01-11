@@ -1,15 +1,25 @@
-#include "texture.h"
+#include "Viewport.h"
 
-TextureCPU::TextureCPU(Image &img) 
-    : texture(LoadTextureFromImage(img)),
-    pixels(LoadImageColors(img)){};
+Viewport::Viewport(int width_, int height_, Scene* scene_)
+    : threads(thread::hardware_concurrency() - 1, [this](JobData job){ calculate_n_pixels(job); }) // Thats so ugly
+{
+    width = width_; height = height_;
+    scene = scene_;
 
-TextureCPU::~TextureCPU(){
+    Image img = GenImageColor(width, height, BLACK);
+    texture = LoadTextureFromImage(img);
+    pixels = LoadImageColors(img);
+    UnloadImage(img);
+};
+
+
+Viewport::~Viewport()
+{
     UnloadTexture(texture);
     UnloadImageColors(pixels);
 }
 
-void TextureCPU::setPixelColor(int x, int y, Color3 color){
+void Viewport::setPixelColor(int x, int y, Color3 color){
     int index = y * texture.width + x;
     pixels[index].r = color.r;
     pixels[index].g = color.g;
@@ -17,7 +27,7 @@ void TextureCPU::setPixelColor(int x, int y, Color3 color){
     pixels[index].a = 255;
 }
 
-Color* TextureCPU::getPixelsRec(int x, int y, int WIDTH, int HEIGHT){
+Color* Viewport::getPixelsRec(int x, int y, int WIDTH, int HEIGHT){
     if(x + WIDTH > texture.width || y + HEIGHT > texture.height){
         // Out of bounds
         throw 3;
@@ -34,38 +44,41 @@ Color* TextureCPU::getPixelsRec(int x, int y, int WIDTH, int HEIGHT){
     return newPixels;
 }
 
-void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
-    // FIXME: Essa quantidade de threads tá bem exagerada, o overhead é mt grande, dá pra melhorar isso
-    // Acho que a melhor ideia é fazer uma pool fixa de threads?
-    vector<thread> threads;
 
-    for(int x = 0; x < WIDTH; x++){
-        threads.push_back(thread([this, &view, x, WIDTH, HEIGHT, shapes, lights](){
-            for(int y = 0; y < HEIGHT; y++){
-                Color3 color = view.calculate_pixel_color(x, y, WIDTH, HEIGHT, shapes, lights);
+void Viewport::update(){
+    for(int i = 0; i < width*height; i+=height){
+        threads.add_job({i, height});
+    }
 
-                setPixelColor(x, y, {color.r*255, color.g*255, color.b*255});
-            }
-        }));
-    }
-    
-    for(thread& t : threads){
-        t.join();
-    }
+    threads.await_jobs();
 }
 
-Texture TextureCPU::get_texture(){
-    // Texture é uma strcut bem pequena, não tem muito problema passar por valor
+Texture Viewport::get_texture(){
+    // Texture é uma struct bem pequena, não tem muito problema passar por valor
     return texture;
 }
 
-Color * TextureCPU::get_pixels(){
+Color* Viewport::get_pixels(){
     return pixels;
+}
+
+void Viewport::calculate_n_pixels(JobData job){
+    int x = job.i % width; int y = job.i/height;
+    for(int i = 0; i < job.n; i++){
+        Color3 color = scene->calculate_pixel_color(x, y, width, height);
+
+        setPixelColor(x, y, {color.r*255, color.g*255, color.b*255});
+
+        if(x >= width){
+            x = 0;
+            y++;
+        }else x++;
+    }
 }
 
 // TODO: Ver o que quero apagar e o que manter aqui
 // Versão nova, mas não gostei então não tou usando
-/*void TextureCPU::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
+/*void Viewport::update(View view, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
     vector<thread> threads;
 
     vector<Shape*>* shapes_transformed = new vector<Shape*>();
@@ -116,7 +129,7 @@ Color * TextureCPU::get_pixels(){
 }*/
 
 // Função de renderização com uma animaçãozinha
-/*void TextureCPU::renderToScreen(View view, std::vector<Mesh3*>* meshes, int WIDTH, int HEIGHT, std::vector<PointLight> lights, int anim_speed){
+/*void Viewport::renderToScreen(View view, std::vector<Mesh3*>* meshes, int WIDTH, int HEIGHT, std::vector<PointLight> lights, int anim_speed){
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
             Color3 color = view.rayCast(x, y, WIDTH, HEIGHT, meshes, lights);

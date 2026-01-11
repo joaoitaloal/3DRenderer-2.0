@@ -1,6 +1,8 @@
 #ifndef RENDERER_COLOR3_H
 #define RENDERER_COLOR3_H
 
+#include <iostream>
+
 class Color3 {
     public:
         float r;        // Color red value
@@ -18,6 +20,8 @@ class Color3 {
         Color3 operator/ (float scalar);
 
         Color3 clampMax(float val);
+
+        void print();
 };
 
 #endif // RENDERER_COLOR3_H

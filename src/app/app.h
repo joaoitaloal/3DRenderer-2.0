@@ -6,9 +6,7 @@
 #include <string>
 #include <chrono>
 
-#include "../texture/texture.h"
-#include "../scene/view/view.h"
-#include "../scene/objects/Shape.h"
+#include "../Viewport/Viewport.h"
 
 #define USER_SPEED 2.0f
 
@@ -49,8 +47,6 @@
 
 // TODO: Colisão com boundingbox
 
-// TODO: Criar uma classe cena, passar algumas funções daqui pra lá
-
 // TODO: Dá pra melhorar a performance de várias funções na pasta math, fazendo cache de acesso de objeto por exemplo.
 
 // TODO: Análise melhor do que tá rodando rápido e do que não tá, tive um teste estranho onde olhar pra um lugar sem objetos nada melhorou muito o fps,
@@ -60,7 +56,7 @@
 
 // TODO: Dar uma melhorada no tratamento de erro
 
-// FIXME: Tou passando um ponteiro pra um vetor de ponteiros como as shapes, isso parece desnecessário.
+// TODO: Implementar um escalonador pro viewport, pra renderizar numa tela pequena e aumentar o tamanho dps
 
 // FIXME: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
 // mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
@@ -68,8 +64,6 @@
 // com todos os materiais iguais, ou um nullptr, só o gerenciamento de memória que ia ser meio complicadinho.
 
 using namespace std;
-
-// Comentei as partes do código que calculam o tempo de renderização, talvez temporariamente talvez não
 
 // Classe que inicializa a janela da raylib e o programa
 class App{
@@ -91,15 +85,18 @@ class App{
         char* obj_file_entry; // Quero muito mudar pra um std::string mas a raygui vai atrapalhar nisso, talvez fazer um wrapper
 
         // Variáveis do renderizador
+        // Acho que a gente não precisa dessas variáveis, já tão guardadas em viewport
         int render_witdh, render_height;
-        int render_offset; // Só existe pelo fato da ui deslocar o renderizador pra direita
+        
         // Textura que é renderizada, se uma classe for criada para o renderizador isso aqui tem que ir pra lá
-        TextureCPU* tex;
+        Viewport* viewport;
 
-        // Esses próximos atributos devem ir pra uma classe Scene, quando ela for criada
-        View view;
-        std::vector<Shape*>* shapes;
-        std::vector<Light*>* lights;
+        // Referência pro view da scene, com o motivo unico de controlar input nessa classe
+        View* view;
+        Scene scene;
+
+        // TODO: Toggle da renderização ao vivo
+        bool live_rendering;
 
         std::chrono::duration<double, std::milli> time_elapsed;
 
