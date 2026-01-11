@@ -1,7 +1,5 @@
 #include "Triangle.h"
 
-#include <limits>
-
 Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()), 
     plane(v1_, v2_, v3_, true) // Usando backface culling por padrão
@@ -13,7 +11,7 @@ Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
     update_transformation_matrices();
 }
 
-Collision Triangle::get_collision(RayR ray){
+/*Collision Triangle::get_collision(RayR ray){
     Collision col = plane.get_collision(ray);
     if(!col.hit) return col;
 
@@ -35,7 +33,7 @@ Collision Triangle::get_collision(RayR ray){
     if(c1 < 0 || c2 < 0 || c3 < 0) col.hit = false;
 
     return col;
-}
+}*/
 
 Triangle* Triangle::transform_return(const MatrixR& m){
     return new Triangle(
@@ -72,10 +70,13 @@ void Triangle::update_transformation_matrices(){
     After some more tests it actually is about 1.25x slower than the raylib version, should take a look at the source for raylib and see what is different there
 */
 // Raylib already has this function but i wanted to try a custom implementation from zero to compare how badly it performs
-/*Collision Triangle::get_collision(RayR ray){
+Collision Triangle::get_collision(RayR ray){
     // Some terrible naming conventions here
     Collision col;
-    const double inf = std::numeric_limits<float>::infinity();
+    col.hit = false;
+    
+    float dir_dot = ray.direction * plane.get_normal();
+    if(dir_dot >= 0) return col;
     
     // M  = a(ei - hf) + b(gf - di) + d(dh- eg)
     float a = v1.x - v2.x; float d = v1.x - v3.x; float g = ray.direction.x; float j = v1.x - ray.position.x;
@@ -92,27 +93,15 @@ void Triangle::update_transformation_matrices(){
     float bl_minus_kc = b*l - k*c;
     float t = -(f*ak_minus_jb + e*jc_minus_al + d*bl_minus_kc)/M;
 
-    if(t < 0){
-        col.distance = inf;
-        col.hit = false;
-        return col;
-    }
+    if(t < 0) return col;
 
     float gamma = (i*ak_minus_jb + h*jc_minus_al + g*bl_minus_kc)/M;
 
-    if(gamma < 0 || gamma > 1){
-        col.distance = inf;
-        col.hit = false;
-        return col;
-    }
+    if(gamma < 0 || gamma > 1) return col;
 
     float beta = (j*ei_minus_hf + k*gf_minus_di + l*dh_minus_eg)/M;
 
-    if(beta < 0 || beta > 1 - gamma){
-        col.distance = inf;
-        col.hit = false;
-        return col;
-    }
+    if(beta < 0 || beta > 1 - gamma) return col;
 
     // hit
     col.hit = true;
@@ -120,10 +109,7 @@ void Triangle::update_transformation_matrices(){
     Vector3R test = (v2 - v1)*beta + (v3 - v1)*gamma;
     col.point = v1 + test;
 
-    Vector3R p1 = v2-v1; Vector3R p2 = v3-v1;
-
-    // It is not necessary to calculate this normal inside the collision
-    col.normal = Vector3R{p1.y*p2.z - p1.z*p2.y, p1.z*p2.x - p1.x*p2.z, p1.x*p2.y - p1.y*p2.x}.normalize();
+    col.normal = plane.get_normal();
 
     return col;
-}*/
+}

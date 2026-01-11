@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#define RECURSION_DEPTH 2
+#define RECURSION_DEPTH 1
 #define EPSILON 0.001f // Usando pra evitar problemas com a precisão no raycasting, talvez pensar uma forma melhor de consertar isso
 // Eu aumentei bastante esse epsilon, o resultado é que objetos muito finos tem a sombra e reflexão meio erradas
 

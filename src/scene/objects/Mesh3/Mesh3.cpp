@@ -1,11 +1,12 @@
 #include "Mesh3.h"
 
-Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
+Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_, Vector3R anchor_)
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
+    bbox(bbox_)
 {
     faces = faces_;
-    bbox = bbox_;
     material = material_;
+    anchor = anchor_;
 
     update_transformation_matrices();
 }
@@ -28,12 +29,9 @@ Collision Mesh3::get_collision(RayR ray){
     Collision col;
     col.hit = false;
 
-    // TODO: Implementar a colisão com caixa regular(Bounding box) pra usar aqui
-    // Collision boxCol = GetRayCollisionBox(ray, bbox);
-
-    /*if(!boxCol.hit || mesh->faces.size() == 0){
+    if(!bbox.get_collision(ray) || faces.size() == 0){
         return col;
-    }*/
+    }
 
     for(Triangle* tri : faces){
         Collision temp = tri->get_collision(ray);
@@ -58,11 +56,9 @@ Mesh3* Mesh3::transform_return(const MatrixR& m){
 
     return new Mesh3(
         new_faces, 
-        {
-            vector_transform(tr, bbox.min), 
-            vector_transform(tr, bbox.max)
-        },
-        material
+        bbox.transform_return(tr),
+        material,
+        vector_transform(tr, anchor)
     );
 }
 
@@ -73,17 +69,15 @@ void Mesh3::transform(const MatrixR& m){
         tri->transform(tr);
     }
 
-    bbox.min = vector_transform(tr, bbox.min);
-    bbox.max = vector_transform(tr, bbox.max);
+    anchor = vector_transform(tr, anchor);
 
     update_transformation_matrices();
 }
 
 void Mesh3::update_transformation_matrices(){
-    Vector3R bbox_center = (bbox.min+bbox.max)/2;
-    world_to_object.m3 = -bbox_center.x;
-    world_to_object.m7 = -bbox_center.y;
-    world_to_object.m11 = -bbox_center.z;
+    world_to_object.m3 = -anchor.x;
+    world_to_object.m7 = -anchor.y;
+    world_to_object.m11 = -anchor.z;
 
     object_to_world = world_to_object.invert_matrix();
 }

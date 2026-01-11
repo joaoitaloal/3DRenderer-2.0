@@ -29,14 +29,20 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
 
     if(!col.hit) return {0, 0, 0};
 
+    Vector3R v = (camera.get_position() - col.point).normalize();
+
     // Shading
     float ALI = 0.2; // temporary constant Ambient Light Intensity
     Color3 color = shape->get_material().color;
     color = color + shape->get_material().ka*ALI;
 
     for(Light* light : *lights){
-        bool shadow = false;
         Vector3R l = light->get_light_vector(col.point);
+        
+        float dotnl = col.normal * l;
+        if(dotnl < 0) continue;
+
+        bool shadow = false;
 
         RayR shadowRay = {col.point + l*EPSILON, l};
 
@@ -48,11 +54,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
         }
         if(shadow) continue;
 
-        Vector3R v = (camera.get_position() - col.point).normalize();
         Vector3R r = ((col.normal*(l*col.normal)*2) - l).normalize();
-
-        float dotnl = col.normal * l;
-        if(dotnl < 0) continue;
         
         color = (
             color + 
@@ -66,13 +68,13 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
             color + 
             light->get_intensity() * shape->get_material().ks * powf(dotvr, shape->get_material().km)
         );
-
-        // Specular Reflection
-        Vector3R reflection_vec = (col.normal*((v*col.normal)*2) - v).normalize();
-        RayR reflection = {col.point + reflection_vec*EPSILON, reflection_vec};
-
-        color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
     }
+    
+    // Specular Reflection
+    Vector3R reflection_vec = (col.normal*((v*col.normal)*2) - v).normalize();
+    RayR reflection = {col.point + reflection_vec*EPSILON, reflection_vec};
+
+    color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
 
     return color.clampMax(1);
 }

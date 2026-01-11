@@ -35,6 +35,8 @@
 // TODO: mover os todos pros arquivos relevantes :P
 // ---------------- Outros ToDos ---------------- //
 
+// TODO: thread pra UI
+
 // TODO: Mover tudo que é da UI aqui pra uma classe separada, talvez convenha modificar a posição da UI,
 // do jeito que tá agora o renderizador inteiro precisa de um offset, 
 // acho que uma opção decente é manter toda a UI sobreposta no próprio renderizador
@@ -44,8 +46,6 @@
 
 // TODO: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
 // calculada e dividir todas as cores por ela, que parece bem legal
-
-// TODO: Colisão com boundingbox
 
 // TODO: Dá pra melhorar a performance de várias funções na pasta math, fazendo cache de acesso de objeto por exemplo.
 

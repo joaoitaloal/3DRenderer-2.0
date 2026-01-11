@@ -63,6 +63,10 @@ void Plane::transform(const MatrixR& m){
     update_transformation_matrices();
 }
 
+Vector3R Plane::get_normal(){
+    return normal;
+}
+
 void Plane::update_transformation_matrices(){
     world_to_object.m3 = -point.x;
     world_to_object.m7 = -point.y;

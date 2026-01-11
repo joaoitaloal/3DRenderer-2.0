@@ -21,11 +21,6 @@ typedef struct RayR {
     Vector3R direction;
 } RayR;
 
-typedef struct BoundingBoxR {
-    Vector3R min;
-    Vector3R max;
-} BoundingBoxR;
-
 typedef struct Collision {
     bool hit;
     float distance;

@@ -13,6 +13,8 @@ class Plane : public Shape {
         Plane* transform_return(const MatrixR& m) override;
         void transform(const MatrixR& m) override;
 
+        Vector3R get_normal();
+        
     protected:
         Vector3R normal;
         Vector3R point; // Ponto conhecido do plano

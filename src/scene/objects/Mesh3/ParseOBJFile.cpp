@@ -109,10 +109,7 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_){
         {max_x, max_y, max_z}
     };
 
-    Mesh3* mesh = new Mesh3(faces, bbox, material_); // this is probably inneficient(i think it copies the vector), need to check later
-    //mesh->faces = faces;
-    //mesh->bbox = bbox;
-    //mesh->material = mat;
+    Mesh3* mesh = new Mesh3(faces, bbox, material_, {0, 0, 0});
 
     return mesh;
 }
