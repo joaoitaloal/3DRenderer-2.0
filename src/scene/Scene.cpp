@@ -33,3 +33,7 @@ Scene::~Scene(){
 
     delete view;
 }
+
+void Scene::look_at(Vector3R at){
+    view->look_at(at.x, at.y, at.z);
+}

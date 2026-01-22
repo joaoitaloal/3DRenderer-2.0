@@ -15,6 +15,13 @@ void Camera3::move(float x, float y, float z){
     win.move(x, y, z, left, forwards, up);
 }
 
+void Camera3::move_to(float x, float y, float z){
+    Vector3R movement = Vector3R{x, y, z} - position;
+    position = position + movement;
+
+    win.move(movement.x, movement.y, movement.z, {1, 0, 0}, {0, 0, 1}, {0, 1, 0});
+}
+
 void Camera3::rotate(float x_angle, float y_angle, float z_angle){
     win.rotate(x_angle, y_angle, z_angle, position, left, forwards, up);
 
@@ -23,8 +30,36 @@ void Camera3::rotate(float x_angle, float y_angle, float z_angle){
     up = win.calculate_up();
 }
 
+// TODO: Falta um tratamento de erro caso x y e z sejam igual a posição atual
+void Camera3::look_at(float x, float y, float z){
+    forwards = (Vector3R{x, y, z} - position).normalize();
+
+    // rotacionar dir 90 graus e fazer y = 0
+    MatrixR rot = {
+        0, 0, 1, 0,
+        0, 1, 0, 0,
+        -1, 0, 0, 0,
+        0, 0, 0, 1
+    };
+    left = normal_transform(rot, forwards);
+    left.y = 0;
+    left = left.normalize();
+
+    up = cross_product(forwards, left).normalize();
+
+    win.p1 = position + forwards*win.get_depth() + left*win.get_width()/2 + up*win.get_height()/2;
+    win.p2 = position + forwards*win.get_depth() - left*win.get_width()/2 + up*win.get_height()/2;
+    win.p3 = position + forwards*win.get_depth() + left*win.get_width()/2 - up*win.get_height()/2;
+    win.p4 = position + forwards*win.get_depth() - left*win.get_width()/2 - up*win.get_height()/2;
+}
+
 Vector3R Camera3::get_position(){
     return position;
+}
+
+Vector3R Camera3::get_forwards()
+{
+    return forwards;
 }
 
 Vector3R Camera3::bi_interpolate(float alpha, float beta){
@@ -94,5 +129,17 @@ Vector3R WorldWindow::calculate_up(){
 }
 
 Vector3R WorldWindow::calculate_left(){
-    return (p2 - p1).normalize();
+    return (p1 - p2).normalize();
+}
+
+float WorldWindow::get_width(){
+    return width;
+}
+
+float WorldWindow::get_height(){
+    return height;
+}
+
+float WorldWindow::get_depth(){
+    return depth;
 }

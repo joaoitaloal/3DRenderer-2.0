@@ -32,25 +32,17 @@ class View{
 
         //temp
         void move(float x, float y, float z);
-        void rotate(float x_angle, float y_angle, float z_angle);
+        void move_to(float x, float y, float z);
 
-        float get_width(); // Desnecessários nesse modelo de camera
-        float get_height();
-        float get_plane_distance();
+        void rotate(float x_angle, float y_angle, float z_angle);
+        void look_at(float x, float y, float z);
+
+        Vector3R get_forwards();
 
         Vector3R get_camera_position();
 
-        MatrixR get_world_to_camera();
-
     private:
         Camera3 camera;
-        
-        float view_width, view_height;
-        float plane_distance;
-
-        MatrixR world_to_camera;
-
-        //void update_world_to_camera();
 };
 
 #endif // RENDERER_VIEW_H

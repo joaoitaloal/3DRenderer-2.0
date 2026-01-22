@@ -11,7 +11,7 @@ class Vector3R{
         float y;
         float z;
 
-        Vector3R() = default;
+        Vector3R() { x = 0; y = 0; z = 0; };
         Vector3R(float _x, float _y, float _z);
 
         Vector3R normalize();
