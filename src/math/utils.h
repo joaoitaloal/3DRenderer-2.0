@@ -26,6 +26,8 @@ typedef struct Collision {
     float distance;
     Vector3R point;
     Vector3R normal;
+    float u = 0;
+    float v = 0;
 } Collision;
 
 // Se delta < 0 retorna delta,
