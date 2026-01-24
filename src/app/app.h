@@ -1,14 +1,17 @@
 #ifndef RENDERER_APP_H
 #define RENDERER_APP_H
 
-#include <raygui.h>
-
 #include <string>
 #include <chrono>
 
+#include "UI/MainWindow.h"
 #include "../Viewport/Viewport.h"
 
 #define USER_SPEED 2.0f
+
+// TODO: Não deixar isso hardcoded assim
+#define RENDERER_WIN_WIDTH 500
+#define RENDERER_WIN_HEIGHT 500
 
 /* TODO: Especificações do trabalho(Separado por dificuldade):
     Díficil(ou trabalhoso):
@@ -79,24 +82,21 @@ class App{
     private:
         int win_width, win_height;
 
-        // Variáveis da UI, tem que ir pra uma classe ui
-        float ui_width, ui_height, ui_padding;
-        bool obj_file_entry_edit;
-        char* obj_file_entry; // Quero muito mudar pra um std::string mas a raygui vai atrapalhar nisso, talvez fazer um wrapper
-
         // Variáveis do renderizador
         // Acho que a gente não precisa dessas variáveis, já tão guardadas em viewport
         int render_witdh, render_height;
         
+        // Referência pro view da scene, com o motivo unico de controlar input nessa classe
+        View* view;
+        Scene* scene;
+        
         // Textura que é renderizada, se uma classe for criada para o renderizador isso aqui tem que ir pra lá
         Viewport* viewport;
 
-        // Referência pro view da scene, com o motivo unico de controlar input nessa classe
-        View* view;
-        Scene scene;
-
-        // TODO: Toggle da renderização ao vivo
-        bool live_rendering;
+        UI_STATE* ui_state;
+        MainWindow ui_win;
+        
+        float ui_padding;
 
         std::chrono::duration<double, std::milli> time_elapsed;
 

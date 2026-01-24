@@ -1,15 +1,8 @@
 #include "view.h"
 
 View::View(Vector3R position_, float view_width_, float view_height_, float plane_distance_)
-    : camera(position_, view_width_, view_height_, plane_distance_),
-    world_to_camera(MatrixR::identity_matrix())
-{
-    //view_width = view_width_;
-    //view_height = view_height_;
-    //plane_distance = plane_distance_;
-
-    //update_world_to_camera();
-}
+    : camera(position_, view_width_, view_height_, plane_distance_)
+{}
 
 Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
     if(recursion_index <= 0) return {0, 0, 0};
@@ -108,63 +101,24 @@ void View::move(float x, float y, float z){
     camera.move(x, y, z);
 }
 
+void View::move_to(float x, float y, float z){
+    camera.move_to(x, y, z);
+}
+
 void View::rotate(float x_angle, float y_angle, float z_angle){
     camera.rotate(x_angle, y_angle, z_angle);
 }
 
-/*void View::rotate(float x_angle, float y_angle, float z_angle){
-    MatrixR rotation_y = get_y_rotation(x_angle);
-    camera.direction = normal_transform(rotation_y, camera.direction);
-
-    MatrixR rotation_z = get_z_rotation(y_angle);
-    camera.direction = normal_transform(rotation_z, camera.direction);
-
-    MatrixR rotation_x = get_x_rotation(z_angle);
-    camera.direction = normal_transform(rotation_x, camera.direction);
-
-    update_world_to_camera();
-    camera.direction.print();
-}*/
-
-/*float View::get_width(){
-    return view_width;
+void View::look_at(float x, float y, float z){
+    camera.look_at(x, y, z);
 }
 
-float View::get_height(){
-    return view_height;
-}
-
-float View::get_plane_distance()
+Vector3R View::get_forwards()
 {
-    return plane_distance;
-}*/
+    return camera.get_forwards();
+}
 
 Vector3R View::get_camera_position()
 {
     return camera.get_position();
 }
-
-MatrixR View::get_world_to_camera()
-{
-    return world_to_camera;
-}
-
-/*void View::update_world_to_camera(){
-    world_to_camera = MatrixR::identity_matrix();
-
-    world_to_camera.m3 = -camera.position.x;
-    world_to_camera.m7 = -camera.position.y;
-    world_to_camera.m11 = -camera.position.z;
-    
-    Vector3R forward(0, 0, 1); Vector3R left(1, 0, 0); Vector3R up(0, 1, 0);
-    float f_angle = angle_from_vectors(camera.direction, forward);
-    float l_angle = angle_from_vectors(camera.direction, left);
-    float u_angle = angle_from_vectors(camera.direction, up);
-
-    //MatrixR rotation_x = get_x_rotation(-l_angle);
-    MatrixR rotation_y = get_y_rotation(-sign(camera.direction.x)*f_angle);
-    MatrixR rotation_z = get_z_rotation(-u_angle);
-    
-    world_to_camera = mul_mat(rotation_y, world_to_camera);
-    world_to_camera = mul_mat(rotation_z, world_to_camera);
-}*/

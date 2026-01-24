@@ -16,6 +16,10 @@ class Scene{
 
         ~Scene();
 
+        // HACK: pensar direito se isso devia ficar aqui mesmo
+        // Mas por enquanto preciso pra usar na UI
+        void look_at(Vector3R at);
+
     private:
 
         // Ponteiro pq quero manter uma referencia disso no app, pra controlar input

@@ -18,18 +18,30 @@ class WorldWindow {
         Vector3R calculate_up();
         Vector3R calculate_left();
 
-    protected:
+        float get_width();
+        float get_height();
+        float get_depth();
+
+        // TODO: Temp, melhorar esse acesso, só tem uma função em Camera3 que precisa
         Vector3R p1, p2, p3, p4;
+        
+    protected:
         float width, height, depth;
 };
 
 class Camera3 {
     public:
         Camera3(Vector3R position_, float view_width_, float view_height_, float plane_distance_);
+
         void move(float x, float y, float z);
+        void move_to(float x, float y, float z);
+
         void rotate(float x_angle, float y_angle, float z_angle);
 
+        void look_at(float x, float y, float z);
+
         Vector3R get_position();
+        Vector3R get_forwards();
 
         Vector3R bi_interpolate(float alpha, float beta);
 

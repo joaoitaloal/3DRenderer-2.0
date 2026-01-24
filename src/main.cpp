@@ -15,7 +15,9 @@
 #include "./app/app.h"
 
 int main(){
-    App app(860, 500);
+    SetTraceLogLevel(LOG_WARNING);
+    
+    App app(700, 700);
     
     app.start();
 
