@@ -85,8 +85,21 @@ Collision Cylinder::get_surface_collision(RayR ray){
 
     col.normal = vector_transform(M, center_to_point).normalize();
     col.hit = true;
-    col.u = std::atan2(col.point.x, col.point.y)/(2 * M_PI) + 0.5;
-    col.v = col.point.z/height;
+    Vector3R radial = center_to_point - axis_dir * col_height;
+
+    Vector3R U;
+    if (fabs(axis_dir.y) < 0.9f)
+        U = cross_product(axis_dir,Vector3R(0,1,0)).normalize();
+    else
+        U = cross_product(axis_dir, Vector3R(1,0,0)).normalize();
+
+    Vector3R V = cross_product(axis_dir ,U);
+
+    float x = radial * U;
+    float z = radial * V;
+
+    col.u = 0.5f + atan2(z, x) / (2.0f * M_PI);
+    col.v = col_height / height;
 
     return col;
 }

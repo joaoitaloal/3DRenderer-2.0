@@ -44,7 +44,7 @@ App::App(int win_width_, int win_height_)
         3,
         10,
         debug_temp_material({0.25, 0, 0.25}),
-        nullptr
+        nave
     ));
     // Esfera
     scene->push_shape(new Sphere(
