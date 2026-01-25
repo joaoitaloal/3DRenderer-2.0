@@ -3,6 +3,7 @@
 
 #include "view/view.h"
 #include "objects/Shape.h"
+#include "objects/Sphere/Sphere.h"
 #include "objects/Lights/Light.h"
 
 class Scene{
@@ -32,6 +33,10 @@ class Scene{
 
         void set_ambient_light(float amount);
 
+        void set_background_tex(Textura* tex);
+        // A scene cuida de dar free na skybox
+        void set_skybox(Sphere* skybox);
+
     private:
         // Ponteiro pq quero manter uma referencia disso no app, pra controlar input
         // Talvez seja meio gambiarra mas acho q tá ok.
@@ -40,6 +45,9 @@ class Scene{
         // FIXME: Tou passando um ponteiro pra um vetor de ponteiros como as shapes, isso parece desnecessário.
         std::vector<Shape*>* shapes;
         std::vector<Light*>* lights;
+
+        Textura* bg_tex = nullptr;
+        Sphere skybox;
 
         // FIXME: pensar onde colocar isso, talvez em view
         bool proj_obliq;

@@ -64,6 +64,10 @@ void Sphere::scale(Vector3R dims){
     set_radius(radius*dims.length());
 }
 
+void Sphere::set_center(Vector3R pos){
+    sphere_center = pos;
+}
+
 void Sphere::update_transformation_matrices(){
     world_to_object.m3 = -sphere_center.x;
     world_to_object.m7 = -sphere_center.y;

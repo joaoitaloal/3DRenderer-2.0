@@ -7,6 +7,7 @@
 class Circle : public Plane {
     public:
         Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 material_, string name_, bool culled);
+        Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 material_, Textura* tex, string name_, bool culled);
         Circle(Plane plane, float radius_);
         Collision get_collision(RayR ray) override;
 

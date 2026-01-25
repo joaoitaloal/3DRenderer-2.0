@@ -24,7 +24,7 @@ void Viewport::setPixelColor(int x, int y, Color3 color){
     pixels[index].r = color.r;
     pixels[index].g = color.g;
     pixels[index].b = color.b;
-    pixels[index].a = 255;
+    pixels[index].a = color.a;
 }
 
 Color* Viewport::getPixelsRec(int x, int y, int WIDTH, int HEIGHT){
@@ -67,7 +67,7 @@ void Viewport::calculate_n_pixels(JobData job){
     for(int i = 0; i < job.n; i++){
         Color3 color = scene->calculate_pixel_color(x, y, width, height);
 
-        setPixelColor(x, y, {color.r*255, color.g*255, color.b*255});
+        setPixelColor(x, y, {color.r*255, color.g*255, color.b*255, color.a*255});
 
         if(x >= width){
             x = 0;

@@ -8,12 +8,21 @@ Color3::Color3(float intensity){
     r = intensity;
     g = intensity;
     b = intensity;
+    a = 1;
 }
 
 Color3::Color3(float r_, float g_, float b_){
     r = r_;
     g = g_;
     b = b_;
+    a  = 1;
+}
+
+Color3::Color3(float r_, float g_, float b_, float a_){
+    r = r_;
+    g = g_;
+    b = b_;
+    a  = a_;
 }
 
 Color3 Color3::clampMax(float val)

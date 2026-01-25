@@ -29,12 +29,15 @@ App::App(int win_width_, int win_height_)
     Textura* lua =  new Textura("texturas/textura_lua.jpg");
     Textura* chao = new Textura("texturas/textura_chao.jpg");
     Textura* nave = new Textura("texturas/textura_nave3.jpg");
+    Textura* space_skybox = new Textura("texturas/space_skybox.jpg");
+
+    scene->set_background_tex(space_skybox);
 
     // Foguete:
     // Cone - ponta
     // cilindro - fuselagem
     // triangulos - asas(Acho que vai ter q ser uma mesh com um triangulo só cada uma)
-    // fogo - plano que gira
+    // fogo - mesh
     // cone - motor
 
     // Planeta:
@@ -90,32 +93,33 @@ App::App(int win_width_, int win_height_)
         true
     ));*/
 
-    fire = new Circle(
-        {0, 5, 10},
-        {0, 0, 1},
-        10,
-        debug_temp_material({0, 0.5, 0.5}),
-        "Fire",
-        true
-    );
+    
     gargantula_ring = new Circle(
-        {0, 5, 10},
+        {25, 250, 250},
         {0, 0, 1},
-        10,
-        debug_temp_material({0, 0.5, 0.5}),
+        50,
+        debug_temp_material({0, 0, 0}),
+        chao,
         "Gargantula_Ring",
         true
     );
+    scene->push_shape(gargantula_ring);
+    scene->push_shape(new Sphere(
+        {25, 250, 250},
+        25,
+        debug_temp_material({0, 0, 0}),
+        nullptr,
+        "Sphere"
+    ));
     close_planet = new Circle(
         {0, 0, 0},
         {0, 1, 0},
         10,
-        debug_temp_material({0, 0, 0.5}),
+        debug_temp_material({0, 0, 0}),
+        chao,
         "close_planet",
         true
     );
-    scene->push_shape(fire);
-    scene->push_shape(gargantula_ring);
     scene->push_shape(close_planet);
 
     // Temporary manual light creation:
@@ -203,7 +207,6 @@ void App::process(){
     }
 
     if(moved){
-        fire->rotate_to(view->get_camera_position());
         gargantula_ring->rotate_to(view->get_camera_position());
         close_planet->update_radius(300-close_planet->get_distance(view->get_camera_position())/5);
     }

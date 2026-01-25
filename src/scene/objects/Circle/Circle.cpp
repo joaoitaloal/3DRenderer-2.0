@@ -9,6 +9,15 @@ Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 mater
     update_transformation_matrices();
 }
 
+Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 material_, Textura *tex, string name_, bool culled)
+    :Plane(normal_, point_, material_, tex, "Circle Plane", culled)
+{
+    radius = radius_;
+    material = material_;
+
+    update_transformation_matrices();
+}
+
 Circle::Circle(Plane plane, float radius_)
     :Plane(plane)
 {

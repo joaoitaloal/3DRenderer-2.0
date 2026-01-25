@@ -12,18 +12,13 @@
 using namespace std;
 
 #define RECURSION_DEPTH 1
-// #define EPSILON 0.001f // Usando pra evitar problemas com a precisão no raycasting, talvez pensar uma forma melhor de consertar isso
-// Eu aumentei bastante esse epsilon, o resultado é que objetos muito finos tem a sombra e reflexão meio erradas
 
-// TODO: Ver o que precisa manter dos testes de mudar o modelo de coordenadas e remover o que não precisar
-
-// FIXME: Tá meio godclass isso aqui
 class View{
     public:
         View(Vector3R position_, float view_width_, float view_height_, float plane_distance_);
 
         // Objetos, x e y do raio no plano, width e height e retorna a cor encontrada nesse pixel
-        Color3 raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index = RECURSION_DEPTH);
+        Color3 raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, Collision col, Shape* colShape);
 
         //temp
         void move(float x, float y, float z);
@@ -33,6 +28,8 @@ class View{
         void look_at(float x, float y, float z);
 
         Vector3R get_forwards();
+        Vector3R get_up();
+        Vector3R get_left();
 
         Vector3R get_camera_position();
 

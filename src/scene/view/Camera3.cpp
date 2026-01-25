@@ -61,6 +61,16 @@ Vector3R Camera3::get_forwards()
     return forwards;
 }
 
+Vector3R Camera3::get_up()
+{
+    return up;
+}
+
+Vector3R Camera3::get_left()
+{
+    return left;
+}
+
 Vector3R Camera3::bi_interpolate(float alpha, float beta){
     return win.bi_interpolate(alpha, beta);
 }

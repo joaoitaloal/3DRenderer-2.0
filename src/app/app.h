@@ -22,13 +22,13 @@
 
 /* TODO: Especificações do trabalho(Separado por dificuldade):
     Díficil(ou trabalhoso):
-    - Aplicação de textura
     - Fonte spot e direcional, a ambiente tá hardcoded, tem que ajeitar também (+)
     - Determinar o cenário
     - perspectiva com pontos de fuga? não lembro o que é isso (+)
 
     Médio:
-    - projeção obliqua (+)
+    - Projeção obliqua (+)
+    - Transparência
     
     Fácil(Alguns tão quase prontos):
     - Fazer input da rotação na UI
@@ -107,9 +107,10 @@ class App{
         void process();
 
         // Temp, só pro cenário funcionar
-        Circle* fire; // plano do fogo do foguete
+        //Circle* fire; // plano do fogo do foguete
         Circle* gargantula_ring; // plano do buraco negro
         Circle* close_planet;
+        Sphere* skybox;
 };
 
 #endif // RENDERER_APP_H

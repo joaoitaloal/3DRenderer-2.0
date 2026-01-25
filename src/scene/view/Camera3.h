@@ -48,6 +48,8 @@ class Camera3 {
 
         Vector3R get_position();
         Vector3R get_forwards();
+        Vector3R get_up();
+        Vector3R get_left();
 
         Vector3R bi_interpolate(float alpha, float beta);
 

@@ -15,6 +15,8 @@ class Sphere : public Shape{
 
         void scale(Vector3R dims) override;
 
+        void set_center(Vector3R pos);
+
     private:
         Vector3R sphere_center;
         float radius;

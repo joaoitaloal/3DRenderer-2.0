@@ -4,36 +4,21 @@ View::View(Vector3R position_, float view_width_, float view_height_, float plan
     : camera(position_, view_width_, view_height_, plane_distance_)
 {}
 
-Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, int recursion_index){
-    if(recursion_index <= 0) return {0, 0, 0};
-    
-    Shape* shape;
-    Collision col;
-    col.hit = false;
-
-    for(Shape* curShape : *shapes){
-        
-        Collision temp = curShape->get_collision(ray);
-        if(!col.hit || (temp.hit && col.distance > temp.distance)){
-            col = temp;
-            shape = curShape;
-        }
-    }
-
-    if(!col.hit) return {0, 0, 0};
+Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, Collision col, Shape* colShape){
+    //if(recursion_index <= 0) return {0, 0, 0};
 
     Vector3R v = (camera.get_position() - col.point).normalize();
 
     // Shading
     Color3 base_color;
-    if (shape->has_texture()){
-        base_color = shape->get_texture()->sample(col.u, col.v);
+    if (colShape->has_texture()){
+        base_color = colShape->get_texture()->sample(col.u, col.v);
     }else{
-        base_color = shape->get_material().color;
+        base_color = colShape->get_material().color;
     }
     Color3 color = base_color*ambient_light;
     //Color3 color = {0, 0, 0}; // ver como fica melhor dps
-    color = color + shape->get_material().ka*ambient_light;
+    color = color + colShape->get_material().ka*ambient_light;
 
     for(Light* light : *lights){
         Vector3R l = light->get_light_vector(col.point);
@@ -59,24 +44,24 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
         color = (
             color + 
             base_color *
-            light->get_intensity() * shape->get_material().kd * dotnl
+            light->get_intensity() * colShape->get_material().kd * dotnl
         );
-        color = color + shape->get_material().color*dotnl; // tirar isso se não tiver legal
+        color = color + colShape->get_material().color*dotnl; // tirar isso se não tiver legal
 
         float dotvr = v * r;
         if(dotvr < 0) continue;
         
         color = (
             color + 
-            light->get_intensity() * shape->get_material().ks * powf(dotvr, shape->get_material().km)
+            light->get_intensity() * colShape->get_material().ks * powf(dotvr, colShape->get_material().km)
         );
     }
     
     // Specular Reflection
-    Vector3R reflection_vec = (col.normal*((v*col.normal)*2) - v).normalize();
-    RayR reflection = {col.point, reflection_vec};
+    //Vector3R reflection_vec = (col.normal*((v*col.normal)*2) - v).normalize();
+    //RayR reflection = {col.point, reflection_vec};
 
-    color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
+    //color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
 
     return color.clampMax(1);
 }
@@ -100,6 +85,16 @@ void View::look_at(float x, float y, float z){
 Vector3R View::get_forwards()
 {
     return camera.get_forwards();
+}
+
+Vector3R View::get_up()
+{
+    return camera.get_up();
+}
+
+Vector3R View::get_left()
+{
+    return camera.get_left();
 }
 
 Vector3R View::get_camera_position()

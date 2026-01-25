@@ -1,11 +1,13 @@
 #include "Scene.h"
 
 Scene::Scene(View* view_)
-    : obliq_rot(MatrixR::identity_matrix())
+    : obliq_rot(MatrixR::identity_matrix()),
+    skybox({0, 0, 0}, 1000, {{0, 0, 0}, 0, 0, 0, 0, 0}, nullptr, "skybox")
 {
     view = view_;
     proj_obliq = false;
     zoom_amount = 1;
+    bg_tex = nullptr;
 
     shapes = new vector<Shape*>();
     lights = new vector<Light*>();
@@ -37,7 +39,54 @@ Color3 Scene::calculate_pixel_color(int origin_x, int origin_y, int WIDTH, int H
     
     RayR ray = {origin, dir};
 
-    return view->raycast(ray, shapes, lights);
+    Shape* shape;
+    Collision col;
+    col.hit = false;
+
+    for(Shape* curShape : *shapes){
+        Collision temp = curShape->get_collision(ray);
+        if(!col.hit || (temp.hit && col.distance > temp.distance)){
+            col = temp;
+            shape = curShape;
+        }
+    }
+
+    if(!col.hit && bg_tex != nullptr){
+        skybox.set_center(view->get_camera_position());
+        Collision skyCol = skybox.get_collision(ray);
+        return bg_tex->sample(skyCol.u, skyCol.v);
+    }
+    /*else if(!col.hit && bg_tex != nullptr){ // Viagem
+        Vector3R x = {1, 0, 0}; 
+        Vector3R y = {0, 1, 0};
+        Vector3R z = {0, 0, 1};
+        
+        Vector3R v_forward = view->get_forwards();
+        Vector3R v_up = view->get_up();
+        Vector3R v_left = view->get_left();
+
+        v_forward.y = 0;
+        v_forward = v_forward.normalize();
+        v_up.x = 0;
+        v_up = v_up.normalize();
+        
+        float angle_forward = angle_from_vectors(v_forward, z);
+        float angle_fx = v_forward * x;
+
+        if(sign(angle_fx) == -1) angle_forward = 2*PI - angle_forward;
+
+        float angle_up = angle_from_vectors(v_up, y);
+        float angle_uz = v_up * z;
+
+        if(sign(angle_uz) == -1) angle_up = 2*PI - angle_up;
+
+        if(origin_x == 0 && origin_y == 0) cout << angle_up << " " << angle_uz << endl;
+
+        return bg_tex->sample((alpha - angle_forward)/2, (beta + angle_up)/2);
+    } */
+    else if(!col.hit) return {0, 0, 0};
+
+    return view->raycast(ray, shapes, lights, col, shape);
 }
 
 // FIXME: Isso faz quase a mesma coisa que o de cima, ajeitar dps
@@ -130,4 +179,8 @@ void Scene::set_projection_obliq(Vector3R dir){
 
 void Scene::set_ambient_light(float amount){
     view->set_ambient_light(amount);
+}
+
+void Scene::set_background_tex(Textura *tex){
+    bg_tex = tex;
 }

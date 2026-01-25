@@ -8,10 +8,12 @@ class Color3 {
         float r;        // Color red value
         float g;        // Color green value
         float b;        // Color blue value
+        float a;        // Alfa
 
         Color3() = default;
         Color3(float intensity);
         Color3(float r_, float g_, float b_);
+        Color3(float r_, float g_, float b_, float a_);
         
         Color3 clampMax(float val);
 
