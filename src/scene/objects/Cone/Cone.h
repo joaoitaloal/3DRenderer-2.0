@@ -7,7 +7,7 @@
 
 class Cone : public Shape{
     public:
-        Cone(Vector3R base_center, Vector3R axis_dir, float radius, float height, Material3 material);
+        Cone(Vector3R base_center, Vector3R axis_dir, float radius, float height, Material3 material, Textura* tex);
         Collision get_collision(RayR ray) override;
 
         Cone *transform_return(const MatrixR &m);
@@ -20,6 +20,8 @@ class Cone : public Shape{
         Vector3R base_center;
         Vector3R axis_dir;
         Vector3R vertice;
+
+        Textura* texture;
 
         MatrixR Q;
         MatrixR M;

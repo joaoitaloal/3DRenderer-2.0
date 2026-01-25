@@ -29,8 +29,13 @@ App::App(int win_width_, int win_height_)
     // ========= Criando objetos =========
     // Malhas
     //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    load_new_mesh("models/Cube.obj", {0.25, 0, 0});
-
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75});
+    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25});
+    
+    // Texturas
+    Textura* lua =  new Textura("texturas/textura_lua.jpg");
+    Textura* chao = new Textura("texturas/textura_chao.jpg");
+    Textura* nave = new Textura("texturas/textura_nave3.jpg");
     Vector3R axis(0.5, 0.7, 0.5);
     // Cilindro
     scene->push_shape(new Cylinder(
@@ -38,13 +43,15 @@ App::App(int win_width_, int win_height_)
         axis.normalize(),
         3,
         10,
-        debug_temp_material({0.25, 0, 0.25})
+        debug_temp_material({0.25, 0, 0.25}),
+        nave
     ));
     // Esfera
     scene->push_shape(new Sphere(
         {0, 15, 0},
         3,
-        debug_temp_material({1, 1, 0})
+        debug_temp_material({1, 1, 0}),
+        lua
     ));
     // Cone
     scene->push_shape(new Cone(
@@ -52,13 +59,15 @@ App::App(int win_width_, int win_height_)
         axis.normalize(),
         3,
         4,
-        debug_temp_material({0, 0, 0.25})
+        debug_temp_material({0, 0, 0.25}),
+        nullptr
     ));
     // Plano
     scene->push_shape(new Plane(
         {0, 1, 0},
         {0, -10, 0},
         debug_temp_material({0, 0.25, 0}),
+        chao,
         true
     ));
 

@@ -2,6 +2,7 @@
 #define RENDERER_SHAPE_H
 
 #include "Material3.h"
+#include "../../Textura/Textura.h"
 #include "../../math/Vector3R.h"
 #include "../../math/MatrixR.h"
 #include "../../math/utils.h"
@@ -21,11 +22,21 @@ class Shape{
         // Retornando uma referencia read-only, nem sei se precisa, talvez copiar seria suave
         const Material3& get_material() const { return material; };
 
+        virtual bool has_texture() const {
+            return texture != nullptr;
+        }
+
+        Textura* get_texture() const{
+            return texture;
+        }
+
         virtual ~Shape() = default;
 
     protected:
         Shape(MatrixR world_to_object_, MatrixR object_to_world_) : world_to_object(world_to_object_), object_to_world(object_to_world_){}
         Material3 material;
+
+        Textura* texture = nullptr;
 
         // Leva o objeto pro centro do mundo
         MatrixR world_to_object;

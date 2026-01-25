@@ -1,6 +1,7 @@
 #include "Cylinder.h"
+#include <cmath>
 
-Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_)
+Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_, Textura* tex)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
     base(base_center_, -axis_dir_, radius_, material_, false),
     roof(base_center_ + axis_dir_*height_, axis_dir_, radius_, material_, false),
@@ -12,6 +13,7 @@ Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, flo
     radius = radius_;
     height = height_;
     material = material_;
+    this->texture = tex;
 
     update_transformation_matrices();
 }
@@ -28,7 +30,8 @@ Cylinder* Cylinder::transform_return(const MatrixR& m){
         normal_transform(tr, axis_dir),
         radius,
         height,
-        material
+        material,
+        texture
     );
 }
 
@@ -82,6 +85,21 @@ Collision Cylinder::get_surface_collision(RayR ray){
 
     col.normal = vector_transform(M, center_to_point).normalize();
     col.hit = true;
+    Vector3R radial = center_to_point - axis_dir * col_height;
+
+    Vector3R U;
+    if (fabs(axis_dir.y) < 0.9f)
+        U = cross_product(axis_dir,Vector3R(0,1,0)).normalize();
+    else
+        U = cross_product(axis_dir, Vector3R(1,0,0)).normalize();
+
+    Vector3R V = cross_product(axis_dir ,U);
+
+    float x = radial * U;
+    float z = radial * V;
+
+    col.u = 0.5f + atan2(z, x) / (2.0f * M_PI);
+    col.v = col_height / height;
 
     return col;
 }

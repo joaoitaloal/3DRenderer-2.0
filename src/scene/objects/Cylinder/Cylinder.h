@@ -7,7 +7,7 @@
 
 class Cylinder : public Shape{
     public:
-        Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_);
+        Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_, Textura* tex);
         Collision get_collision(RayR ray) override;
 
         Cylinder* transform_return(const MatrixR& m) override;

@@ -1,8 +1,8 @@
 #include "Triangle.h"
 
 Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()), 
-    plane(v1_, v2_, v3_, true) // Usando backface culling por padrão
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
+    plane(v1_, v2_, v3_, nullptr, true) // Usando backface culling por padrão
 {
     v1 = v1_;
     v2 = v2_;
@@ -48,7 +48,7 @@ void Triangle::transform(const MatrixR& m){
     v2 = vector_transform(m, v2);
     v3 = vector_transform(m, v3);
 
-    plane = Plane(v1, v2, v3, true);
+    plane = Plane(v1, v2, v3, nullptr, true);
 
     update_transformation_matrices();
 }

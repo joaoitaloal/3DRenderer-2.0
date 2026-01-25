@@ -26,8 +26,13 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
 
     // Shading
     float ALI = 0.2; // temporary constant Ambient Light Intensity
-    Color3 color = shape->get_material().color;
-    color = color + shape->get_material().ka*ALI;
+    Color3 base_color;
+    if (shape->has_texture()){
+        base_color = shape->get_texture()->sample(col.u, col.v);
+    }else{
+        base_color = shape->get_material().color;
+    }
+    Color3 color = base_color + shape->get_material().ka*ALI;
 
     for(Light* light : *lights){
         Vector3R l = light->get_light_vector(col.point);
@@ -51,6 +56,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
         
         color = (
             color + 
+            base_color *
             light->get_intensity() * shape->get_material().kd * dotnl
         );
 
