@@ -1,13 +1,5 @@
 #include "app.h"
 
-// Temporario, tirar daqui depois
-#include "../scene/objects/Lights/Point/PointLight.h"
-// Esse não sei se é temporario, mas deve ir pra outro lugar em alguma refatoração
-#include "../scene/objects/Mesh3/Mesh3.h"
-#include "../scene/objects/Cylinder/Cylinder.h"
-#include "../scene/objects/Sphere/Sphere.h"
-#include "../scene/objects/Cone/Cone.h"
-
 // Temporario
 Material3 debug_temp_material(Color3 color){
     return {color, 0.5, 0.5, 0.3, 0.3, 10};
@@ -16,7 +8,7 @@ Material3 debug_temp_material(Color3 color){
 App::App(int win_width_, int win_height_)
     : view(new View({-10, 2, 0}, 2, 2, 1)),
     scene(new Scene(view)),
-    ui_state(new UI_STATE{viewport, false, scene}),
+    ui_state(new UI_STATE{viewport, false, nullptr, scene}),
     ui_win(win_width_, win_height_, RENDERER_WIN_WIDTH, RENDERER_WIN_HEIGHT, ui_state)
 {
     win_width = win_width_;
@@ -29,13 +21,36 @@ App::App(int win_width_, int win_height_)
     // ========= Criando objetos =========
     // Malhas
     //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75});
-    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25});
+    //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima");
+    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base");
     
     // Texturas
     Textura* lua =  new Textura("texturas/textura_lua.jpg");
     Textura* chao = new Textura("texturas/textura_chao.jpg");
     Textura* nave = new Textura("texturas/textura_nave3.jpg");
+
+    // Foguete:
+    // Cone - ponta
+    // cilindro - fuselagem
+    // triangulos - asas(Acho que vai ter q ser uma mesh com um triangulo só cada uma)
+    // fogo - plano que gira
+    // cone - motor
+
+    // Planeta:
+    // anel - circulo com o centro furado
+    // corpo - esfera(dá pra deixar ele bem grande)
+
+    // Ovni: mesh
+
+    // planeta que tá bem próximo: circulo que muda de raio com distância
+    
+    // Gargantula:
+    // esfera preta
+    // plano que gira com textura pra fz a iluminação em volta
+
+    // Plano de fundo: estrelas, ver como fazer um skybox certinho
+
     Vector3R axis(0.5, 0.7, 0.5);
     // Cilindro
     scene->push_shape(new Cylinder(
@@ -44,14 +59,16 @@ App::App(int win_width_, int win_height_)
         3,
         10,
         debug_temp_material({0.25, 0, 0.25}),
-        nave
+        nave,
+        "Cilindro"
     ));
     // Esfera
     scene->push_shape(new Sphere(
         {0, 15, 0},
         3,
         debug_temp_material({1, 1, 0}),
-        lua
+        lua,
+        "Sphere"
     ));
     // Cone
     scene->push_shape(new Cone(
@@ -60,16 +77,46 @@ App::App(int win_width_, int win_height_)
         3,
         4,
         debug_temp_material({0, 0, 0.25}),
-        nullptr
+        nullptr,
+        "Cone"
     ));
     // Plano
-    scene->push_shape(new Plane(
+    /*scene->push_shape(new Plane(
         {0, 1, 0},
         {0, -10, 0},
         debug_temp_material({0, 0.25, 0}),
         chao,
+        "Plane",
         true
-    ));
+    ));*/
+
+    fire = new Circle(
+        {0, 5, 10},
+        {0, 0, 1},
+        10,
+        debug_temp_material({0, 0.5, 0.5}),
+        "Fire",
+        true
+    );
+    gargantula_ring = new Circle(
+        {0, 5, 10},
+        {0, 0, 1},
+        10,
+        debug_temp_material({0, 0.5, 0.5}),
+        "Gargantula_Ring",
+        true
+    );
+    close_planet = new Circle(
+        {0, 0, 0},
+        {0, 1, 0},
+        10,
+        debug_temp_material({0, 0, 0.5}),
+        "close_planet",
+        true
+    );
+    scene->push_shape(fire);
+    scene->push_shape(gargantula_ring);
+    scene->push_shape(close_planet);
 
     // Temporary manual light creation:
     scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
@@ -83,7 +130,6 @@ App::App(int win_width_, int win_height_)
     ui_state->viewport = viewport;
 }
 
-// Falta ajeitar muita coisa aqui, principalmente coisas da UI que precisam sair desse método
 void App::start()
 {
 
@@ -98,10 +144,10 @@ void App::start()
     CloseWindow();
 }
 
-void App::load_new_mesh(string filename, Color3 color){
+void App::load_new_mesh(string filename, Color3 color, string name){
     try{
         // Material fixo temporário
-        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color));
+        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color), name);
         scene->push_shape(mesh);
     }catch(const int err){
         throw err; // Só pra ficar explicito o erro
@@ -110,22 +156,29 @@ void App::load_new_mesh(string filename, Color3 color){
 
 void App::process(){
     int fps = GetFPS();
+    bool moved = false;
 
     // Some screen controls, maybe temporary maybe not, definitely needs some work though
     if(IsKeyDown(KEY_W)){
         view->move(0, 0, USER_SPEED);
+        moved = true;
     }else if(IsKeyDown(KEY_S)){
         view->move(0, 0, -USER_SPEED);
+        moved = true;
     }
     if(IsKeyDown(KEY_A)){
         view->move(USER_SPEED, 0, 0);
+        moved = true;
     }else if(IsKeyDown(KEY_D)){
         view->move(-USER_SPEED, 0, 0);
+        moved = true;
     }
     if(IsKeyDown(KEY_SPACE)){
         view->move(0, USER_SPEED, 0);
+        moved = true;
     }else if(IsKeyDown(KEY_LEFT_SHIFT)){
         view->move(0, -USER_SPEED, 0);
+        moved = true;
     }
     if(IsKeyDown(KEY_LEFT)){
         view->rotate(0.1, 0, 0);
@@ -147,6 +200,21 @@ void App::process(){
         auto end = std::chrono::high_resolution_clock().now();
 
         time_elapsed = end - start; 
+    }
+
+    if(moved){
+        fire->rotate_to(view->get_camera_position());
+        gargantula_ring->rotate_to(view->get_camera_position());
+        close_planet->update_radius(300-close_planet->get_distance(view->get_camera_position())/5);
+    }
+
+    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        Vector2 mouse_pos = GetMousePosition();
+        mouse_pos.x -= win_width-render_witdh;
+        mouse_pos.y -= win_height-render_height;
+        if(mouse_pos.x >= 0 && mouse_pos.y >= 0){
+            ui_state->picked = scene->get_collision(mouse_pos.x, mouse_pos.y, render_witdh, render_height);
+        }
     }
     
     BeginDrawing();

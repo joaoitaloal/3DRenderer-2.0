@@ -1,7 +1,7 @@
 #include "ShapeGroup.h"
 
-ShapeGroup::ShapeGroup(Vector3R position, Vector3R min_, Vector3R max_)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
+ShapeGroup::ShapeGroup(Vector3R position, Vector3R min_, Vector3R max_, string name_)
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_),
     bbox(min_, max_)
 {
     update_transformation_matrices();

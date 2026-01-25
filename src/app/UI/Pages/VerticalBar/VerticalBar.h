@@ -1,9 +1,7 @@
 #ifndef RENDERER_UI_VERTICALBAR_H
 #define RENDERER_UI_VERTICALBAR_H
 
-#include "../../Widgets/Frames/ScrollableFrame.h"
-#include "../../Widgets/Inputs/Button.h"
-#include "../../Widgets/Inputs/CheckBox.h"
+#include "../../Components/Vec3Entry.h"
 #include "../../UI_STATE.h"
 
 class VerticalBar : public Frame{
@@ -16,9 +14,18 @@ class VerticalBar : public Frame{
 
         float padding;
 
-        // Tenho que passar esses dois pra header, deixar só as coisas de transformação nessa classe aqui
-        Button* render_bttn;
-        CheckBox* live_render_box;
+        Label shape_name;
+
+        Vec3Entry transl_entry;
+        //Vec3Entry rot_entry;
+        Vec3Entry scale_entry;
+
+        // Tenho que fazer um input diferente pra rotação,
+        // já que ela vai receber um eixo e um angulo
+        
+        // Vai faltar cisalhamento(Shear),
+        // reflexão em volta de um plano
+        
 };
 
 #endif // RENDERER_UI_VERTICALBAR_H

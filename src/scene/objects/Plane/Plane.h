@@ -5,13 +5,16 @@
 
 class Plane : public Shape {
     public:
-        Plane(Vector3R normal_, Vector3R point_, Material3 material_, Textura* tex, bool culled);
-        Plane(Vector3R v1, Vector3R v2, Vector3R v3, Textura* tex, bool culled);
+        Plane(Vector3R normal_, Vector3R point_, Material3 material_, Textura* tex, string name_, bool culled);
+        Plane(Vector3R v1, Vector3R v2, Vector3R v3, Textura* tex, string name_, bool culled);
 
         Collision get_collision(RayR ray) override;
 
         Plane* transform_return(const MatrixR& m) override;
         void transform(const MatrixR& m) override;
+
+        // Não dá né
+        void scale(Vector3R dims) override {};
 
         Vector3R get_normal();
         

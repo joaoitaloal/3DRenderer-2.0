@@ -28,6 +28,11 @@ void PointLight::transform(const MatrixR &m){
     position = vector_transform(tr, position);
 }
 
+float PointLight::get_distance(Vector3R pos)
+{
+    return (pos - position).length();
+}
+
 void PointLight::update_transformation_matrices(){
     world_to_object.m3 = -position.x;
     world_to_object.m7 = -position.y;

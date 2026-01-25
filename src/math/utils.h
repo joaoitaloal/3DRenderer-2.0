@@ -4,22 +4,18 @@
 #include "Vector3R.h"
 #include <vector>
 
-// Mesmas definições da raylib, pelo menos por enquanto
+#ifndef EPSILON 
+#define EPSILON 0.00001f
+#endif 
 
 // TODO: Mudar pra esse raio aqui dps, mais bonitinho
-/*class RayR {
+class RayR {
     public:
         RayR(Vector3R position_, Vector3R direction_) { position = position_; direction = direction_; }
-        Vector3R calculate_point(float distance) { return position + direction*distance; }
+        Vector3R calculate_point(float distance) { return position + direction*distance*(1.0f-EPSILON); }
 
-    private:
         Vector3R position, direction;
-}*/
-
-typedef struct RayR {
-    Vector3R position;
-    Vector3R direction;
-} RayR;
+};
 
 typedef struct Collision {
     bool hit;

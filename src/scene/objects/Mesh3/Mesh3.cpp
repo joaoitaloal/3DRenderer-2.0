@@ -1,7 +1,7 @@
 #include "Mesh3.h"
 
-Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_, Vector3R anchor_)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
+Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_, Vector3R anchor_, string name_)
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_),
     bbox(bbox_)
 {
     faces = faces_;
@@ -17,9 +17,9 @@ Mesh3::~Mesh3(){
     }
 }
 
-Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_)
+Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_, string name_)
 {
-    Mesh3* mesh = ParseOBJFile(filename, material_);
+    Mesh3* mesh = ParseOBJFile(filename, material_, name_);
     mesh->material = material_;
     
     return mesh;
@@ -58,7 +58,8 @@ Mesh3* Mesh3::transform_return(const MatrixR& m){
         new_faces, 
         bbox.transform_return(tr),
         material,
-        vector_transform(tr, anchor)
+        vector_transform(tr, anchor),
+        name
     );
 }
 
@@ -69,9 +70,14 @@ void Mesh3::transform(const MatrixR& m){
         tri->transform(tr);
     }
 
+    bbox.transform(tr);
     anchor = vector_transform(tr, anchor);
 
     update_transformation_matrices();
+}
+
+void Mesh3::scale(Vector3R dims){
+    transform(get_scale_matrix(dims));
 }
 
 void Mesh3::update_transformation_matrices(){

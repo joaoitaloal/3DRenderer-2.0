@@ -12,6 +12,8 @@ class PointLight : public Light{
         PointLight* transform_return(const MatrixR& m) override;
         void transform(const MatrixR& m) override;
 
+        float get_distance(Vector3R pos) override;
+
     private:
         Vector3R position;
 

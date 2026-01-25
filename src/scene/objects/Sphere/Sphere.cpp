@@ -1,8 +1,7 @@
 #include "Sphere.h"
-#include <cmath>
 
-Sphere::Sphere(Vector3R sphere_center_, float radius_, Material3 material_, Textura* tex)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
+Sphere::Sphere(Vector3R sphere_center_, float radius_, Material3 material_, Textura* tex, string name_)
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_),
     sphere_center(sphere_center_), 
     radius(radius_)
 {
@@ -25,16 +24,14 @@ Collision Sphere::get_collision(RayR ray){
     col.distance = modified_quadratic(a,b,c);
     if(col.distance < 0) return col;
 
-    Vector3R rt = ray.position + ray.direction * col.distance;
-    Vector3R p = rt - sphere_center;
+    col.point = ray.calculate_point(col.distance);
+    Vector3R p = col.point - sphere_center;
 
     col.normal = p.normalize();
     col.hit = true;
-    col.point = ray.position + (ray.direction*col.distance);
 
-    Vector3R n = (col.point - sphere_center).normalize();
-    col.u = 0.5f + std::atan2(n.z, n.x)/(2.0f * M_PI);
-    col.v = 0.5f - std::asin(n.y)/M_PI;
+    col.u = 0.5f + std::atan2(col.normal.z, col.normal.x)/(2.0f * PI);
+    col.v = 0.5f - std::asin(col.normal.y)/PI;
 
     return col;
 }
@@ -46,7 +43,8 @@ Sphere* Sphere::transform_return(const MatrixR& m){
         vector_transform(tr, sphere_center), 
         radius, 
         material,
-        texture
+        texture,
+        name
     );
 }
 
@@ -60,6 +58,10 @@ void Sphere::transform(const MatrixR& m){
 
 void Sphere::set_radius(float radius_){
     radius = radius_;
+}
+
+void Sphere::scale(Vector3R dims){
+    set_radius(radius*dims.length());
 }
 
 void Sphere::update_transformation_matrices(){

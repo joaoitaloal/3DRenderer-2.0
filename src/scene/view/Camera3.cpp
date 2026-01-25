@@ -30,9 +30,11 @@ void Camera3::rotate(float x_angle, float y_angle, float z_angle){
     up = win.calculate_up();
 }
 
-// TODO: Falta um tratamento de erro caso x y e z sejam igual a posição atual
 void Camera3::look_at(float x, float y, float z){
-    forwards = (Vector3R{x, y, z} - position).normalize();
+    Vector3R dir = Vector3R{x, y, z} - position;
+    if(dir.x == 0 && dir.y == 0 && dir.z == 0) return; // TODO: tratamento de erro correto
+
+    forwards = dir.normalize();
 
     // rotacionar dir 90 graus e fazer y = 0
     MatrixR rot = {
@@ -47,10 +49,7 @@ void Camera3::look_at(float x, float y, float z){
 
     up = cross_product(forwards, left).normalize();
 
-    win.p1 = position + forwards*win.get_depth() + left*win.get_width()/2 + up*win.get_height()/2;
-    win.p2 = position + forwards*win.get_depth() - left*win.get_width()/2 + up*win.get_height()/2;
-    win.p3 = position + forwards*win.get_depth() + left*win.get_width()/2 - up*win.get_height()/2;
-    win.p4 = position + forwards*win.get_depth() - left*win.get_width()/2 - up*win.get_height()/2;
+    win.update_dimensions(position, left, forwards, up);
 }
 
 Vector3R Camera3::get_position(){
@@ -66,16 +65,26 @@ Vector3R Camera3::bi_interpolate(float alpha, float beta){
     return win.bi_interpolate(alpha, beta);
 }
 
+void Camera3::set_dimensions(Vector3R dims){
+    if(dims.x == 0 || dims.y == 0 || dims.z == 0) return; // TODO: Tratamento de erro
+    win.set_dimensions(dims, position, left, forwards, up);
+}
+
+void Camera3::set_up(Vector3R up_){
+    //up = 
+}
+
+void Camera3::set_zoom(float amount){
+    win.set_zoom(amount, position, left, forwards, up);
+}
+
 // ============= WorldWindow ============= //
 
 WorldWindow::WorldWindow(float set_width, float set_height, float depth_, Vector3R parent_pos){
     width = set_width; height = set_height; depth = depth_;
+    zoom = 1;
 
-    float hwidth = width/2; float hheight = height/2;
-    p1 = {hwidth + parent_pos.x, hheight + parent_pos.y, depth + parent_pos.z};
-    p2 = {-hwidth + parent_pos.x, hheight + parent_pos.y, depth + parent_pos.z};
-    p3 = {hwidth + parent_pos.x, -hheight + parent_pos.y, depth + parent_pos.z};
-    p4 = {-hwidth + parent_pos.x, -hheight + parent_pos.y, depth + parent_pos.z};
+    update_dimensions(parent_pos, {1, 0, 0}, {0, 0, 1}, {0, 1, 0});
 }
 
 void WorldWindow::move(float x, float y, float z, Vector3R left, Vector3R forwards, Vector3R up){
@@ -142,4 +151,26 @@ float WorldWindow::get_height(){
 
 float WorldWindow::get_depth(){
     return depth;
+}
+
+void WorldWindow::set_zoom(float zoom_, Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up){
+    zoom = zoom_;
+
+    update_dimensions(parent_pos, left, forwards, up);
+}
+
+void WorldWindow::set_dimensions(Vector3R dims, Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up){
+    width = dims.x;
+    height = dims.y;
+    depth = dims.z;
+
+    update_dimensions(parent_pos, left, forwards, up);
+}
+
+void WorldWindow::update_dimensions(Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up){
+    float hwidth = width/2; float hheight = height/2;
+    p1 = parent_pos + forwards*depth + left*hwidth*zoom + up*hheight*zoom;
+    p2 = parent_pos + forwards*depth - left*hwidth*zoom + up*hheight*zoom;
+    p3 = parent_pos + forwards*depth + left*hwidth*zoom - up*hheight*zoom;
+    p4 = parent_pos + forwards*depth - left*hwidth*zoom - up*hheight*zoom;
 }

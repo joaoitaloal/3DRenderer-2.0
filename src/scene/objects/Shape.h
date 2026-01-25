@@ -7,6 +7,10 @@
 #include "../../math/MatrixR.h"
 #include "../../math/utils.h"
 
+#include <string>
+
+using namespace std;
+
 // Classe de forma genérica
 class Shape{
     public:
@@ -19,8 +23,12 @@ class Shape{
         // Mesma coisa do de cima mas transforma a instância de fato
         virtual void transform(const MatrixR& m) = 0;
 
+        virtual void scale(Vector3R dims) = 0;
+
         // Retornando uma referencia read-only, nem sei se precisa, talvez copiar seria suave
-        const Material3& get_material() const { return material; };
+        const Material3& get_material() const { return material; }
+
+        string get_name() { return name; }
 
         virtual bool has_texture() const {
             return texture != nullptr;
@@ -33,10 +41,15 @@ class Shape{
         virtual ~Shape() = default;
 
     protected:
-        Shape(MatrixR world_to_object_, MatrixR object_to_world_) : world_to_object(world_to_object_), object_to_world(object_to_world_){}
+        Shape(MatrixR world_to_object_, MatrixR object_to_world_, string name_)
+        : world_to_object(world_to_object_), 
+        object_to_world(object_to_world_),
+        name(name_) {}
+
         Material3 material;
 
         Textura* texture = nullptr;
+        string name;
 
         // Leva o objeto pro centro do mundo
         MatrixR world_to_object;

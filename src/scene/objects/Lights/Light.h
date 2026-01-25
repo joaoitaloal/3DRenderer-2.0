@@ -19,6 +19,8 @@ class Light{
 
         Color3 get_intensity() { return intensity; }
 
+        virtual float get_distance(Vector3R pos) = 0;
+
         virtual ~Light() = default;
     protected:
         Light(MatrixR world_to_object_, MatrixR object_to_world_) : world_to_object(world_to_object_), object_to_world(object_to_world_){}

@@ -10,6 +10,9 @@ class Triangle : public Shape {
 
         Triangle* transform_return(const MatrixR& m) override;
         void transform(const MatrixR& m) override;
+        
+        // O triângulo não existe isoladamente, portanto não tem escala
+        void scale(Vector3R dims) override {};
 
     protected:
         Vector3R v1, v2, v3;

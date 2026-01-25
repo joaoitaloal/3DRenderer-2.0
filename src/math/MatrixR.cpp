@@ -171,6 +171,26 @@ MatrixR get_rotation_matrix(float x_angle, float y_angle, float z_angle){
     };
 }
 
+MatrixR get_translation_matrix(Vector3R vec)
+{
+    return {
+        1, 0, 0, vec.x,
+        0, 1, 0, vec.y,
+        0, 0, 1, vec.z,
+        0, 0, 0, 1
+    };
+}
+
+MatrixR get_scale_matrix(Vector3R vec)
+{
+    return {
+        vec.x, 0, 0, 0,
+        0, vec.y, 0, 0,
+        0, 0, vec.z, 0,
+        0, 0, 0, 1
+    };
+}
+
 MatrixR get_x_rotation(float angle){
     float cos_a = cosf(angle); float sin_a = sinf(angle);
     return {

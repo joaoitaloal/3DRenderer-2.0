@@ -1,7 +1,7 @@
 #include "Plane.h"
 
-Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, Textura* tex, bool culled = false)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
+Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, Textura* tex, string name_, bool culled = false)
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_)
 {
     normal = normal_;
     point = point_;
@@ -13,8 +13,8 @@ Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, Textura* te
     update_transformation_matrices();
 }
 
-Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, Textura* tex, bool culled = false)
-    :Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
+Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, Textura* tex, string name_, bool culled = false)
+    :Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_)
 {
     Vector3R p1 = v2-v1; Vector3R p2 = v3-v1;
     normal = cross_product(p1, p2).normalize();
@@ -40,7 +40,7 @@ Collision Plane::get_collision(RayR ray)
 
     col.hit = true;
     col.normal = normal;
-    col.point = ray.position + (ray.direction*col.distance);
+    col.point = ray.calculate_point(col.distance);
 
     float escala = 0.02;
     col.u = col.point.x * escala;
@@ -59,6 +59,7 @@ Plane* Plane::transform_return(const MatrixR& m){
         vector_transform(tr, point), 
         material,
         texture,
+        name,
         backface_culled
     );
 }

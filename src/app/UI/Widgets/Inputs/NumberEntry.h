@@ -24,15 +24,15 @@ class NumberEntry : public ScrollableFrame{
     public:
         void render(Vector2 scrollOffset) override;
 
-        double get_cur_num();
+        float get_cur_num();
 
         // Callback chamado quando o novo número é validado
-        void set_callback(function<void(double num)> callback_);
+        void set_callback(function<void(float num)> callback_);
 
-        NumberEntry(Rectangle bounds_, string title_, function<void(double num)> callback_);
+        NumberEntry(Rectangle bounds_, string title_, function<void(float num)> callback_);
 
     private:
-        double cur_num;
+        float cur_num;
         string title;
 
         Label label;
@@ -43,7 +43,7 @@ class NumberEntry : public ScrollableFrame{
 
         bool editMode;
 
-        function<void(double num)> callback;
+        function<void(float num)> callback;
 
         bool validate_input();
 };

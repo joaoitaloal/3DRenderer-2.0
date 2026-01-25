@@ -1,10 +1,9 @@
 #include "Cylinder.h"
-#include <cmath>
 
-Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_, Textura* tex)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
-    base(base_center_, -axis_dir_, radius_, material_, false),
-    roof(base_center_ + axis_dir_*height_, axis_dir_, radius_, material_, false),
+Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_, Textura* tex, string name_)
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_),
+    base(base_center_, -axis_dir_, radius_, material_, "Base", false),
+    roof(base_center_ + axis_dir_*height_, axis_dir_, radius_, material_, "Roof", false),
     Q(matrix_by_vector(vector_transpose(axis_dir_), axis_dir_)),
     M(subtract_matrix(MatrixR::identity_matrix(), Q))
 {
@@ -31,7 +30,8 @@ Cylinder* Cylinder::transform_return(const MatrixR& m){
         radius,
         height,
         material,
-        texture
+        texture,
+        name
     );
 }
 
@@ -42,9 +42,8 @@ void Cylinder::transform(const MatrixR& m){
 
     axis_dir = normal_transform(tr, axis_dir);
 
-    // Creio que seja mais rápido criar dois circulos novos que aplicar a transformação neles
-    base = {base_center, -axis_dir, radius, material, false};
-    roof = {base_center + axis_dir*height, axis_dir, radius, material, false};
+    base = {base_center, -axis_dir, radius, material, "Base", false};
+    roof = {base_center + axis_dir*height, axis_dir, radius, material, "Roof", false};
 
     Q = matrix_by_vector(vector_transpose(axis_dir), axis_dir);
     M = subtract_matrix(MatrixR::identity_matrix(), Q);
@@ -54,10 +53,18 @@ void Cylinder::transform(const MatrixR& m){
 
 void Cylinder::update_radius(float radius_){
     radius = radius_;
+    base = {base_center, -axis_dir, radius, material, "Base", false};
+    roof = {base_center + axis_dir*height, axis_dir, radius, material, "Roof", false};
 }
 
 void Cylinder::update_height(float height_){
     height = height_;
+}
+
+void Cylinder::scale(Vector3R dims){
+    update_height(height*dims.y);
+    dims.y = 0;
+    update_radius(radius*dims.length());
 }
 
 // TODO: caso a colisão ocorra na parte de dentro, inverter a normal, ou enfim fazer mudanças necessárias pra ver a parte de dentro
@@ -77,7 +84,7 @@ Collision Cylinder::get_surface_collision(RayR ray){
     col.distance = modified_quadratic(a, b, c);
     if(col.distance < 0) return col;
 
-    col.point = ray.position + (ray.direction*col.distance);
+    col.point = ray.calculate_point(col.distance);
 
     Vector3R center_to_point = col.point - base_center;
     float col_height = center_to_point * axis_dir;
@@ -98,7 +105,7 @@ Collision Cylinder::get_surface_collision(RayR ray){
     float x = radial * U;
     float z = radial * V;
 
-    col.u = 0.5f + atan2(z, x) / (2.0f * M_PI);
+    col.u = 0.5f + atan2(z, x) / (2.0f * PI);
     col.v = col_height / height;
 
     return col;

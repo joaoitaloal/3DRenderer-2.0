@@ -25,14 +25,15 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
     Vector3R v = (camera.get_position() - col.point).normalize();
 
     // Shading
-    float ALI = 0.2; // temporary constant Ambient Light Intensity
     Color3 base_color;
     if (shape->has_texture()){
         base_color = shape->get_texture()->sample(col.u, col.v);
     }else{
         base_color = shape->get_material().color;
     }
-    Color3 color = base_color + shape->get_material().ka*ALI;
+    Color3 color = base_color*ambient_light;
+    //Color3 color = {0, 0, 0}; // ver como fica melhor dps
+    color = color + shape->get_material().ka*ambient_light;
 
     for(Light* light : *lights){
         Vector3R l = light->get_light_vector(col.point);
@@ -42,10 +43,11 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
 
         bool shadow = false;
 
-        RayR shadowRay = {col.point + l*EPSILON, l};
+        RayR shadowRay = {col.point, l};
 
         for(Shape* shadowShape : *shapes){
-            if(shadowShape->get_collision(shadowRay).hit){
+            Collision shadowCol = shadowShape->get_collision(shadowRay);
+            if(shadowCol.hit && shadowCol.distance < light->get_distance(col.point)){
                 shadow = true;
                 break;
             }
@@ -59,6 +61,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
             base_color *
             light->get_intensity() * shape->get_material().kd * dotnl
         );
+        color = color + shape->get_material().color*dotnl; // tirar isso se não tiver legal
 
         float dotvr = v * r;
         if(dotvr < 0) continue;
@@ -71,30 +74,11 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, i
     
     // Specular Reflection
     Vector3R reflection_vec = (col.normal*((v*col.normal)*2) - v).normalize();
-    RayR reflection = {col.point + reflection_vec*EPSILON, reflection_vec};
+    RayR reflection = {col.point, reflection_vec};
 
     color = color + raycast(reflection, shapes, lights, recursion_index-1)*shape->get_material().kr;
 
     return color.clampMax(1);
-}
-
-// Funções que usam interpolação, acho que não vamos mais usar
-RayR View::createRay(float alpha, float beta){
-    Vector3R origin = camera.bi_interpolate(alpha, beta);
-
-    Vector3R dir = (origin - camera.get_position()).normalize();
-
-    RayR ray = {origin, dir};
-
-    return ray;
-}
-
-Color3 View::calculate_pixel_color(float origin_x, float origin_y, int WIDTH, int HEIGHT, vector<Shape*>* shapes, vector<Light*>* lights){
-    float alpha = origin_x/WIDTH;
-    float beta = origin_y/HEIGHT;
-
-    RayR ray = createRay(alpha, beta);
-    return raycast(ray, shapes, lights, RECURSION_DEPTH);
 }
 
 void View::move(float x, float y, float z){
@@ -121,4 +105,25 @@ Vector3R View::get_forwards()
 Vector3R View::get_camera_position()
 {
     return camera.get_position();
+}
+
+Vector3R View::bi_interpolate(float alpha, float beta)
+{
+    return camera.bi_interpolate(alpha, beta);
+}
+
+void View::set_dimensions(Vector3R dims){
+    camera.set_dimensions(dims);
+}
+
+void View::set_up(Vector3R up){
+    camera.set_up(up);
+}
+
+void View::set_zoom(float amount){
+    camera.set_zoom(amount);
+}
+
+void View::set_ambient_light(float value){
+    ambient_light = value;
 }

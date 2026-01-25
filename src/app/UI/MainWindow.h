@@ -1,6 +1,7 @@
 #ifndef RENDERER_UI_MAINWINDOW_H
 #define RENDERER_UI_MAINWINDOW_H
 
+#include "Pages/Header/Header.h"
 #include "Pages/HorizontalBar/HorizontalBar.h"
 #include "Pages/VerticalBar/VerticalBar.h"
 
@@ -18,7 +19,7 @@ class MainWindow : public Frame{
 
         int padding;
 
-        // TODO: Header
+        Header header;
         VerticalBar vbar;
         HorizontalBar hbar;
 

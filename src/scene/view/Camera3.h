@@ -22,11 +22,17 @@ class WorldWindow {
         float get_height();
         float get_depth();
 
-        // TODO: Temp, melhorar esse acesso, só tem uma função em Camera3 que precisa
-        Vector3R p1, p2, p3, p4;
-        
-    protected:
-        float width, height, depth;
+        void set_zoom(float zoom_, Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up);
+
+        // HACK: temp i guess
+        void set_dimensions(Vector3R dims, Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up);
+        void update_dimensions(Vector3R parent_pos, Vector3R left, Vector3R forwards, Vector3R up);
+
+        protected:
+            Vector3R p1, p2, p3, p4;
+            float width, height, depth;
+            float zoom;
+
 };
 
 class Camera3 {
@@ -44,6 +50,12 @@ class Camera3 {
         Vector3R get_forwards();
 
         Vector3R bi_interpolate(float alpha, float beta);
+
+        void set_dimensions(Vector3R dims);
+
+        // HACK: temp
+        void set_up(Vector3R up_);
+        void set_zoom(float amount);
 
     protected:
         Vector3R position;

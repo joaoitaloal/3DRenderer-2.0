@@ -1,10 +1,8 @@
 #ifndef RENDERER_UI_HORIZONTALBAR_H
 #define RENDERER_UI_HORIZONTALBAR_H
 
-#include "../../Widgets/Frames/ScrollableFrame.h"
-#include "../../Widgets/Inputs/NumberEntry.h"
-#include "../../Widgets/Inputs/Button.h"
-#include "../../Widgets/Label.h"
+#include "../../Components/Vec3Entry.h"
+#include "../../Components/Vec3Slider.h"
 #include "../../UI_STATE.h"
 
 class HorizontalBar : public Frame{
@@ -13,18 +11,23 @@ class HorizontalBar : public Frame{
         void render() override;
 
     private:
-        UI_STATE* ui_state;
-
         float padding;
 
-        // ----- Look at ----- //
-        Label* lat_label;
-        NumberEntry* lat_x;
-        NumberEntry* lat_y;
-        NumberEntry* lat_z;
-        Button* lat_submit;
+        Vec3Entry look_at_entry;
+        Vec3Entry move_to_entry;
 
-        Vector3R lat_vector;
+        // x: width; y: height; z: depth;
+        Vec3Entry viewplane_entry;
+
+        //Vec3Slider proj_obliqua;
+
+        Button proj_pers;
+        Button proj_orto;
+
+        Button zoom_in;
+        Button zoom_out;
+
+        Slider ambient_light;
 };
 
 #endif // RENDERER_UI_HORIZONTALBAR_H

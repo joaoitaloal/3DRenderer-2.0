@@ -1,8 +1,8 @@
 #include "Triangle.h"
 
 Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
-    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
-    plane(v1_, v2_, v3_, nullptr, true) // Usando backface culling por padrão
+    : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), "Triangle"),
+    plane(v1_, v2_, v3_, nullptr, "Triangle Plane", true) // Usando backface culling por padrão
 {
     v1 = v1_;
     v2 = v2_;
@@ -48,7 +48,7 @@ void Triangle::transform(const MatrixR& m){
     v2 = vector_transform(m, v2);
     v3 = vector_transform(m, v3);
 
-    plane = Plane(v1, v2, v3, nullptr, true);
+    plane = Plane(v1, v2, v3, nullptr, "Triangle Plane", true);
 
     update_transformation_matrices();
 }
@@ -106,8 +106,9 @@ Collision Triangle::get_collision(RayR ray){
     // hit
     col.hit = true;
     col.distance = t;
-    Vector3R test = (v2 - v1)*beta + (v3 - v1)*gamma;
-    col.point = v1 + test;
+    //Vector3R test = (v2 - v1)*beta + (v3 - v1)*gamma; // ??
+    //col.point = v1 + test;
+    col.point = ray.calculate_point(col.distance);
 
     col.normal = plane.get_normal();
 

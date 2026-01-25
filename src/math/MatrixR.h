@@ -51,6 +51,9 @@ MatrixR vector_to_matrix(const Vector3R& v);
 // FIXME: Quase certeza que tá errado
 MatrixR get_rotation_matrix(float x_angle, float y_angle, float z_angle);
 
+MatrixR get_translation_matrix(Vector3R vec);
+MatrixR get_scale_matrix(Vector3R vec);
+
 MatrixR get_x_rotation(float angle);
 MatrixR get_y_rotation(float angle);
 MatrixR get_z_rotation(float angle);

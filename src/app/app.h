@@ -7,6 +7,13 @@
 #include "UI/MainWindow.h"
 #include "../Viewport/Viewport.h"
 
+// Temporario, tirar daqui depois
+#include "../scene/objects/Lights/Point/PointLight.h"
+// Esse não sei se é temporario, mas deve ir pra outro lugar em alguma refatoração
+#include "../scene/objects/Mesh3/Mesh3.h"
+#include "../scene/objects/Cylinder/Cylinder.h"
+#include "../scene/objects/Sphere/Sphere.h"
+#include "../scene/objects/Cone/Cone.h"
 #define USER_SPEED 2.0f
 
 // TODO: Não deixar isso hardcoded assim
@@ -16,20 +23,16 @@
 /* TODO: Especificações do trabalho(Separado por dificuldade):
     Díficil(ou trabalhoso):
     - Aplicação de textura
-    - Fonte spot e direcional, a ambiente tá hardcoded, tem que ajeitar também
+    - Fonte spot e direcional, a ambiente tá hardcoded, tem que ajeitar também (+)
     - Determinar o cenário
-    - perspectiva com pontos de fuga? não lembro o que é isso
+    - perspectiva com pontos de fuga? não lembro o que é isso (+)
 
     Médio:
-    - Criar uma função que define a direção up da camêra(o look at deixa o up = (0, 1, 0) obrigatoriamente, no momento)
-    - Função de selecionar um objeto com o clique
-    - projeção ortográfica e obliqua
+    - projeção obliqua (+)
     
     Fácil(Alguns tão quase prontos):
-    - Transformações, falta cisalhamento e espelho em relação a um plano.
-    - Campo de visão, provavelmente dar a opção de modificar proporções do plano de visão é suficiente
-    - Distancia focal, pesquisar o que isso quer dizer??(Provavelmente é a distância do plano pra camera)
-    - zoom in e zoom out
+    - Fazer input da rotação na UI
+    - Transformações, falta cisalhamento e espelho em relação a um plano[Householder] (+)
 
     Não vai rolar:
     - Mudar o sistema de camera pra usar aquele modelo que ele usa, centrado na origem e com as transformações world-to-camera e etc.
@@ -77,7 +80,7 @@ class App{
         void start();
 
         // Acho que temporário, deve ir pra outra classe pelo menos
-        void load_new_mesh(string filename, Color3 color);
+        void load_new_mesh(string filename, Color3 color, string name);
 
     private:
         int win_width, win_height;
@@ -102,6 +105,11 @@ class App{
 
         // Função chamada todo frame
         void process();
+
+        // Temp, só pro cenário funcionar
+        Circle* fire; // plano do fogo do foguete
+        Circle* gargantula_ring; // plano do buraco negro
+        Circle* close_planet;
 };
 
 #endif // RENDERER_APP_H

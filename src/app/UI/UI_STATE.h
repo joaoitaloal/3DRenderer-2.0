@@ -9,6 +9,8 @@ struct UI_STATE{
     Viewport* viewport;
     bool live_rendering;
 
+    Shape* picked;
+
     // Pra quando eu precisar fazer transform nos objetos e no view
     Scene* scene;
 };

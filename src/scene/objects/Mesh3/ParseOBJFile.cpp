@@ -14,7 +14,7 @@ struct FaceTriIndexes{
 
 FaceTriIndexes ParseFace(vector<string> vertices_info);
 
-Mesh3* ParseOBJFile(string fileName, Material3 material_){
+Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_){
     ifstream file(fileName);
 
     if(!file) throw 1;
@@ -109,7 +109,7 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_){
         {max_x, max_y, max_z}
     };
 
-    Mesh3* mesh = new Mesh3(faces, bbox, material_, {0, 0, 0});
+    Mesh3* mesh = new Mesh3(faces, bbox, material_, {0, 0, 0}, name_);
 
     return mesh;
 }
