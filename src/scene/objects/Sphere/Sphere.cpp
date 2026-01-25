@@ -1,13 +1,13 @@
 #include "Sphere.h"
 #include <cmath>
 
-Sphere::Sphere(Vector3R sphere_center_, float radius_, Material3 material_, Textura tex)
+Sphere::Sphere(Vector3R sphere_center_, float radius_, Material3 material_, Textura* tex)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
     sphere_center(sphere_center_), 
-    radius(radius_),
-    texture(tex)
+    radius(radius_)
 {
     material = material_;
+    this->texture = tex;
 
     update_transformation_matrices();
 }

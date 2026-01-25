@@ -5,7 +5,7 @@
 
 class Sphere : public Shape{
     public:
-        Sphere(Vector3R sphere_center, float radius, Material3 material_, Textura tex);
+        Sphere(Vector3R sphere_center, float radius, Material3 material_, Textura* tex);
         Collision get_collision(RayR ray) override;
 
         Sphere* transform_return(const MatrixR& m) override;
@@ -17,7 +17,6 @@ class Sphere : public Shape{
     private:
         Vector3R sphere_center;
         float radius;
-        Textura texture;
 
         void update_transformation_matrices() override;
 };

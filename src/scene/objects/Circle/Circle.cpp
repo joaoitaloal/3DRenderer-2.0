@@ -1,7 +1,7 @@
 #include "Circle.h"
 
 Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 material_, bool culled = false)
-    :Plane(normal_, point_, material_, culled )
+    :Plane(normal_, point_, material_, nullptr, culled)
 {
     radius = radius_;
     material = material_;

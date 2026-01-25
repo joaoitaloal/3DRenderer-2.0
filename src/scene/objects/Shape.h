@@ -2,7 +2,7 @@
 #define RENDERER_SHAPE_H
 
 #include "Material3.h"
-#include "../Textura/Textura.h"
+#include "../../Textura/Textura.h"
 #include "../../math/Vector3R.h"
 #include "../../math/MatrixR.h"
 #include "../../math/utils.h"
@@ -22,7 +22,7 @@ class Shape{
         // Retornando uma referencia read-only, nem sei se precisa, talvez copiar seria suave
         const Material3& get_material() const { return material; };
 
-        bool has_texture() const {
+        virtual bool has_texture() const {
             return texture != nullptr;
         }
 

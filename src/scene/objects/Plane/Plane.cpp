@@ -1,6 +1,6 @@
 #include "Plane.h"
 
-Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, bool culled = false)
+Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, Textura* tex, bool culled = false)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
 {
     normal = normal_;
@@ -8,11 +8,12 @@ Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, bool culled
     material = material_;
 
     backface_culled = culled;
+    this->texture = tex;
 
     update_transformation_matrices();
 }
 
-Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled = false)
+Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, Textura* tex, bool culled = false)
     :Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix())
 {
     Vector3R p1 = v2-v1; Vector3R p2 = v3-v1;
@@ -20,6 +21,7 @@ Plane::Plane(Vector3R v1, Vector3R v2, Vector3R v3, bool culled = false)
 
     point = v1;
     backface_culled = culled;
+    texture = tex;
     
     update_transformation_matrices();
 }
@@ -40,6 +42,12 @@ Collision Plane::get_collision(RayR ray)
     col.normal = normal;
     col.point = ray.position + (ray.direction*col.distance);
 
+    float escala = 0.02;
+    col.u = col.point.x * escala;
+    col.v = col.point.z * escala;
+    col.u = col.u - std::floor(col.u);
+    col.v = col.v - std::floor(col.v);
+
     return col;
 }
 
@@ -50,6 +58,7 @@ Plane* Plane::transform_return(const MatrixR& m){
         normal_transform(tr, normal), 
         vector_transform(tr, point), 
         material,
+        texture,
         backface_culled
     );
 }

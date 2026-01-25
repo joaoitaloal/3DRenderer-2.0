@@ -1,10 +1,11 @@
 #include "Cone.h"
 
-Cone::Cone(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_):
+Cone::Cone(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_, Textura* tex):
 Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix()),
 Q(matrix_by_vector(vector_transpose(axis_dir_), axis_dir_)),
 M(subtract_matrix(MatrixR::identity_matrix(),Q)),
-base(base_center_, -axis_dir_, radius_, material_, true)
+base(base_center_, -axis_dir_, radius_, material_, true),
+texture(tex)
 {
     base_center = base_center_;
     axis_dir = axis_dir_;
@@ -77,7 +78,8 @@ Cone* Cone::transform_return(const MatrixR& m){
         normal_transform(tr, axis_dir),
         radius,
         height,
-        material
+        material,
+        texture
     );
 }
 
