@@ -35,7 +35,10 @@ HorizontalBar::HorizontalBar(Rectangle bounds_, UI_STATE* ui_state_)
         {bounds.x + 2*padding + 180, bounds.y + padding + 128, 60, 32}, "Zoom out",
         [ui_state_]() { ui_state_->scene->zoom(1.1); }
       ),
-      ambient_light({bounds.x + 2*padding + 240, bounds.y + padding + 128, 60, 32}, "0", "1", 0, 1, 0.2, [ui_state_](float num){
+      ALI_label(
+        {bounds.x + 2*padding + 300 - 15 - 10, bounds.y + padding + 120, 80, 16}, "Ambient Light"
+      ),
+      ALI_slider({bounds.x + 2*padding + 300 - 15, bounds.y + padding + 136, 60, 32}, "", "", 0, 1, 0.2, [ui_state_](float num){
         ui_state_->scene->set_ambient_light(num);
       })
 {}
@@ -57,5 +60,8 @@ void HorizontalBar::render(){
     zoom_in.render({0, 0});
     zoom_out.render({0, 0});
 
-    ambient_light.render({0, 0});
+    GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+    ALI_label.render({0, 0});
+    GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+    ALI_slider.render({0, 0});
 }

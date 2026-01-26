@@ -14,8 +14,8 @@ MainWindow::MainWindow(int win_width, int win_height, int render_width, int rend
 
     // Setting UI styles, dar uma olhada no que mais da pra fz com essa função
     // --- Estilo global da UI --- //
-    GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, ColorToInt((Color){ 100, 200, 255, 255 }));
-    GuiSetStyle(TEXTBOX, TEXT_COLOR_NORMAL, ColorToInt((Color){ 100, 200, 255, 255 }));
+    GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, ColorToInt(Color{ 100, 200, 255, 255 }));
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_NORMAL, ColorToInt(Color{ 100, 200, 255, 255 }));
 }
 
 void MainWindow::render(){

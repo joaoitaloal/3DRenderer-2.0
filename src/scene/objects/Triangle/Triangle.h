@@ -14,6 +14,9 @@ class Triangle : public Shape {
         // O triângulo não existe isoladamente, portanto não tem escala
         void scale(Vector3R dims) override {};
 
+        Vector3R get_min_point();
+        Vector3R get_max_point();
+
     protected:
         Vector3R v1, v2, v3;
         Plane plane;

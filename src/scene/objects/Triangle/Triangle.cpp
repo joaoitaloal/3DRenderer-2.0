@@ -53,6 +53,22 @@ void Triangle::transform(const MatrixR& m){
     update_transformation_matrices();
 }
 
+Vector3R Triangle::get_min_point(){
+    return {
+        min(v1.x, min(v2.x, v3.x)),
+        min(v1.y, min(v2.y, v3.y)),
+        min(v1.z, min(v2.z, v3.z))
+    };
+}
+
+Vector3R Triangle::get_max_point(){
+    return {
+        max(v1.x, max(v2.x, v3.x)),
+        max(v1.y, max(v2.y, v3.y)),
+        max(v1.z, max(v2.z, v3.z))
+    };
+}
+
 void Triangle::update_transformation_matrices(){
     // Por enquanto o triângulo não existe sozinho, só em uma mesh
     // ToDo: world_to_object = média dos três pontos? algo assim?

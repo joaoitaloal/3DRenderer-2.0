@@ -221,6 +221,7 @@ MatrixR get_z_rotation(float angle){
     };
 }
 
+// Angulo em radianos
 MatrixR get_rotation_around_axis(float angle, Vector3R axis){
     float cos_a = cosf(angle); float sin_a = sinf(angle);
     float o_minus_c = 1 - cos_a;

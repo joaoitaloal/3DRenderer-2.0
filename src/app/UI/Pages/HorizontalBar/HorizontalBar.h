@@ -1,8 +1,8 @@
 #ifndef RENDERER_UI_HORIZONTALBAR_H
 #define RENDERER_UI_HORIZONTALBAR_H
 
-#include "../../Components/Vec3Entry.h"
-#include "../../Components/Vec3Slider.h"
+#include "../../Components/Vec3Entry/Vec3Entry.h"
+#include "../../Components/Vec3Entry/Vec3Slider.h"
 #include "../../UI_STATE.h"
 
 class HorizontalBar : public Frame{
@@ -27,7 +27,8 @@ class HorizontalBar : public Frame{
         Button zoom_in;
         Button zoom_out;
 
-        Slider ambient_light;
+        Label ALI_label;
+        Slider ALI_slider;
 };
 
 #endif // RENDERER_UI_HORIZONTALBAR_H

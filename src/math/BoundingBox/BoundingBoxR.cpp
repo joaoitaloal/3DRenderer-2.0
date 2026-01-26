@@ -28,8 +28,37 @@ bool BoundingBoxR::get_collision(RayR ray){
 }
 
 void BoundingBoxR::transform(const MatrixR &m){
-    min = vector_transform(m, min);
-    max = vector_transform(m, max);
+    // Isso seria bem simples se não tivesse rotação,
+    // com a rotação, a solução que eu pensei é reconstruir todos os pontos da caixa,
+    // girar todos eles e pegar o novo min e novo max
+
+    // Essa ideia não funciona!!!
+    // Não sei como fazer isso por enquanto
+
+    /*Vector3R points[8];
+
+    float width = max.x - min.x;
+    float height = max.y - min.y;
+    float depth = max.z - min.z;
+
+    points[0] = min;
+    points[1] = min + Vector3R{1, 0, 0}*width;
+    points[2] = min + Vector3R{0, 1, 0}*height;
+    points[3] = min + Vector3R{1, 0, 0}*width + Vector3R{0, 1, 0}*height;
+    points[4] = min + Vector3R{0, 0, 1}*depth;
+    points[5] = min + Vector3R{0, 0, 1}*depth + Vector3R{0, 1, 0}*height;
+    points[6] = min + Vector3R{1, 0, 0}*width + Vector3R{0, 0, 1}*depth;
+    points [7] = max;
+
+    for(int i = 0; i < 8; i++){
+        points[i] = vector_transform(m, points[i]);
+        if(min.x < points[i].x) min.x = points[i].x;
+        else if(max.x > points[i].x) max.x = points[i].x;
+        if(min.y < points[i].y) min.z = points[i].y;
+        else if(max.y > points[i].y) max.y = points[i].y;
+        if(min.z < points[i].z) min.y = points[i].z;
+        else if(max.z > points[i].z) max.z = points[i].z;
+    }*/
 }
 
 BoundingBoxR BoundingBoxR::transform_return(const MatrixR &m){

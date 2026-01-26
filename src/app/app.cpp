@@ -212,6 +212,7 @@ void App::process(){
         close_planet->update_radius(300-close_planet->get_distance(view->get_camera_position())/5);
     }
 
+    // Pick
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         Vector2 mouse_pos = GetMousePosition();
         mouse_pos.x -= win_width-render_witdh;

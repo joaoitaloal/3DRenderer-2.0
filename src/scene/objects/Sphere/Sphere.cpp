@@ -61,7 +61,7 @@ void Sphere::set_radius(float radius_){
 }
 
 void Sphere::scale(Vector3R dims){
-    set_radius(radius*dims.length());
+    set_radius(radius*(dims.x+dims.y+dims.z)/3);
 }
 
 void Sphere::set_center(Vector3R pos){

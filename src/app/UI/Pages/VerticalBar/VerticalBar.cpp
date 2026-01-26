@@ -8,15 +8,22 @@ VerticalBar::VerticalBar(Rectangle bounds_, UI_STATE* ui_state_)
       transl_entry(
         {bounds.x + bounds.width/3 - 50, bounds.y + padding + 32, 0, 0}, "Mov", "x", "y", "z",
         [this](Vector3R vec){ 
-            if(ui_state->picked)
+            if(ui_state->picked != nullptr)
                 ui_state->picked->transform(get_translation_matrix(vec));
         }
       ),
       scale_entry(
         {bounds.x + bounds.width/3 + 50, bounds.y + padding + 32, 0, 0}, "Scale", "x", "y", "z",
         [this](Vector3R vec){
-            if(ui_state->picked)
+            if(ui_state->picked != nullptr)
                 ui_state->picked->scale(vec);
+        }
+      ),
+      rot_entry(
+        {bounds.x + bounds.width/3 - 50, bounds.y + padding + 200, 0, 0}, "Rotation",
+        [this](Vector3R vec, float angle){
+            if(ui_state->picked != nullptr)
+                ui_state->picked->transform(get_rotation_around_axis(angle, vec.normalize()));
         }
       )
 {}
@@ -39,4 +46,5 @@ void VerticalBar::render(){
 
     transl_entry.render({0, 0});
     scale_entry.render({0, 0});
+    rot_entry.render({0, 0});
 }

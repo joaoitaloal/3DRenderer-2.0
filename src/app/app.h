@@ -58,6 +58,10 @@
 
 // TODO: Calcular u e v só se a textura do objeto for diferente de nullptr, fiz pro plano falta o resto
 
+// TODO: Comentar um pouco o código
+
+// FIXME: Muitas classes tão repetindo boa parte dos construtores, dá pra melhorar o OO pra facilitar nossa vida
+
 // FIXME: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
 // mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
 // Acho que uma solução possível é guardar um ponteiro pro material na classe shape, daí quando tiver criando a mesh podemos criar

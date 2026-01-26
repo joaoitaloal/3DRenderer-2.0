@@ -61,7 +61,7 @@ void Circle::scale(Vector3R dims){
 
 // Criando um raio na direção do plano pra ver a distância
 float Circle::get_distance(Vector3R point_){
-    RayR testRay = {point, -normal};
+    RayR testRay = {point_, -normal};
     return Plane::get_collision(testRay).distance;
 }
 

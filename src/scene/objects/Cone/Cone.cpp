@@ -109,6 +109,5 @@ void Cone::update_height(float height_){
 
 void Cone::scale(Vector3R dims){
     update_height(height*dims.y);
-    dims.y = 0;
-    update_radius(radius*dims.length());
+    update_radius(radius*(dims.x+dims.z)/2);
 }
