@@ -14,7 +14,7 @@ struct FaceTriIndexes{
 
 FaceTriIndexes ParseFace(vector<string> vertices_info);
 
-Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_){
+Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_, Textura* tex){
     ifstream file(fileName);
 
     if(!file) throw 1;
@@ -24,7 +24,7 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_){
     vector<Vector3R> vertices; 
     
     //vector<Vector3> normals;
-    //vector<Vector2> v_texture;
+    vector<Vector2> v_texture;
 
     float max_x = 0, max_y = 0, max_z = 0;
     float min_x = 0, min_y = 0, min_z = 0;
@@ -60,13 +60,13 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_){
             stream >> v.z;
 
             normals.push_back(v);
-        }else if(type == "vt"){
+        }*/else if(type == "vt"){
             Vector2 v;
             stream >> v.x;
             stream >> v.y;
 
             v_texture.push_back(v);
-        }*/else if(type == "f"){
+        }else if(type == "f"){
             vector<string> vertices_info;
 
             for(int i = 0; i < 3; i++){
@@ -81,7 +81,8 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_){
             Triangle* face = new Triangle(
                 vertices[faceIndexes.vertices[0]],
                 vertices[faceIndexes.vertices[1]],
-                vertices[faceIndexes.vertices[2]]
+                vertices[faceIndexes.vertices[2]],
+                nullptr
             );
 
             /*if(faceIndexes.v_normals[0] != -1)
@@ -90,13 +91,13 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_){
             face.vn2 = normals[faceIndexes.v_normals[1]];
             if(faceIndexes.v_normals[2] != -1)
             face.vn3 = normals[faceIndexes.v_normals[2]];
-
+            */
             if(faceIndexes.v_tex[0] != -1)
-                face.vt1 = v_texture[faceIndexes.v_tex[0]];
+                face->vt1 = v_texture[faceIndexes.v_tex[0]];
             if(faceIndexes.v_tex[1] != -1)
-            face.vt2 = v_texture[faceIndexes.v_tex[1]];
+                face->vt2 = v_texture[faceIndexes.v_tex[1]];
             if(faceIndexes.v_tex[2] != -1)
-            face.vt3 = v_texture[faceIndexes.v_tex[2]];*/
+                face->vt3 = v_texture[faceIndexes.v_tex[2]];
             
             faces.push_back(face);
         }
@@ -109,7 +110,7 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_){
         {max_x, max_y, max_z}
     };
 
-    Mesh3* mesh = new Mesh3(faces, bbox, material_, {0, 0, 0}, name_);
+    Mesh3* mesh = new Mesh3(faces, bbox, material_, {0, 0, 0}, name_, tex);
 
     return mesh;
 }

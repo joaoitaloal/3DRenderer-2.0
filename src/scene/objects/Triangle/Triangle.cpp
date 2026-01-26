@@ -1,12 +1,13 @@
 #include "Triangle.h"
 
-Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_)
+Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_, Textura* tex)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), "Triangle"),
-    plane(v1_, v2_, v3_, nullptr, "Triangle Plane", true) // Usando backface culling por padrão
+    plane(v1_, v2_, v3_, tex, "Triangle Plane", true) // Usando backface culling por padrão
 {
     v1 = v1_;
     v2 = v2_;
     v3 = v3_;
+    this->texture =  tex;
 
     update_transformation_matrices();
 }
@@ -39,7 +40,8 @@ Triangle* Triangle::transform_return(const MatrixR& m){
     return new Triangle(
         vector_transform(m, v1),
         vector_transform(m, v2),
-        vector_transform(m, v3)
+        vector_transform(m, v3),
+        texture
     );
 }
 
@@ -48,7 +50,7 @@ void Triangle::transform(const MatrixR& m){
     v2 = vector_transform(m, v2);
     v3 = vector_transform(m, v3);
 
-    plane = Plane(v1, v2, v3, nullptr, "Triangle Plane", true);
+    plane = Plane(v1, v2, v3, texture, "Triangle Plane", true);
 
     update_transformation_matrices();
 }
@@ -111,6 +113,9 @@ Collision Triangle::get_collision(RayR ray){
     col.point = ray.calculate_point(col.distance);
 
     col.normal = plane.get_normal();
+    float alpha = 1.0f - beta - gamma;
+    col.u = alpha * v1.x + beta * v2.x + gamma * v3.x;
+    col.v = alpha * v1.y + beta * v2.y + gamma * v3.y;
 
     return col;
 }

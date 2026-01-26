@@ -80,7 +80,7 @@ class App{
         void start();
 
         // Acho que temporário, deve ir pra outra classe pelo menos
-        void load_new_mesh(string filename, Color3 color, string name);
+        void load_new_mesh(string filename, Color3 color, string name, Textura* tex);
 
     private:
         int win_width, win_height;

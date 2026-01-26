@@ -1,12 +1,13 @@
 #include "Mesh3.h"
 
-Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_, Vector3R anchor_, string name_)
+Mesh3::Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_, Vector3R anchor_, string name_, Textura* tex)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_),
     bbox(bbox_)
 {
     faces = faces_;
     material = material_;
     anchor = anchor_;
+    this->texture = tex;
 
     update_transformation_matrices();
 }
@@ -17,11 +18,12 @@ Mesh3::~Mesh3(){
     }
 }
 
-Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_, string name_)
+Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_, string name_, Textura* tex)
 {
-    Mesh3* mesh = ParseOBJFile(filename, material_, name_);
+    Mesh3* mesh = ParseOBJFile(filename, material_, name_, tex);
     mesh->material = material_;
-    
+    mesh->texture = tex;
+
     return mesh;
 }
 
@@ -59,7 +61,8 @@ Mesh3* Mesh3::transform_return(const MatrixR& m){
         bbox.transform_return(tr),
         material,
         vector_transform(tr, anchor),
-        name
+        name,
+        texture
     );
 }
 

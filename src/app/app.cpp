@@ -19,17 +19,17 @@ App::App(int win_width_, int win_height_)
     ui_padding = 12;
 
     // ========= Criando objetos =========
-    // Malhas
-    //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
-    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima");
-    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base");
-    
     // Texturas
     Textura* lua =  new Textura("texturas/textura_lua.jpg");
     Textura* chao = new Textura("texturas/textura_chao.jpg");
     Textura* nave = new Textura("texturas/textura_nave3.jpg");
     Textura* space_skybox = new Textura("texturas/space_skybox.jpg");
+    
+    // Malhas
+    //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
+    //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua);
+    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao);
 
     scene->set_background_tex(space_skybox);
 
@@ -148,10 +148,10 @@ void App::start()
     CloseWindow();
 }
 
-void App::load_new_mesh(string filename, Color3 color, string name){
+void App::load_new_mesh(string filename, Color3 color, string name, Textura* tex){
     try{
         // Material fixo temporário
-        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color), name);
+        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color), name, tex);
         scene->push_shape(mesh);
     }catch(const int err){
         throw err; // Só pra ficar explicito o erro

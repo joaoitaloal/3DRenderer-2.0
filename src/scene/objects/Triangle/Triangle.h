@@ -5,7 +5,7 @@
 
 class Triangle : public Shape {
     public:
-        Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_);
+        Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_, Textura* tex);
         Collision get_collision(RayR ray) override;
 
         Triangle* transform_return(const MatrixR& m) override;
@@ -13,7 +13,8 @@ class Triangle : public Shape {
         
         // O triângulo não existe isoladamente, portanto não tem escala
         void scale(Vector3R dims) override {};
-
+        
+        Vector2 vt1, vt2, vt3; // texture vertices
     protected:
         Vector3R v1, v2, v3;
         Plane plane;
@@ -22,7 +23,7 @@ class Triangle : public Shape {
         
         // Coisas de mesh, só vai precisar se a gente colocar texturas em mesh
         // Vector3 vn1, vn2, vn3; // vertex normals
-        // Vector2 vt1, vt2, vt3; // texture vertices
+        
 };
 
 #endif // RENDERER_TRIANGLE_H
