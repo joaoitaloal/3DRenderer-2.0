@@ -63,8 +63,7 @@ void Cylinder::update_height(float height_){
 
 void Cylinder::scale(Vector3R dims){
     update_height(height*dims.y);
-    dims.y = 0;
-    update_radius(radius*dims.length());
+    update_radius(radius*(dims.x+dims.z)/2);
 }
 
 // TODO: caso a colisão ocorra na parte de dentro, inverter a normal, ou enfim fazer mudanças necessárias pra ver a parte de dentro

@@ -32,7 +32,14 @@ Collision Mesh3::get_collision(RayR ray){
     col.hit = false;
 
     if(!bbox.get_collision(ray) || faces.size() == 0){
-        return col;
+        /*col.distance = 1; // Mostrar bbox pra debug
+        col.hit = true;
+        col.normal = {0, 1, 0};
+        col.point = {0, 0, 0};
+        col.u = 0;
+        col.v = 0;*/
+
+        return col; 
     }
 
     for(Triangle* tri : faces){
@@ -67,13 +74,28 @@ Mesh3* Mesh3::transform_return(const MatrixR& m){
 }
 
 void Mesh3::transform(const MatrixR& m){
+    if(faces.size() <= 0) return; // TODO: tratamento de erro
+
     MatrixR tr = mul_mat(object_to_world, mul_mat(m, world_to_object));
+    Vector3R min = faces.at(0)->get_min_point();
+    Vector3R max = faces.at(0)->get_max_point();
 
     for(Triangle* tri : faces){
         tri->transform(tr);
+
+        Vector3R newmin = tri->get_min_point();
+        Vector3R newmax = tri->get_max_point();
+
+        if(newmin.x < min.x) min.x = newmin.x;
+        else if(newmax.x > max.x) max.x = newmax.x;
+        if(newmin.y < min.y) min.y = newmin.y;
+        else if(newmax.y > max.y) max.y = newmax.y;
+        if(newmin.z < min.z) min.z = newmin.z;
+        else if(newmax.z > max.z) max.z = newmax.z;
     }
 
-    bbox.transform(tr);
+    bbox = {min, max};
+
     anchor = vector_transform(tr, anchor);
 
     update_transformation_matrices();

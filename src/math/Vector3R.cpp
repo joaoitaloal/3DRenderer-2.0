@@ -6,6 +6,7 @@ Vector3R::Vector3R(float _x, float _y, float _z){
 
 Vector3R Vector3R::normalize(){
     float length = Vector3R::length();
+    if(length == 0) return {0, 0, 0}; // TODO: tratamento de erro
     return {x/length, y/length, z/length};
 }
 

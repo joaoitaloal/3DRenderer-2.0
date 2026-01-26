@@ -3,7 +3,7 @@
 Plane::Plane(Vector3R normal_, Vector3R point_, Material3 material_, Textura* tex, string name_, bool culled = false)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_)
 {
-    normal = normal_;
+    normal = normal_.normalize();
     point = point_;
     material = material_;
 
@@ -42,11 +42,23 @@ Collision Plane::get_collision(RayR ray)
     col.normal = normal;
     col.point = ray.calculate_point(col.distance);
 
-    float escala = 0.02;
-    col.u = col.point.x * escala;
-    col.v = col.point.z * escala;
-    col.u = col.u - std::floor(col.u);
-    col.v = col.v - std::floor(col.v);
+    if(texture != nullptr){
+        float escala = 0.02;
+
+        Vector3R texPoint = col.point - point;
+        
+        Vector3R up = {0, 1, 0};
+        float dot = normal*up;
+        if(dot != 1){
+            MatrixR texRot = get_rotation_around_axis(acos(dot), cross_product(normal, up).normalize());
+            texPoint = vector_transform(texRot, texPoint);
+        }
+        
+        col.u = texPoint.x * escala;
+        col.v = texPoint.z * escala;
+        col.u = col.u - std::floor(col.u);
+        col.v = col.v - std::floor(col.v);
+    }
 
     return col;
 }
