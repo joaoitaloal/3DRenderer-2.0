@@ -27,12 +27,11 @@
     - perspectiva com pontos de fuga? não lembro o que é isso (+)
 
     Médio:
+    - Transformações, falta cisalhamento e espelho em relação a um plano[Householder] (+)
     - Projeção obliqua (+)
-    - Transparência
     
     Fácil(Alguns tão quase prontos):
     - Fazer input da rotação na UI
-    - Transformações, falta cisalhamento e espelho em relação a um plano[Householder] (+)
 
     Não vai rolar:
     - Mudar o sistema de camera pra usar aquele modelo que ele usa, centrado na origem e com as transformações world-to-camera e etc.
@@ -42,13 +41,6 @@
 // ---------------- Outros ToDos ---------------- //
 
 // TODO: thread pra UI
-
-// TODO: Mover tudo que é da UI aqui pra uma classe separada, talvez convenha modificar a posição da UI,
-// do jeito que tá agora o renderizador inteiro precisa de um offset, 
-// acho que uma opção decente é manter toda a UI sobreposta no próprio renderizador
-
-// TODO: Mover o próprio renderizador pra uma classe separada pode ser bom tbm,
-// por ele ter uma width e heigth própria
 
 // TODO: Tou dando clamp em todas as cores que passam de 1, mas o creto deu aquela ideia de pegar a maior cor
 // calculada e dividir todas as cores por ela, que parece bem legal
@@ -63,6 +55,8 @@
 // TODO: Dar uma melhorada no tratamento de erro
 
 // TODO: Implementar um escalonador pro viewport, pra renderizar numa tela pequena e aumentar o tamanho dps
+
+// TODO: Calcular u e v só se a textura do objeto for diferente de nullptr, fiz pro plano falta o resto
 
 // FIXME: Nossa definição de triangulo tem um material próprio, algo que faz sentido pra triangulos isolados,
 // mas pras malhas isso significa que cada triangulo tem 5 floats não utilizados(e valores não definidos), que não é muito legal.
@@ -101,7 +95,7 @@ class App{
         
         float ui_padding;
 
-        std::chrono::duration<double, std::milli> time_elapsed;
+        chrono::duration<double, milli> time_elapsed;
 
         // Função chamada todo frame
         void process();

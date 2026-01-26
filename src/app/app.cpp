@@ -18,12 +18,6 @@ App::App(int win_width_, int win_height_)
     render_witdh = RENDERER_WIN_WIDTH; render_height = RENDERER_WIN_HEIGHT;
     ui_padding = 12;
 
-    // ========= Criando objetos =========
-    // Malhas
-    //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
-    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima");
-    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base");
     
     // Texturas
     Textura* lua =  new Textura("texturas/textura_lua.jpg");
@@ -54,6 +48,13 @@ App::App(int win_width_, int win_height_)
 
     // Plano de fundo: estrelas, ver como fazer um skybox certinho
 
+    // ========= Criando objetos =========
+    // Malhas
+    //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
+    //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima");
+    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base");
+    
     Vector3R axis(0.5, 0.7, 0.5);
     // Cilindro
     scene->push_shape(new Cylinder(
@@ -109,12 +110,12 @@ App::App(int win_width_, int win_height_)
         25,
         debug_temp_material({0, 0, 0}),
         nullptr,
-        "Sphere"
+        "Gargantula"
     ));
     close_planet = new Circle(
         {0, 0, 0},
         {0, 1, 0},
-        10,
+        300,
         debug_temp_material({0, 0, 0}),
         chao,
         "close_planet",
@@ -199,9 +200,9 @@ void App::process(){
         view->rotate(0, 0, 0.1);
     }
     if(IsKeyDown(KEY_ENTER) && !ui_state->live_rendering){
-        auto start = std::chrono::high_resolution_clock().now();
+        auto start = chrono::high_resolution_clock().now();
         viewport->update();
-        auto end = std::chrono::high_resolution_clock().now();
+        auto end = chrono::high_resolution_clock().now();
 
         time_elapsed = end - start; 
     }
@@ -225,9 +226,9 @@ void App::process(){
     ClearBackground(BLACK);
 
     if(ui_state->live_rendering){
-        auto start = std::chrono::high_resolution_clock().now();
+        auto start = chrono::high_resolution_clock().now();
         viewport->update();
-        auto end = std::chrono::high_resolution_clock().now();
+        auto end = chrono::high_resolution_clock().now();
         
         time_elapsed = end - start; 
     } 
@@ -241,13 +242,13 @@ void App::process(){
 
     // Render image displays
 
-    DrawText(std::to_string(view->get_camera_position().x).insert(0, "cam X: ").c_str(), 0 + win_width-render_witdh + ui_padding, 0 + win_height-render_height + ui_padding, 16, WHITE);
-    DrawText(std::to_string(view->get_camera_position().y).insert(0, "cam Y: ").c_str(), 0 + win_width-render_witdh + ui_padding, 16 + win_height-render_height + ui_padding, 16, WHITE);
-    DrawText(std::to_string(view->get_camera_position().z).insert(0, "cam Z: ").c_str(), 0 + win_width-render_witdh + ui_padding, 32 + win_height-render_height + ui_padding, 16, WHITE);
+    DrawText(to_string(view->get_camera_position().x).insert(0, "cam X: ").c_str(), 0 + win_width-render_witdh + ui_padding, 0 + win_height-render_height + ui_padding, 16, WHITE);
+    DrawText(to_string(view->get_camera_position().y).insert(0, "cam Y: ").c_str(), 0 + win_width-render_witdh + ui_padding, 16 + win_height-render_height + ui_padding, 16, WHITE);
+    DrawText(to_string(view->get_camera_position().z).insert(0, "cam Z: ").c_str(), 0 + win_width-render_witdh + ui_padding, 32 + win_height-render_height + ui_padding, 16, WHITE);
 
-    DrawText(std::to_string(time_elapsed.count()/1000).insert(0, "Time to render: ").append("s").c_str(), 0 + win_width-render_witdh, win_height-render_height + render_height - 24, 24, WHITE);
+    DrawText(to_string(time_elapsed.count()/1000).insert(0, "Time to render: ").append("s").c_str(), 0 + win_width-render_witdh, win_height-render_height + render_height - 24, 24, WHITE);
 
-    GuiLabel((Rectangle){0 + ui_padding, 0, 32, 16}, std::to_string(fps).insert(0, "fps: ").c_str());
+    GuiLabel((Rectangle){0 + ui_padding, 0, 32, 16}, to_string(fps).insert(0, "fps: ").c_str());
 
     EndDrawing();
 }

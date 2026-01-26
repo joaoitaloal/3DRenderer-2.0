@@ -34,8 +34,10 @@ Color3 Scene::calculate_pixel_color(int origin_x, int origin_y, int WIDTH, int H
     Vector3R dir;
     if(!proj_obliq)
         dir = (origin - view->get_camera_position()).normalize();
-    else
+    else{
         dir = normal_transform(obliq_rot, view->get_forwards());
+        //if(origin_x == 0 && origin_y == 0) dir.print();
+    }
     
     RayR ray = {origin, dir};
 
@@ -164,15 +166,16 @@ void Scene::set_projection_pers(){
 
 // FIXME: tá errada
 void Scene::set_projection_obliq(Vector3R dir){
-    if(dir.x == 0 && dir.y == 0 && dir.z == 0) return; // TODO: tratamento de erro
+    if(dir.z <= 0 || (dir.x == 0 && dir.y == 0 && dir.z == 0)) return; // TODO: tratamento de erro
     
     Vector3R forward(0, 0, 1);
     dir = dir.normalize();
-    float f_angle = angle_from_vectors(dir, forward);
-    
-    MatrixR obliq_rot_y = get_y_rotation(-f_angle);
-    MatrixR obliq_rot_x = get_x_rotation(f_angle);
-    obliq_rot = mul_mat(obliq_rot_x, obliq_rot_y);
+
+    float dot = dir*forward;
+    if(dot != 1)
+        obliq_rot = get_rotation_around_axis(acos(dot), cross_product(dir, forward).normalize());
+    else
+        obliq_rot = MatrixR::identity_matrix();
 
     proj_obliq = true;
 }

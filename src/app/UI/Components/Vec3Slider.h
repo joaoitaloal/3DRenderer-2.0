@@ -9,7 +9,7 @@
 // Width e Height hardcoded, não são influenciados pelo parâmetro de inicialização
 class Vec3Slider : public ScrollableFrame {
     public:
-        Vec3Slider(Rectangle bounds_, string title_, function<void(Vector3R)> on_submit);
+        Vec3Slider(Rectangle bounds_, string title_, float min, float max, function<void(Vector3R)> on_submit);
 
         void render(Vector2 scrollOffset) override;
 

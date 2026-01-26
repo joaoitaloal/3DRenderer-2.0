@@ -15,6 +15,10 @@ HorizontalBar::HorizontalBar(Rectangle bounds_, UI_STATE* ui_state_)
         {bounds.x + padding + 120, bounds.y + padding, 0, 0}, "Plane", "width", "height", "depth",
         [ui_state_](Vector3R vec){ ui_state_->scene->set_dimensions(vec); }
       ),
+      proj_obliqua(
+        {bounds.x + padding + 300, bounds.y + padding, 0, 0}, "Obliqua", -1, 1,
+        [ui_state_](Vector3R vec){ ui_state_->scene->set_projection_obliq(vec); }
+      ),
       proj_pers(
         {bounds.x + 2*padding + 180, bounds.y + padding, 60, 32}, "Proj pers",
         [ui_state_]() { ui_state_->scene->set_projection_pers(); }
@@ -44,6 +48,8 @@ void HorizontalBar::render(){
     look_at_entry.render({0, 0});    
     move_to_entry.render({0, 0});
     viewplane_entry.render({0, 0});
+
+    proj_obliqua.render({0, 0});
     
     proj_pers.render({0, 0});
     proj_orto.render({0, 0});

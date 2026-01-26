@@ -19,7 +19,7 @@ class HorizontalBar : public Frame{
         // x: width; y: height; z: depth;
         Vec3Entry viewplane_entry;
 
-        //Vec3Slider proj_obliqua;
+        Vec3Slider proj_obliqua;
 
         Button proj_pers;
         Button proj_orto;
