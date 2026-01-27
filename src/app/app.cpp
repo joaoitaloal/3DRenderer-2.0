@@ -29,6 +29,7 @@ App::App(int win_width_, int win_height_)
     textures.insert({"ovni_cima", new Textura("texturas/textura_ovni_cima.png")});
     textures.insert({"ovni_base", new Textura("texturas/textura_ovni_base.png")});
     textures.insert({"sun", new Textura("texturas/sun.jpg")});
+    textures.insert({"placa_solar", new Textura("texturas/textura_placa_solar.jpg")});
 
     // Texturas a seguir são do site: https://planetpixelemporium.com
     textures.insert({"earth", new Textura("texturas/earth.jpg")});
@@ -45,9 +46,13 @@ App::App(int win_width_, int win_height_)
     scene->set_background_tex(textures.at("skybox"));
 
     // --- Estacao espacial --- //
-    // Base
     Vector3R pos_estacao = {0, 0, 0};
     Vector3R axis_estacao = {0, 1, 0};
+    ShapeGroup* estacao = new ShapeGroup(
+        pos_estacao,
+        "Estacao"
+    );
+    // Base
     scene->push_shape(new Cylinder(
         pos_estacao,
         axis_estacao,
@@ -76,15 +81,22 @@ App::App(int win_width_, int win_height_)
         "estacao_base3"
     ));
     Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
-    estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
     estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
-    scene->push_shape(estacao_cabine);
+    estacao_cabine->transform(get_translation_matrix({0, 3+5+7, 0}));
+    estacao->push_shape(estacao_cabine);
     
     // Placas solares
-    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", nullptr, true);
-    estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
-    estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
-    scene->push_shape(estacao_cabine);
+    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("placa_solar"), true);
+    placa_solar1->transform(get_scale_matrix({1, 1, 5}));
+    placa_solar1->transform(get_translation_matrix({0, 3+2.5, 5}));
+    estacao->push_shape(placa_solar1);
+    
+    Mesh3* placa_solar2 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("placa_solar"), true);
+    placa_solar2->transform(get_scale_matrix({10, 0.1, 15}));
+    placa_solar2->transform(get_translation_matrix({0, 3+2.5, -5}));
+    estacao->push_shape(placa_solar2);
+
+    scene->push_shape(estacao);
 
     // scene->push_shape(new Cylinder(
     //     pos_estacao + axis_estacao*(3+5),

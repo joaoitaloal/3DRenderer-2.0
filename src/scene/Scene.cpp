@@ -50,6 +50,8 @@ Color3 Scene::calculate_pixel_color(int origin_x, int origin_y, int WIDTH, int H
         if(!col.hit || (temp.hit && col.distance > temp.distance)){
             col = temp;
             shape = curShape;
+            if(col.tex == nullptr) // HACK
+                col.tex = shape->get_texture();
         }
     }
 

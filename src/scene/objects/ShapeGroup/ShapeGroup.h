@@ -8,9 +8,9 @@
 
 // Tá meio TODO, não terminei ela inteira e nem sei se ajudaria muito.
 
-class ShapeGroup : Shape {
+class ShapeGroup : public Shape {
     public:
-        ShapeGroup(Vector3R position, Vector3R min_, Vector3R max_, string name_);
+        ShapeGroup(Vector3R position, string name_);
         ~ShapeGroup();
 
         Collision get_collision(RayR ray) override;
@@ -21,9 +21,13 @@ class ShapeGroup : Shape {
         // Escalar todos? ou não fazer nada?
         void scale(Vector3R dims) override {};
 
+        void push_shape(Shape* shape);
+
     private:
         std::vector<Shape*> shapes;
-        BoundingBoxR bbox;
+        //BoundingBoxR bbox; // TODO
+
+        Vector3R anchor;
         
         void update_transformation_matrices();
 };

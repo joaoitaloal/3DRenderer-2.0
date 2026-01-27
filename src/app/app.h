@@ -17,6 +17,7 @@
 #include "../scene/objects/Sphere/Sphere.h"
 #include "../scene/objects/Cone/Cone.h"
 #include "../scene/objects/Circle/Ring/Ring.h"
+#include "../scene/objects/ShapeGroup/ShapeGroup.h"
 #define USER_SPEED 10.0f
 
 // TODO: Não deixar isso hardcoded assim

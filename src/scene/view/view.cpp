@@ -13,7 +13,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, C
     // Shading
     Color3 base_color;
     if (colShape->has_texture()){
-        base_color = colShape->get_texture()->sample(col.u, col.v);
+        base_color = col.tex->sample(col.u, col.v);
     }else{
         base_color = colShape->get_material().color;
     }

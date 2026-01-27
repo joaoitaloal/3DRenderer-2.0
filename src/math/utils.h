@@ -1,6 +1,7 @@
 #ifndef RENDERER_UTILS_H
 #define RENDERER_UTILS_H
 
+#include "../Textura/Textura.h"
 #include "Vector3R.h"
 #include <vector>
 
@@ -24,6 +25,8 @@ typedef struct Collision {
     Vector3R normal;
     float u = 0;
     float v = 0;
+
+    Textura* tex = nullptr; // HACK
 } Collision;
 
 // Se delta < 0 retorna delta,
