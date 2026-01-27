@@ -220,6 +220,7 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "Gargantula"
     ));
+    
 
     // Temporary manual light creation:
     //scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));

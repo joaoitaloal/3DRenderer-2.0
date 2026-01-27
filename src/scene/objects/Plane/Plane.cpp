@@ -43,7 +43,7 @@ Collision Plane::get_collision(RayR ray)
     col.point = ray.calculate_point(col.distance);
 
     if(texture != nullptr){
-        float escala = 0.01;
+        float escala = 0.001;
 
         Vector3R texPoint = col.point - point;
         
