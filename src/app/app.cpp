@@ -29,6 +29,7 @@ App::App(int win_width_, int win_height_)
     textures.insert({"ovni_cima", new Textura("texturas/textura_ovni_cima.png")});
     textures.insert({"ovni_base", new Textura("texturas/textura_ovni_base.png")});
     textures.insert({"sun", new Textura("texturas/sun.jpg")});
+    textures.insert({"tex_placa_solar", new Textura("texturas/textura_placa_solar.png")});
 
     // Texturas a seguir são do site: https://planetpixelemporium.com
     textures.insert({"earth", new Textura("texturas/earth.jpg")});
@@ -48,7 +49,7 @@ App::App(int win_width_, int win_height_)
     // Base
     Vector3R pos_estacao = {0, 0, 0};
     Vector3R axis_estacao = {0, 1, 0};
-    scene->push_shape(new Cylinder(
+    /*scene->push_shape(new Cylinder(
         pos_estacao,
         axis_estacao,
         7,
@@ -66,7 +67,7 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "estacao_base2"
     ));
-    scene->push_shape(new Cylinder(
+    ->push_shape(new Cylinder(
         pos_estacao + axis_estacao*(3+5),
         axis_estacao,
         2,
@@ -75,6 +76,7 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "estacao_base3"
     ));
+    */
     Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
     estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
     estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
