@@ -164,7 +164,6 @@ void Scene::set_projection_pers(){
     proj_obliq = false;
 }
 
-// FIXME: tá errada
 void Scene::set_projection_obliq(Vector3R dir){
     if(dir.z <= 0 || (dir.x == 0 && dir.y == 0 && dir.z == 0)) return; // TODO: tratamento de erro
     

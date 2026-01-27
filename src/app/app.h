@@ -103,6 +103,8 @@ class App{
         // Função chamada todo frame
         void process();
 
+        void create_estacao(Vector3R pos, Vector3R axis);
+
         // Temp, só pro cenário funcionar
         Circle* gargantua_ring; // plano do buraco negro
         Circle* gargantua_ring2; // plano do buraco negro

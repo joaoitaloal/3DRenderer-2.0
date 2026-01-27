@@ -13,8 +13,6 @@ App::App(int win_width_, int win_height_)
 {
     win_width = win_width_;
     win_height = win_height_;
-
-    
     
     // Rendered image dimensions
     render_witdh = RENDERER_WIN_WIDTH; render_height = RENDERER_WIN_HEIGHT;
@@ -41,76 +39,13 @@ App::App(int win_width_, int win_height_)
     //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
     //load_new_mesh("models/ovni_base.obj", {0.75, 0.75, 0.75}, "ovni", textures.at("ovni_base"), true);
     //load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni", textures.at("ovni_cima"), true);
-    //load_new_mesh("models/chama.obj", {0.75, 0.75, 0.75}, "chama nave", textures.at("chama"), true);
+    //load_new_mesh("models/Chama.obj", {0.75, 0.75, 0.75}, "chama nave", textures.at("chama"), true);
 
     scene->set_background_tex(textures.at("skybox"));
 
     // --- Estacao espacial --- //
     // Base
-    Vector3R pos_estacao = {0, 0, 0};
-    Vector3R axis_estacao = {0, 1, 0};
-    /*scene->push_shape(new Cylinder(
-        pos_estacao,
-        axis_estacao,
-        7,
-        3,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
-        nullptr,
-        "estacao_base1"
-    ));
-    scene->push_shape(new Cylinder(
-        pos_estacao + axis_estacao*3,
-        axis_estacao,
-        4,
-        5,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
-        nullptr,
-        "estacao_base2"
-    ));
-    ->push_shape(new Cylinder(
-        pos_estacao + axis_estacao*(3+5),
-        axis_estacao,
-        2,
-        7,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
-        nullptr,
-        "estacao_base3"
-    ));
-    */
-    Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
-    estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
-    estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
-    //scene->push_shape(estacao_cabine);
-    
-    // Placas solares
-    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("nave"), true);
-    placa_solar1->transform(get_translation_matrix({0, 3+2.5, -10}));
-    placa_solar1->transform(get_scale_matrix({5, 0.1, 20}));
-    scene->push_shape(placa_solar1);
-    
-    Mesh3* placa_solar2 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("nave"), true);
-    placa_solar2->transform(get_translation_matrix({0, 3+2.5, 10}));
-    placa_solar2->transform(get_scale_matrix({5, 0.1, 20}));
-    scene->push_shape(placa_solar2);
-
-    // scene->push_shape(new Cylinder(
-    //     pos_estacao + axis_estacao*(3+5),
-    //     axis_estacao,
-    //     2,
-    //     7,
-    //     debug_temp_material({0.25, 0.25, 0.25}), // TODO
-    //     nullptr,
-    //     "estacao_base3"
-    // ));
-    // scene->push_shape(new Cylinder(
-    //     pos_estacao + axis_estacao*(3+5),
-    //     axis_estacao,
-    //     2,
-    //     7,
-    //     debug_temp_material({0.25, 0.25, 0.25}), // TODO
-    //     nullptr,
-    //     "estacao_base3"
-    // ));
+    create_estacao({0, 0, 0}, {1, 1, 0});
     
     Vector3R axis_foguete(0.5, 0.7, 0.5);
     axis_foguete = axis_foguete.normalize();
@@ -356,4 +291,65 @@ void App::process(){
     GuiLabel((Rectangle){0 + ui_padding, 0, 32, 16}, to_string(fps).insert(0, "fps: ").c_str());
 
     EndDrawing();
+}
+
+void App::create_estacao(Vector3R pos, Vector3R axis){
+    axis = axis.normalize();
+    scene->push_shape(new Cylinder(
+        pos,
+        axis,
+        7,
+        3,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base1"
+    ));
+    scene->push_shape(new Cylinder(
+        pos + axis*3,
+        axis,
+        4,
+        5,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base2"
+    ));
+    scene->push_shape(new Cylinder(
+        pos + axis*(3+5),
+        axis,
+        2,
+        7,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base3"
+    ));
+    Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
+    estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
+    estacao_cabine->transform(get_translation_matrix(axis*(3+5+7)));
+    scene->push_shape(estacao_cabine);
+
+    Vector3R up(0, 1, 0);
+    float dot = axis*up;
+    if(dot != 1)
+        estacao_cabine->transform(get_rotation_around_axis(acos(dot), cross_product(up, axis).normalize()));
+    
+    // Placas solares
+    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar1->transform(get_translation_matrix({0, 3+2.5, -10}));
+    placa_solar1->transform(get_scale_matrix({5, 0.1, 20}));
+    scene->push_shape(placa_solar1);
+    
+    Mesh3* placa_solar2 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar2->transform(get_translation_matrix({0, 3+2.5, 10}));
+    placa_solar2->transform(get_scale_matrix({5, 0.1, 20}));
+    scene->push_shape(placa_solar2);
+    
+    Mesh3* placa_solar3 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar3->transform(get_translation_matrix({-10, 3+2.5, 0}));
+    placa_solar3->transform(get_scale_matrix({10, 0.1, 2.5}));
+    scene->push_shape(placa_solar3);
+    
+    Mesh3* placa_solar4 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar4->transform(get_translation_matrix({10, 3+2.5, 0}));
+    placa_solar4->transform(get_scale_matrix({10, 0.1, 2.5}));
+    scene->push_shape(placa_solar4);
 }
