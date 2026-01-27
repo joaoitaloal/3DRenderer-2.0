@@ -25,7 +25,7 @@ class Circle : public Plane {
         // HACK
         void set_normal(Vector3R normal_);
 
-    private:
+    protected:
         float radius;
 
         void update_transformation_matrices() override;

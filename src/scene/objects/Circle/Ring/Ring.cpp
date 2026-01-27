@@ -11,6 +11,8 @@ Collision Ring::get_collision(RayR ray)
     Collision col = Circle::get_collision(ray);
     
     if(col.hit && (col.point - point).length() < radius2 - EPSILON) col.hit = false;
+    col.u = (col.point - point).length()/50;
+    col.v = (col.point - point).length()/50;
 
     return col;
 }

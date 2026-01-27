@@ -9,6 +9,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, C
 
     Vector3R v = (camera.get_position() - col.point).normalize();
 
+    if(colShape->get_name() == "sun" || colShape->get_name() == "Gargantula_Ring") return colShape->get_texture()->sample(col.u, col.v);
     // Shading
     Color3 base_color;
     if (colShape->has_texture()){
@@ -18,7 +19,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, C
     }
     Color3 color = base_color*ambient_light;
     //Color3 color = {0, 0, 0}; // ver como fica melhor dps
-    color = color + colShape->get_material().ka*ambient_light;
+    color = mix(color, colShape->get_material().ka*ambient_light/5, 0.5);
 
     for(Light* light : *lights){
         Vector3R l = light->get_light_vector(col.point);
@@ -31,6 +32,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, C
         RayR shadowRay = {col.point, l};
 
         for(Shape* shadowShape : *shapes){
+            if(shadowShape->get_name() == "sun") continue;
             Collision shadowCol = shadowShape->get_collision(shadowRay);
             if(shadowCol.hit && shadowCol.distance < light->get_distance(col.point)){
                 shadow = true;
@@ -46,7 +48,7 @@ Color3 View::raycast(RayR ray, vector<Shape*>* shapes, vector<Light*>* lights, C
             base_color *
             light->get_intensity() * colShape->get_material().kd * dotnl
         );
-        color = color + colShape->get_material().color*dotnl; // tirar isso se não tiver legal
+        //color = color + colShape->get_material().color*dotnl; // tirar isso se não tiver legal
 
         float dotvr = v * r;
         if(dotvr < 0) continue;

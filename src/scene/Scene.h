@@ -34,8 +34,6 @@ class Scene{
         void set_ambient_light(float amount);
 
         void set_background_tex(Textura* tex);
-        // A scene cuida de dar free na skybox
-        void set_skybox(Sphere* skybox);
 
     private:
         // Ponteiro pq quero manter uma referencia disso no app, pra controlar input

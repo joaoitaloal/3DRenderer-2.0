@@ -20,7 +20,7 @@ DirectionalLight *DirectionalLight::transform_return(const MatrixR &m){
 void DirectionalLight::transform(const MatrixR &m){}
 
 float DirectionalLight::get_distance(Vector3R pos){
-    return INFINITY;
+    return 0;
 }
 
 void DirectionalLight::update_transformation_matrices(){}

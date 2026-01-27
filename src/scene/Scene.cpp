@@ -8,7 +8,7 @@ Scene::Scene(View* view_)
     proj_obliq = false;
     zoom_amount = 1;
     bg_tex = nullptr;
-
+    
     shapes = new vector<Shape*>();
     lights = new vector<Light*>();
 }
