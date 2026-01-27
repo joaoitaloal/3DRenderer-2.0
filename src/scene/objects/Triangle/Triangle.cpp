@@ -9,6 +9,8 @@ Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_, Textura* tex, bool 
     v3 = v3_;
     this->texture =  tex;
 
+    b_culled = culled;
+
     update_transformation_matrices();
 }
 
@@ -50,7 +52,7 @@ void Triangle::transform(const MatrixR& m){
     v2 = vector_transform(m, v2);
     v3 = vector_transform(m, v3);
 
-    plane = Plane(v1, v2, v3, texture, "Triangle Plane", true);
+    plane = Plane(v1, v2, v3, texture, "Triangle Plane", b_culled);
 
     update_transformation_matrices();
 }

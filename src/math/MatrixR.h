@@ -60,4 +60,10 @@ MatrixR get_z_rotation(float angle);
 
 MatrixR get_rotation_around_axis(float angle, Vector3R axis);
 
+MatrixR get_shear_xy(float intensity_x, float intensity_y);
+MatrixR get_shear_xz(float intensity_x, float intensity_z);
+MatrixR get_shear_yz(float intensity_y, float intensity_z);
+
+MatrixR get_householder(Vector3R vec);
+
 #endif // RENDERER_MATRIX_H

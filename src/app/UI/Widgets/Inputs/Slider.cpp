@@ -1,13 +1,13 @@
 #include "Slider.h"
 
-Slider::Slider(Rectangle bounds_, string text_left_, string text_right_, float min_, float max_, float init, function<void(float num)> callback_)
+Slider::Slider(Rectangle bounds_, string text_left_, string text_right_, float min_, float max_, float init_, function<void(float num)> callback_)
     : ScrollableFrame(bounds_)
 {
     callback = callback_;
 
     max = max_;
     min = min_;
-    value = init;
+    value = init = init_;
     last_value = value;
 
     text_left = text_left_;
@@ -29,4 +29,9 @@ void Slider::render(Vector2 scrollOffset){
         last_value = value;
         callback(value);
     }
+}
+
+void Slider::reset(){
+    value = last_value = init;
+    callback(value);
 }

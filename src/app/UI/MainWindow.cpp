@@ -9,8 +9,13 @@ MainWindow::MainWindow(int win_width, int win_height, int render_width, int rend
 {
     ui_state = ui_state_;
     padding = 12;
+    
+    // Window configuration
+    SetConfigFlags(FLAG_VSYNC_HINT);
 
     InitWindow(win_width, win_height, "Raytracer!!!!!!!!!!!");
+    
+    //SetTargetFPS(60);
 
     // Setting UI styles, dar uma olhada no que mais da pra fz com essa função
     // --- Estilo global da UI --- //

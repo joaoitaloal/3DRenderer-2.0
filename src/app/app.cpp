@@ -13,6 +13,8 @@ App::App(int win_width_, int win_height_)
 {
     win_width = win_width_;
     win_height = win_height_;
+
+    
     
     // Rendered image dimensions
     render_witdh = RENDERER_WIN_WIDTH; render_height = RENDERER_WIN_HEIGHT;
@@ -26,9 +28,9 @@ App::App(int win_width_, int win_height_)
     
     // Malhas
     //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
-    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua, true);
-    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao, true);
+    load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube", nullptr, false);
+    //load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua, true);
+    //load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao, true);
 
     scene->set_background_tex(space_skybox);
 
@@ -91,7 +93,7 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "Foguete"
     ));
-    load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
+    //load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
 
 
 
@@ -163,7 +165,8 @@ App::App(int win_width_, int win_height_)
     scene->push_shape(close_planet);
 
     // Temporary manual light creation:
-    scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
+    //scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
+    scene->push_light(new DirectionalLight({-1, -1, 0}, {1, 1, 1}));
 
     // Window configuration
     SetTargetFPS(60);
@@ -238,12 +241,13 @@ void App::process(){
     }else if(IsKeyDown(KEY_E)){
         view->rotate(0, 0, 0.1);
     }
-    if(IsKeyDown(KEY_ENTER) && !ui_state->live_rendering){
+    if(IsKeyDown(KEY_ENTER) || ui_state->live_rendering){
         auto start = chrono::high_resolution_clock().now();
         viewport->update();
         auto end = chrono::high_resolution_clock().now();
+        UpdateTexture(viewport->get_texture(), viewport->get_pixels());
 
-        time_elapsed = end - start; 
+        time_elapsed = end - start;
     }
 
     if(moved){
@@ -266,16 +270,6 @@ void App::process(){
     BeginDrawing();
 
     ClearBackground(BLACK);
-
-    if(ui_state->live_rendering){
-        auto start = chrono::high_resolution_clock().now();
-        viewport->update();
-        auto end = chrono::high_resolution_clock().now();
-        
-        time_elapsed = end - start; 
-    } 
-
-    UpdateTexture(viewport->get_texture(), viewport->get_pixels());
 
     DrawTexture(viewport->get_texture(), win_width-render_witdh, win_height-render_height, WHITE);
 

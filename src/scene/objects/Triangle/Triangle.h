@@ -23,6 +23,9 @@ class Triangle : public Shape {
         Vector3R v1, v2, v3;
         Plane plane;
 
+        // HACK: já existe no plano, fazer essa classe herdar ou algo assim
+        bool b_culled;
+
         void update_transformation_matrices() override;
         
         // Coisas de mesh, só vai precisar se a gente colocar texturas em mesh
