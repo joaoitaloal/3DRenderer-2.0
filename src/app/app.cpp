@@ -28,9 +28,9 @@ App::App(int win_width_, int win_height_)
     
     // Malhas
     //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
-    load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube", nullptr, false);
-    //load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua, true);
-    //load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao, true);
+    //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube", nullptr, false);
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua, true);
+    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao, true);
 
     scene->set_background_tex(space_skybox);
 
@@ -59,12 +59,10 @@ App::App(int win_width_, int win_height_)
     // Gargantula:
     // esfera preta
     // plano que gira com textura pra fz a iluminação em volta
-
-    // Plano de fundo: estrelas, ver como fazer um skybox certinho
     
     Vector3R axis_foguete(0.5, 0.7, 0.5);
     axis_foguete = axis_foguete.normalize();
-    Vector3R pos_foguete(-10, 5, 10);
+    Vector3R pos_foguete(10, 5, 10);
     // Foguete
     scene->push_shape(new Cylinder(
         pos_foguete,
@@ -91,41 +89,42 @@ App::App(int win_width_, int win_height_)
         4,
         debug_temp_material({0, 0, 0.25}),
         nullptr,
-        "Foguete"
+        "Motor"
     ));
     //load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
 
 
-
-    // Esfera
+    // Planetas
     scene->push_shape(new Sphere(
-        {0, 15, 0},
-        3,
-        debug_temp_material({1, 1, 0}),
+        {200, 150, 300},
+        30,
+        debug_temp_material({0, 0, 0}),
         lua,
-        "Sphere"
+        "Planeta01"
+    ));    
+    scene->push_shape(new Sphere(
+        {200, 50, 100},
+        15,
+        debug_temp_material({0, 0, 0}),
+        lua,
+        "Planeta02"
     ));
-    // Cone
-    /*scene->push_shape(new Cone(
-        {5, 5, 0},
-        axis_foguete,
-        3,
-        4,
-        debug_temp_material({0, 0, 0.25}),
-        nullptr,
-        "Cone"
-    ));*/
-    // Plano
-    /*scene->push_shape(new Plane(
-        {0, 1, 0},
-        {0, -10, 0},
-        debug_temp_material({0, 0.25, 0}),
-        chao,
-        "Plane",
-        true
-    ));*/
+    scene->push_shape(new Sphere(
+        {0, 300, 0},
+        20,
+        debug_temp_material({0, 0, 0}),
+        lua,
+        "Planeta03"
+    ));
+    scene->push_shape(new Sphere(
+        {60, 60, 60},
+        5,
+        debug_temp_material({0, 0, 0}),
+        lua,
+        "Planeta04"
+    ));
 
-    
+    // Gargantua
     gargantua_ring = new Circle(
         {25, 250, 250},
         {0, 0, 1},
@@ -153,6 +152,8 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "Gargantula"
     ));
+
+    // Planeta próximo
     close_planet = new Circle(
         {0, 0, 0},
         {0, 1, 0},

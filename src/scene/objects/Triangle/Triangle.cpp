@@ -38,6 +38,7 @@ Triangle::Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_, Textura* tex, bool 
     return col;
 }*/
 
+// TODO: fix reflection
 Triangle* Triangle::transform_return(const MatrixR& m){
     return new Triangle(
         vector_transform(m, v1),
@@ -52,7 +53,8 @@ void Triangle::transform(const MatrixR& m){
     v2 = vector_transform(m, v2);
     v3 = vector_transform(m, v3);
 
-    plane = Plane(v1, v2, v3, texture, "Triangle Plane", b_culled);
+    plane = Plane(normal_transform((MatrixR &)m, plane.get_normal()), v1, material, texture, "Triangle Plane", b_culled);
+    //plane = Plane(v1, v2, v3, texture, "Triangle Plane", b_culled);
 
     update_transformation_matrices();
 }
