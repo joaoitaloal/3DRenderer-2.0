@@ -25,6 +25,26 @@ VerticalBar::VerticalBar(Rectangle bounds_, UI_STATE* ui_state_)
             if(ui_state->picked != nullptr)
                 ui_state->picked->transform(get_rotation_around_axis(angle, vec.normalize()));
         }
+      ),
+      shear_entry(
+        {bounds.x + bounds.width/3 + 50, bounds.y + padding + 200, 0, 0}, "Shear",
+        [this](Vector2 xy, Vector2 xz, Vector2 yz){
+            if(ui_state->picked != nullptr){
+                MatrixR shear = get_shear_xy(xy.x, xy.y);
+                shear = mul_mat(get_shear_xz(xz.x, xz.y), shear);
+                shear = mul_mat(get_shear_yz(yz.x, yz.y), shear);
+
+                ui_state->picked->transform(shear);
+            }
+        }
+      ),
+      ref_entry(
+        {bounds.x + bounds.width/3 - 50, bounds.y + padding + 300, 0, 0}, "Reflection",
+        [this](Vector3R vec){
+            if(ui_state->picked != nullptr){
+                ui_state->picked->transform(get_householder(vec));
+            }
+        }
       )
 {}
 
@@ -46,5 +66,7 @@ void VerticalBar::render(){
 
     transl_entry.render({0, 0});
     scale_entry.render({0, 0});
-    rot_entry.render({0, 0});
+    //rot_entry.render({0, 0});
+    shear_entry.render({0, 0});
+    ref_entry.render({0, 0});
 }

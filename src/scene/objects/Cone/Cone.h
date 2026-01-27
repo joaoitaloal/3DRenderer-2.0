@@ -4,6 +4,7 @@
 #include "../Shape.h"
 
 #include "../Circle/Circle.h"
+#include "../../../math/BoundingBox/BoundingBoxR.h"
 
 class Cone : public Shape{
     public:
@@ -21,7 +22,6 @@ class Cone : public Shape{
     private:
         Vector3R base_center;
         Vector3R axis_dir;
-        Vector3R vertice;
 
         Textura* texture;
 
@@ -32,6 +32,8 @@ class Cone : public Shape{
 
         float radius;
         float height;
+
+        Vector3R vertice;
 
         Collision get_surface_collision(RayR ray);
 

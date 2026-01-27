@@ -13,6 +13,8 @@ App::App(int win_width_, int win_height_)
 {
     win_width = win_width_;
     win_height = win_height_;
+
+    
     
     // Rendered image dimensions
     render_witdh = RENDERER_WIN_WIDTH; render_height = RENDERER_WIN_HEIGHT;
@@ -62,12 +64,10 @@ App::App(int win_width_, int win_height_)
     // Gargantula:
     // esfera preta
     // plano que gira com textura pra fz a iluminação em volta
-
-    // Plano de fundo: estrelas, ver como fazer um skybox certinho
     
     Vector3R axis_foguete(0.5, 0.7, 0.5);
     axis_foguete = axis_foguete.normalize();
-    Vector3R pos_foguete(-10, 5, 10);
+    Vector3R pos_foguete(10, 5, 10);
     // Foguete
     scene->push_shape(new Cylinder(
         pos_foguete,
@@ -94,41 +94,42 @@ App::App(int win_width_, int win_height_)
         4,
         debug_temp_material({0, 0, 0.25}),
         nullptr,
-        "Foguete"
+        "Motor"
     ));
     //load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
 
 
-
-    // Esfera
+    // Planetas
     scene->push_shape(new Sphere(
-        {0, 15, 0},
-        3,
-        debug_temp_material({1, 1, 0}),
+        {200, 150, 300},
+        30,
+        debug_temp_material({0, 0, 0}),
         lua,
-        "Sphere"
+        "Planeta01"
+    ));    
+    scene->push_shape(new Sphere(
+        {200, 50, 100},
+        15,
+        debug_temp_material({0, 0, 0}),
+        lua,
+        "Planeta02"
     ));
-    // Cone
-    /*scene->push_shape(new Cone(
-        {5, 5, 0},
-        axis_foguete,
-        3,
-        4,
-        debug_temp_material({0, 0, 0.25}),
-        nullptr,
-        "Cone"
-    ));*/
-    // Plano
-    /*scene->push_shape(new Plane(
-        {0, 1, 0},
-        {0, -10, 0},
-        debug_temp_material({0, 0.25, 0}),
-        chao,
-        "Plane",
-        true
-    ));*/
+    scene->push_shape(new Sphere(
+        {0, 300, 0},
+        20,
+        debug_temp_material({0, 0, 0}),
+        lua,
+        "Planeta03"
+    ));
+    scene->push_shape(new Sphere(
+        {60, 60, 60},
+        5,
+        debug_temp_material({0, 0, 0}),
+        lua,
+        "Planeta04"
+    ));
 
-    
+    // Gargantua
     gargantua_ring = new Circle(
         {25, 250, 250},
         {0, 0, 1},
@@ -156,6 +157,8 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "Gargantula"
     ));
+
+    // Planeta próximo
     close_planet = new Circle(
         {0, 0, 0},
         {0, 1, 0},
@@ -168,7 +171,8 @@ App::App(int win_width_, int win_height_)
     scene->push_shape(close_planet);
 
     // Temporary manual light creation:
-    scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
+    //scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
+    scene->push_light(new DirectionalLight({-1, -1, 0}, {1, 1, 1}));
 
     // Window configuration
     SetTargetFPS(60);
@@ -243,12 +247,13 @@ void App::process(){
     }else if(IsKeyDown(KEY_E)){
         view->rotate(0, 0, 0.1);
     }
-    if(IsKeyDown(KEY_ENTER) && !ui_state->live_rendering){
+    if(IsKeyDown(KEY_ENTER) || ui_state->live_rendering){
         auto start = chrono::high_resolution_clock().now();
         viewport->update();
         auto end = chrono::high_resolution_clock().now();
+        UpdateTexture(viewport->get_texture(), viewport->get_pixels());
 
-        time_elapsed = end - start; 
+        time_elapsed = end - start;
     }
 
     if(moved){
@@ -271,16 +276,6 @@ void App::process(){
     BeginDrawing();
 
     ClearBackground(BLACK);
-
-    if(ui_state->live_rendering){
-        auto start = chrono::high_resolution_clock().now();
-        viewport->update();
-        auto end = chrono::high_resolution_clock().now();
-        
-        time_elapsed = end - start; 
-    } 
-
-    UpdateTexture(viewport->get_texture(), viewport->get_pixels());
 
     DrawTexture(viewport->get_texture(), win_width-render_witdh, win_height-render_height, WHITE);
 

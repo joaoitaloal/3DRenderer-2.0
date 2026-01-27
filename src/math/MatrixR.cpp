@@ -232,3 +232,40 @@ MatrixR get_rotation_around_axis(float angle, Vector3R axis){
         0, 0, 0, 1
     };
 }
+
+MatrixR get_shear_xy(float intensity_x, float intensity_y){
+    return {
+        1, tan(intensity_x), 0, 0,
+        tan(intensity_y), 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    };
+}
+
+MatrixR get_shear_xz(float intensity_x, float intensity_z){
+    return {
+        1, 0, tan(intensity_x), 0,
+        0, 1, 0, 0,
+        tan(intensity_z), 0, 1, 0,
+        0, 0, 0, 1
+    };
+}
+
+MatrixR get_shear_yz(float intensity_y, float intensity_z){
+    return {
+        1, 0, 0, 0,
+        0, 1, tan(intensity_y), 0,
+        0, tan(intensity_z), 1, 0,
+        0, 0, 0, 1
+    };
+}
+
+MatrixR get_householder(Vector3R vec)
+{
+    return {
+        1-2*vec.x*vec.x, -2*vec.y*vec.x, -2*vec.z*vec.x, 0,
+        -2*vec.x*vec.y, 1-2*vec.y*vec.y, -2*vec.z*vec.y, 0,
+        -2*vec.x*vec.z, -2*vec.y*vec.z, 1-2*vec.z*vec.z, 0,
+        0, 0, 0, 1
+    };
+}

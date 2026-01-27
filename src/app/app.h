@@ -9,6 +9,7 @@
 
 // Temporario, tirar daqui depois
 #include "../scene/objects/Lights/Point/PointLight.h"
+#include "../scene/objects/Lights/Directional/DirectionalLight.h"
 // Esse não sei se é temporario, mas deve ir pra outro lugar em alguma refatoração
 #include "../scene/objects/Mesh3/Mesh3.h"
 #include "../scene/objects/Cylinder/Cylinder.h"

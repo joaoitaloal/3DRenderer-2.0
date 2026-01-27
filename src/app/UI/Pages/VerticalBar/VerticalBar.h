@@ -3,6 +3,8 @@
 
 #include "../../Components/Vec3Entry/Vec3Entry.h"
 #include "../../Components/RotationEntry/RotationEntry.h"
+#include "../../Components/ShearEntry/ShearEntry.h"
+#include "../../Components/ReflectionEntry/ReflectionEntry.h"
 #include "../../UI_STATE.h"
 
 class VerticalBar : public Frame{
@@ -22,11 +24,9 @@ class VerticalBar : public Frame{
 
         RotationEntry rot_entry;
 
-        // Tenho que fazer um input diferente pra rotação,
-        // já que ela vai receber um eixo e um angulo
+        ShearEntry shear_entry;
         
-        // Vai faltar cisalhamento(Shear),
-        // reflexão em volta de um plano
+        ReflectionEntry ref_entry;
         
 };
 

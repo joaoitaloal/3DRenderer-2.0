@@ -5,21 +5,19 @@ Cone::Cone(Vector3R base_center_, Vector3R axis_dir_, float radius_, float heigh
 Q(matrix_by_vector(vector_transpose(axis_dir_), axis_dir_)),
 M(subtract_matrix(MatrixR::identity_matrix(),Q)),
 base(base_center_, -axis_dir_, radius_, material_, "Base", true),
-texture(tex)
+texture(tex),
+base_center(base_center_),
+axis_dir(axis_dir_),
+radius(radius_),
+height(height_),
+vertice(base_center + (axis_dir * height))
 {
-    base_center = base_center_;
-    axis_dir = axis_dir_;
-    radius = radius_;
-    height = height_;
     material = material_;
-
-    vertice = base_center + (axis_dir * height);
 
     update_transformation_matrices();
 }
 
 Collision Cone::get_collision(RayR ray)  {
-    return get_surface_collision(ray);
     return get_first_collision({base.get_collision(ray), get_surface_collision(ray)});
 }
 
@@ -54,32 +52,25 @@ Collision Cone::get_surface_collision(RayR ray) {
     Vector3R point1 = ray.calculate_point(x1);
     Vector3R point2 = ray.calculate_point(x2);
 
-    float height1 = (vertice - point1)*axis_dir;
-    float height2 = (vertice - point2)*axis_dir;
+    Vector3R vecH1 = vector_transform(Q, point1 - base_center);
+    Vector3R vecH2 = vector_transform(Q, point2 - base_center);
+
     bool hit1 = false;
     bool hit2 = false;
 
-    if(height1 >= 0 && height1 <= height){
+    if(vecH1*axis_dir > 0 && vecH1.length() <= height){
         col.point = point1;
         col.distance = x1;
         hit1 = true;
     }
-    if(height2 >= 0 && height2 <= height){
-        if(x1 > x2){
+    if(vecH2*axis_dir > 0 && vecH2.length() <= height){
+        if((!hit1 && x2 > 0) || (x1 > x2 && x2 > 0)){
             col.point = point2;
             col.distance = x2;
         }
         hit2 = true;
     }
-    if(!hit1 && !hit2) return col;
-    
-    //if(col.distance < 0) return col;
-
-    // col.point = ray.calculate_point(col.distance);
-
-    // testar a altura do cone
-    //float altura = (col.point - base_center) * axis_dir;
-    //if (altura < 0 || altura > height) return col;
+    if((!hit1 && !hit2) || col.distance < 0) return col;
     
     Vector3R u = (vertice - col.point).normalize();
     MatrixR ut = matrix_by_vector(vector_transpose(u), u);
@@ -135,6 +126,7 @@ void Cone::update_radius(float radius_){
 
 void Cone::update_height(float height_){
     height = height_;
+    vertice = base_center + (axis_dir * height);
 }
 
 void Cone::scale(Vector3R dims){
