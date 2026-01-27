@@ -22,19 +22,13 @@
 
 /* TODO: Especificações do trabalho(Separado por dificuldade):
     Díficil(ou trabalhoso):
-    - Fonte spot e direcional, a ambiente tá hardcoded, tem que ajeitar também (+)
     - Determinar o cenário
+    - Fonte spot e direcional, a ambiente tá hardcoded, tem que ajeitar também (+)
     - perspectiva com pontos de fuga? não lembro o que é isso (+)
 
     Médio:
     - Transformações, falta cisalhamento e espelho em relação a um plano[Householder] (+)
     - Projeção obliqua (+)
-    
-    Fácil(Alguns tão quase prontos):
-    - Fazer input da rotação na UI
-
-    Não vai rolar:
-    - Mudar o sistema de camera pra usar aquele modelo que ele usa, centrado na origem e com as transformações world-to-camera e etc.
 */
 
 // TODO: mover os todos pros arquivos relevantes :P
@@ -78,7 +72,7 @@ class App{
         void start();
 
         // Acho que temporário, deve ir pra outra classe pelo menos
-        void load_new_mesh(string filename, Color3 color, string name, Textura* tex);
+        void load_new_mesh(string filename, Color3 color, string name, Textura* tex, bool culled);
 
     private:
         int win_width, win_height;
@@ -106,7 +100,8 @@ class App{
 
         // Temp, só pro cenário funcionar
         //Circle* fire; // plano do fogo do foguete
-        Circle* gargantula_ring; // plano do buraco negro
+        Circle* gargantua_ring; // plano do buraco negro
+        Circle* gargantua_ring2; // plano do buraco negro
         Circle* close_planet;
         Sphere* skybox;
 };

@@ -18,9 +18,9 @@ Mesh3::~Mesh3(){
     }
 }
 
-Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_, string name_, Textura* tex)
+Mesh3* Mesh3::create_from_obj_file(string filename, Material3 material_, string name_, Textura* tex, bool culled = true)
 {
-    Mesh3* mesh = ParseOBJFile(filename, material_, name_, tex);
+    Mesh3* mesh = ParseOBJFile(filename, material_, name_, tex, culled);
     mesh->material = material_;
     mesh->texture = tex;
 

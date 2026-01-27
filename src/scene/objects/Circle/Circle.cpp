@@ -69,6 +69,10 @@ void Circle::rotate_to(Vector3R point_){
     normal = (point_ - point).normalize();
 }
 
+void Circle::set_normal(Vector3R normal_){
+    normal = normal_;
+}
+
 void Circle::update_transformation_matrices(){
     // Situação parecida com a do triangulo, não existe sem um objeto pai, talvez mudar a classe disso
 }

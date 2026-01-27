@@ -23,6 +23,9 @@ class Circle : public Plane {
         // Temp, fazer uma classe nova pra isso sla
         void rotate_to(Vector3R point_);
 
+        // HACK
+        void set_normal(Vector3R normal_);
+
     private:
         float radius;
 

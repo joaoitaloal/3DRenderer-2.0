@@ -19,6 +19,7 @@ texture(tex)
 }
 
 Collision Cone::get_collision(RayR ray)  {
+    return get_surface_collision(ray);
     return get_first_collision({base.get_collision(ray), get_surface_collision(ray)});
 }
 
@@ -26,7 +27,7 @@ Collision Cone::get_surface_collision(RayR ray) {
     Collision col;
     col.hit = false;
 
-    Vector3R w = ray.position - base_center;    
+    Vector3R w = ray.position - base_center;
     Vector3R Mdr = vector_transform(M, ray.direction);
     Vector3R Qdr = vector_transform(Q, ray.direction);
     Vector3R Mw = vector_transform(M, w);
@@ -42,18 +43,47 @@ Collision Cone::get_surface_collision(RayR ray) {
     Vector3R qw_minus_hdc = (Qw - hdc);
     float c = h2* (Mw * Mw) - r2*( qw_minus_hdc * qw_minus_hdc);
 
-    col.distance = modified_quadratic(a,b,c);
-    if(col.distance < 0) return col;
+    float delta = powf(b, 2) - (4*a*c);
 
-    col.point = ray.calculate_point(col.distance);
+    if(delta < 0) return col;
+    delta = sqrtf(delta);
+
+    float x1 = (-b + delta)/(2*a);
+    float x2 = (-b - delta)/(2*a);
+
+    Vector3R point1 = ray.calculate_point(x1);
+    Vector3R point2 = ray.calculate_point(x2);
+
+    float height1 = (vertice - point1)*axis_dir;
+    float height2 = (vertice - point2)*axis_dir;
+    bool hit1 = false;
+    bool hit2 = false;
+
+    if(height1 >= 0 && height1 <= height){
+        col.point = point1;
+        col.distance = x1;
+        hit1 = true;
+    }
+    if(height2 >= 0 && height2 <= height){
+        if(x1 > x2){
+            col.point = point2;
+            col.distance = x2;
+        }
+        hit2 = true;
+    }
+    if(!hit1 && !hit2) return col;
+    
+    //if(col.distance < 0) return col;
+
+    // col.point = ray.calculate_point(col.distance);
 
     // testar a altura do cone
-    float altura = (col.point - base_center) * axis_dir;
-    if (altura < 0 || altura > height) return col;
+    //float altura = (col.point - base_center) * axis_dir;
+    //if (altura < 0 || altura > height) return col;
     
     Vector3R u = (vertice - col.point).normalize();
     MatrixR ut = matrix_by_vector(vector_transpose(u), u);
-    MatrixR Mu = subtract_matrix(MatrixR::identity_matrix(),ut);
+    MatrixR Mu = subtract_matrix(MatrixR::identity_matrix(), ut);
 
     col.normal = vector_transform(Mu, axis_dir).normalize();
     col.hit = true;

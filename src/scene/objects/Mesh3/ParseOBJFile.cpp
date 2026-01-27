@@ -14,10 +14,10 @@ struct FaceTriIndexes{
 
 FaceTriIndexes ParseFace(vector<string> vertices_info);
 
-Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_, Textura* tex){
+Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_, Textura* tex, bool culled = true){
     ifstream file(fileName);
 
-    if(!file) throw 1;
+    if(!file) throw runtime_error("File does not exist");
 
     vector<Triangle*> faces;
 
@@ -82,7 +82,8 @@ Mesh3* ParseOBJFile(string fileName, Material3 material_, string name_, Textura*
                 vertices[faceIndexes.vertices[0]],
                 vertices[faceIndexes.vertices[1]],
                 vertices[faceIndexes.vertices[2]],
-                nullptr
+                nullptr,
+                culled
             );
 
             /*if(faceIndexes.v_normals[0] != -1)
@@ -127,7 +128,7 @@ FaceTriIndexes ParseFace(vector<string> vertices_info){
         string part;
 
         getline(stream, part, '/');
-        if(part.empty()) throw 2;
+        if(part.empty()) throw runtime_error("Parte vazia");
         face.vertices[i] = stoi(part) - 1;
 
         if (getline(stream, part, '/')) {

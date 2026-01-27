@@ -27,25 +27,32 @@ App::App(int win_width_, int win_height_)
     // Malhas
     //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
     //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
-    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua);
-    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao);
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua, true);
+    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao, true);
 
     scene->set_background_tex(space_skybox);
 
-    // Foguete:
-    // Cone - ponta
-    // cilindro - fuselagem
-    // triangulos - asas(Acho que vai ter q ser uma mesh com um triangulo só cada uma)
-    // fogo - mesh
-    // cone - motor
+    // Ajeitar o cone
 
-    // Planeta:
+    // Foguete:
+    // ponta 
+    // cilindro - fuselagem - Fazer textura
+    // triangulos - asas(Acho que vai ter q ser uma mesh com um triangulo só cada uma) - Posicionar
+    // fogo - mesh
+    // cone
+
+    // Planetas:
+    // Adicionar mais
     // anel - circulo com o centro furado
     // corpo - esfera(dá pra deixar ele bem grande)
 
-    // Ovni: mesh
+    // Sol objeto:
+    // Fazer sistema pra ele não ficar na própria sombra
+    
+    // Sol skybox:
+    // Iluminação direcional
 
-    // planeta que tá bem próximo: circulo que muda de raio com distância
+    // planeta que tá bem próximo - achar textura
     
     // Gargantula:
     // esfera preta
@@ -53,17 +60,41 @@ App::App(int win_width_, int win_height_)
 
     // Plano de fundo: estrelas, ver como fazer um skybox certinho
     
-    Vector3R axis(0.5, 0.7, 0.5);
-    // Cilindro
+    Vector3R axis_foguete(0.5, 0.7, 0.5);
+    axis_foguete = axis_foguete.normalize();
+    Vector3R pos_foguete(-10, 5, 10);
+    // Foguete
     scene->push_shape(new Cylinder(
-        {-10, 5, 10},
-        axis.normalize(),
+        pos_foguete,
+        axis_foguete,
         3,
         10,
         debug_temp_material({0.25, 0, 0.25}),
         nave,
-        "Cilindro"
+        "Fuselagem"
     ));
+    scene->push_shape(new Cone(
+        (pos_foguete + axis_foguete*10),
+        axis_foguete,
+        3,
+        6,
+        debug_temp_material({0, 0, 0.25}),
+        nullptr,
+        "Ponta"
+    ));
+    scene->push_shape(new Cone(
+        (pos_foguete - axis_foguete*2),
+        axis_foguete,
+        2.5,
+        4,
+        debug_temp_material({0, 0, 0.25}),
+        nullptr,
+        "Foguete"
+    ));
+    load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
+
+
+
     // Esfera
     scene->push_shape(new Sphere(
         {0, 15, 0},
@@ -73,15 +104,15 @@ App::App(int win_width_, int win_height_)
         "Sphere"
     ));
     // Cone
-    scene->push_shape(new Cone(
+    /*scene->push_shape(new Cone(
         {5, 5, 0},
-        axis.normalize(),
+        axis_foguete,
         3,
         4,
         debug_temp_material({0, 0, 0.25}),
         nullptr,
         "Cone"
-    ));
+    ));*/
     // Plano
     /*scene->push_shape(new Plane(
         {0, 1, 0},
@@ -93,7 +124,7 @@ App::App(int win_width_, int win_height_)
     ));*/
 
     
-    gargantula_ring = new Circle(
+    gargantua_ring = new Circle(
         {25, 250, 250},
         {0, 0, 1},
         50,
@@ -102,7 +133,17 @@ App::App(int win_width_, int win_height_)
         "Gargantula_Ring",
         true
     );
-    scene->push_shape(gargantula_ring);
+    scene->push_shape(gargantua_ring);
+    gargantua_ring2 = new Circle(
+        {25, 250, 250},
+        {0, 0, 1},
+        50,
+        debug_temp_material({0, 0, 0}),
+        nave,
+        "Gargantula_Ring",
+        true
+    );
+    scene->push_shape(gargantua_ring2);
     scene->push_shape(new Sphere(
         {25, 250, 250},
         25,
@@ -147,10 +188,10 @@ void App::start()
     CloseWindow();
 }
 
-void App::load_new_mesh(string filename, Color3 color, string name, Textura* tex){
+void App::load_new_mesh(string filename, Color3 color, string name, Textura* tex, bool culled = true){
     try{
         // Material fixo temporário
-        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color), name, tex);
+        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color), name, tex, culled);
         scene->push_shape(mesh);
     }catch(const int err){
         throw err; // Só pra ficar explicito o erro
@@ -206,7 +247,9 @@ void App::process(){
     }
 
     if(moved){
-        gargantula_ring->rotate_to(view->get_camera_position());
+        gargantua_ring->rotate_to(view->get_camera_position());
+        MatrixR rot = get_rotation_around_axis(PI/2 - PI/15, {1, 0, 0});
+        gargantua_ring2->set_normal(normal_transform(rot, gargantua_ring->get_normal()));
         close_planet->update_radius(300-close_planet->get_distance(view->get_camera_position())/5);
     }
 

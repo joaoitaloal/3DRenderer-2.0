@@ -5,7 +5,7 @@
 
 class Triangle : public Shape {
     public:
-        Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_, Textura* tex);
+        Triangle(Vector3R v1_, Vector3R v2_, Vector3R v3_, Textura* tex, bool culled);
         Collision get_collision(RayR ray) override;
 
         Triangle* transform_return(const MatrixR& m) override;

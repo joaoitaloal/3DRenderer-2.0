@@ -17,7 +17,7 @@ class Mesh3 : public Shape {
         Mesh3(vector<Triangle*> faces_, BoundingBoxR bbox_, Material3 material_, Vector3R anchor_, string name_, Textura* tex);
         ~Mesh3();
 
-        static Mesh3* create_from_obj_file(string filename, Material3 material_, string name_, Textura* tex);
+        static Mesh3* create_from_obj_file(string filename, Material3 material_, string name_, Textura* tex, bool culled);
 
         Collision get_collision(RayR ray) override;
 
@@ -44,6 +44,6 @@ class Mesh3 : public Shape {
         void update_transformation_matrices() override;
 };
 
-Mesh3* ParseOBJFile(string filename, Material3 material_, string name_, Textura* tex);
+Mesh3* ParseOBJFile(string filename, Material3 material_, string name_, Textura* tex, bool culled);
 
 #endif // RENDERER_MESH3_H

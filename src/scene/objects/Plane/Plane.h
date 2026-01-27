@@ -18,14 +18,14 @@ class Plane : public Shape {
 
         Vector3R get_normal();
         
+        // FIXME
+        bool backface_culled;
+
     protected:
         Vector3R normal;
         Vector3R point; // Ponto conhecido do plano
 
         void update_transformation_matrices() override;
-
-    private:
-        bool backface_culled;
 };
 
 #endif // RENDERER_PLANE_H
