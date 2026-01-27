@@ -20,15 +20,20 @@ App::App(int win_width_, int win_height_)
     
     // Texturas
     Textura* lua =  new Textura("texturas/textura_lua.jpg");
-    Textura* chao = new Textura("texturas/textura_chao.jpg");
-    Textura* nave = new Textura("texturas/textura_nave3.jpg");
+    Textura* gargantua = new Textura("texturas/textura_gargantua.jpg");
+    Textura* nave = new Textura("texturas/textura_nave.png");
     Textura* space_skybox = new Textura("texturas/space_skybox.jpg");
+    Textura* tex_chama = new Textura("texturas/textura_chama.png");
+    Textura* tex_ovni_cima = new Textura("texturas/textura_ovni_cima.png");
+    Textura* tex_ovni_base = new Textura("texturas/textura_ovni_base.png");
     
     // Malhas
     //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
     //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
-    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni cima", lua, true);
-    load_new_mesh("models/ovni_base.obj", {0.25, 0.25, 0.25}, "ovni base", chao, true);
+    load_new_mesh("models/ovni_base.obj", {0.75, 0.75, 0.75}, "ovni", tex_ovni_base, true);
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni", tex_ovni_cima, true);
+    //load_new_mesh("models/chama.obj", {0.75, 0.75, 0.75}, "chama nave", tex_chama, true);
+    
 
     scene->set_background_tex(space_skybox);
 
@@ -91,7 +96,7 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "Foguete"
     ));
-    load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
+    //load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
 
 
 
@@ -129,7 +134,7 @@ App::App(int win_width_, int win_height_)
         {0, 0, 1},
         50,
         debug_temp_material({0, 0, 0}),
-        chao,
+        gargantua,
         "Gargantula_Ring",
         true
     );
@@ -139,7 +144,7 @@ App::App(int win_width_, int win_height_)
         {0, 0, 1},
         50,
         debug_temp_material({0, 0, 0}),
-        nave,
+        gargantua,
         "Gargantula_Ring",
         true
     );
@@ -156,7 +161,7 @@ App::App(int win_width_, int win_height_)
         {0, 1, 0},
         300,
         debug_temp_material({0, 0, 0}),
-        chao,
+        nullptr,
         "close_planet",
         true
     );
