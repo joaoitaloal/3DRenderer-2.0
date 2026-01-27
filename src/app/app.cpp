@@ -21,23 +21,32 @@ App::App(int win_width_, int win_height_)
     ui_padding = 12;
     
     // Texturas
-    Textura* lua =  new Textura("texturas/textura_lua.jpg");
+    /*Textura* lua =  new Textura("texturas/textura_lua.jpg");
     Textura* gargantua = new Textura("texturas/textura_gargantua.jpg");
     Textura* nave = new Textura("texturas/textura_nave.png");
     Textura* space_skybox = new Textura("texturas/space_skybox.jpg");
     Textura* tex_chama = new Textura("texturas/textura_chama.png");
     Textura* tex_ovni_cima = new Textura("texturas/textura_ovni_cima.png");
-    Textura* tex_ovni_base = new Textura("texturas/textura_ovni_base.png");
+    Textura* tex_ovni_base = new Textura("texturas/textura_ovni_base.png");*/
     
+    textures.insert({"lua", new Textura("texturas/textura_lua.jpg")});
+    textures.insert({"gargantua", new Textura("texturas/textura_gargantua.jpg")});
+    textures.insert({"chao", new Textura("texturas/textura_chao.jpg")});
+    textures.insert({"nave", new Textura("texturas/textura_nave.png")});
+    textures.insert({"skybox", new Textura("texturas/space_skybox.jpg")});
+    textures.insert({"earth", new Textura("texturas/earth.jpg")});
+    textures.insert({"chama", new Textura("texturas/textura_chama.png")});
+    textures.insert({"ovni_cima", new Textura("texturas/textura_ovni_cima.png")});
+    textures.insert({"ovni_base", new Textura("texturas/textura_ovni_base.png")});
+
     // Malhas
     //load_new_mesh("models/PlaneLow.obj", {0, 0.125, 0.25});
     //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
-    load_new_mesh("models/ovni_base.obj", {0.75, 0.75, 0.75}, "ovni", tex_ovni_base, true);
-    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni", tex_ovni_cima, true);
+    load_new_mesh("models/ovni_base.obj", {0.75, 0.75, 0.75}, "ovni", textures.at("ovni_base"), true);
+    load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni", textures.at("ovni_cima"), true);
     //load_new_mesh("models/chama.obj", {0.75, 0.75, 0.75}, "chama nave", tex_chama, true);
-    
 
-    scene->set_background_tex(space_skybox);
+    scene->set_background_tex(textures.at("skybox"));
 
     // Ajeitar o cone
 
@@ -74,8 +83,8 @@ App::App(int win_width_, int win_height_)
         axis_foguete,
         3,
         10,
-        debug_temp_material({0.25, 0, 0.25}),
-        nave,
+        debug_temp_material({0.25, 0, 0.25}), // TODO
+        textures.at("nave"),
         "Fuselagem"
     ));
     scene->push_shape(new Cone(
@@ -83,7 +92,7 @@ App::App(int win_width_, int win_height_)
         axis_foguete,
         3,
         6,
-        debug_temp_material({0, 0, 0.25}),
+        debug_temp_material({0, 0, 0.25}), // TODO
         nullptr,
         "Ponta"
     ));
@@ -92,7 +101,7 @@ App::App(int win_width_, int win_height_)
         axis_foguete,
         2.5,
         4,
-        debug_temp_material({0, 0, 0.25}),
+        debug_temp_material({0, 0, 0.25}), // TODO
         nullptr,
         "Motor"
     ));
@@ -101,74 +110,74 @@ App::App(int win_width_, int win_height_)
 
     // Planetas
     scene->push_shape(new Sphere(
-        {200, 150, 300},
-        30,
+        {500, 550, 300},
+        100,
         debug_temp_material({0, 0, 0}),
-        lua,
+        textures.at("lua"),
         "Planeta01"
-    ));    
+    ));   
+    scene->push_shape(new Ring(
+        {500, 550, 300},
+        {1, 1, 1},
+        200,
+        150,
+        debug_temp_material({0, 0, 0}),
+        textures.at("chao"),
+        "Anel",
+        false
+    )); 
+
     scene->push_shape(new Sphere(
         {200, 50, 100},
-        15,
+        60,
         debug_temp_material({0, 0, 0}),
-        lua,
+        textures.at("earth"),
         "Planeta02"
     ));
     scene->push_shape(new Sphere(
         {0, 300, 0},
         20,
         debug_temp_material({0, 0, 0}),
-        lua,
+        textures.at("lua"),
         "Planeta03"
     ));
     scene->push_shape(new Sphere(
         {60, 60, 60},
         5,
         debug_temp_material({0, 0, 0}),
-        lua,
+        textures.at("lua"),
         "Planeta04"
     ));
 
     // Gargantua
+    Vector3R gargantua_pos = {250, 250, 700};
     gargantua_ring = new Circle(
-        {25, 250, 250},
-        {0, 0, 1},
-        50,
+        gargantua_pos,
+        {0, 0, -1},
+        300,
         debug_temp_material({0, 0, 0}),
-        gargantua,
+        textures.at("gargantua"),
         "Gargantula_Ring",
         true
     );
     scene->push_shape(gargantua_ring);
     gargantua_ring2 = new Circle(
-        {25, 250, 250},
-        {0, 0, 1},
-        50,
+        gargantua_pos,
+        {0, 1, -1},
+        300,
         debug_temp_material({0, 0, 0}),
-        gargantua,
+        textures.at("gargantua"),
         "Gargantula_Ring",
         true
     );
     scene->push_shape(gargantua_ring2);
     scene->push_shape(new Sphere(
-        {25, 250, 250},
-        25,
+        gargantua_pos,
+        200,
         debug_temp_material({0, 0, 0}),
         nullptr,
         "Gargantula"
     ));
-
-    // Planeta próximo
-    close_planet = new Circle(
-        {0, 0, 0},
-        {0, 1, 0},
-        300,
-        debug_temp_material({0, 0, 0}),
-        nullptr,
-        "close_planet",
-        true
-    );
-    scene->push_shape(close_planet);
 
     // Temporary manual light creation:
     //scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
@@ -260,7 +269,6 @@ void App::process(){
         gargantua_ring->rotate_to(view->get_camera_position());
         MatrixR rot = get_rotation_around_axis(PI/2 - PI/15, {1, 0, 0});
         gargantua_ring2->set_normal(normal_transform(rot, gargantua_ring->get_normal()));
-        close_planet->update_radius(300-close_planet->get_distance(view->get_camera_position())/5);
     }
 
     // Pick

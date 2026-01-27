@@ -4,7 +4,7 @@ Cone::Cone(Vector3R base_center_, Vector3R axis_dir_, float radius_, float heigh
     :Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_),
 Q(matrix_by_vector(vector_transpose(axis_dir_), axis_dir_)),
 M(subtract_matrix(MatrixR::identity_matrix(),Q)),
-base(base_center_, -axis_dir_, radius_, material_, "Base", true),
+base(base_center_, -axis_dir_, radius_, material_, nullptr, "Base", true),
 texture(tex),
 base_center(base_center_),
 axis_dir(axis_dir_),
@@ -110,7 +110,7 @@ void Cone::transform(const MatrixR& m){
     base_center = vector_transform(tr, base_center);
     axis_dir = normal_transform(tr, axis_dir);
 
-    base = {base_center, -axis_dir, radius, material, "Base", true};
+    base = {base_center, -axis_dir, radius, material, nullptr, "Base", true};
     vertice = base_center + (axis_dir * height);
 
     Q = matrix_by_vector(vector_transpose(axis_dir), axis_dir);

@@ -1,14 +1,5 @@
 #include "Circle.h"
 
-Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 material_, string name_, bool culled = false)
-    :Plane(normal_, point_, material_, nullptr, name_, culled)
-{
-    radius = radius_;
-    material = material_;
-
-    update_transformation_matrices();
-}
-
 Circle::Circle(Vector3R point_, Vector3R normal_, float radius_, Material3 material_, Textura *tex, string name_, bool culled)
     :Plane(normal_, point_, material_, tex, name_, culled)
 {

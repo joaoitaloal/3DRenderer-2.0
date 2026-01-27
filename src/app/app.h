@@ -3,6 +3,7 @@
 
 #include <string>
 #include <chrono>
+#include <map>
 
 #include "UI/MainWindow.h"
 #include "../Viewport/Viewport.h"
@@ -15,7 +16,8 @@
 #include "../scene/objects/Cylinder/Cylinder.h"
 #include "../scene/objects/Sphere/Sphere.h"
 #include "../scene/objects/Cone/Cone.h"
-#define USER_SPEED 2.0f
+#include "../scene/objects/Circle/Ring/Ring.h"
+#define USER_SPEED 10.0f
 
 // TODO: Não deixar isso hardcoded assim
 #define RENDERER_WIN_WIDTH 500
@@ -96,15 +98,14 @@ class App{
 
         chrono::duration<double, milli> time_elapsed;
 
+        map<string, Textura*> textures;
+
         // Função chamada todo frame
         void process();
 
         // Temp, só pro cenário funcionar
-        //Circle* fire; // plano do fogo do foguete
         Circle* gargantua_ring; // plano do buraco negro
         Circle* gargantua_ring2; // plano do buraco negro
-        Circle* close_planet;
-        Sphere* skybox;
 };
 
 #endif // RENDERER_APP_H

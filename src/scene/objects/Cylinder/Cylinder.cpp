@@ -2,8 +2,8 @@
 
 Cylinder::Cylinder(Vector3R base_center_, Vector3R axis_dir_, float radius_, float height_, Material3 material_, Textura* tex, string name_)
     : Shape(MatrixR::identity_matrix(), MatrixR::identity_matrix(), name_),
-    base(base_center_, -axis_dir_, radius_, material_, "Base", false),
-    roof(base_center_ + axis_dir_*height_, axis_dir_, radius_, material_, "Roof", false),
+    base(base_center_, -axis_dir_, radius_, material_, nullptr, "Base", false),
+    roof(base_center_ + axis_dir_*height_, axis_dir_, radius_, material_, nullptr, "Roof", false),
     Q(matrix_by_vector(vector_transpose(axis_dir_), axis_dir_)),
     M(subtract_matrix(MatrixR::identity_matrix(), Q))
 {
@@ -42,8 +42,8 @@ void Cylinder::transform(const MatrixR& m){
 
     axis_dir = normal_transform(tr, axis_dir);
 
-    base = {base_center, -axis_dir, radius, material, "Base", false};
-    roof = {base_center + axis_dir*height, axis_dir, radius, material, "Roof", false};
+    base = {base_center, -axis_dir, radius, material, nullptr, "Base", false};
+    roof = {base_center + axis_dir*height, axis_dir, radius, material, nullptr, "Roof", false};
 
     Q = matrix_by_vector(vector_transpose(axis_dir), axis_dir);
     M = subtract_matrix(MatrixR::identity_matrix(), Q);
@@ -53,8 +53,8 @@ void Cylinder::transform(const MatrixR& m){
 
 void Cylinder::update_radius(float radius_){
     radius = radius_;
-    base = {base_center, -axis_dir, radius, material, "Base", false};
-    roof = {base_center + axis_dir*height, axis_dir, radius, material, "Roof", false};
+    base = {base_center, -axis_dir, radius, material, nullptr, "Base", false};
+    roof = {base_center + axis_dir*height, axis_dir, radius, material, nullptr, "Roof", false};
 }
 
 void Cylinder::update_height(float height_){
