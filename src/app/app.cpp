@@ -40,35 +40,70 @@ App::App(int win_width_, int win_height_)
     //load_new_mesh("models/Cube.obj", {0.25, 0, 0}, "Cube");
     //load_new_mesh("models/ovni_base.obj", {0.75, 0.75, 0.75}, "ovni", textures.at("ovni_base"), true);
     //load_new_mesh("models/ovni_cima.obj", {0.75, 0.75, 0.75}, "ovni", textures.at("ovni_cima"), true);
-    load_new_mesh("models/chama.obj", {0.75, 0.75, 0.75}, "chama nave", textures.at("chama"), true);
+    //load_new_mesh("models/chama.obj", {0.75, 0.75, 0.75}, "chama nave", textures.at("chama"), true);
 
     scene->set_background_tex(textures.at("skybox"));
 
-    // Ajeitar o cone
-
-    // Foguete:
-    // ponta 
-    // cilindro - fuselagem - Fazer textura
-    // triangulos - asas(Acho que vai ter q ser uma mesh com um triangulo só cada uma) - Posicionar
-    // fogo - mesh
-    // cone
-
-    // Planetas:
-    // Adicionar mais
-    // anel - circulo com o centro furado
-    // corpo - esfera(dá pra deixar ele bem grande)
-
-    // Sol objeto:
-    // Fazer sistema pra ele não ficar na própria sombra
+    // --- Estacao espacial --- //
+    // Base
+    Vector3R pos_estacao = {0, 0, 0};
+    Vector3R axis_estacao = {0, 1, 0};
+    scene->push_shape(new Cylinder(
+        pos_estacao,
+        axis_estacao,
+        7,
+        3,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base1"
+    ));
+    scene->push_shape(new Cylinder(
+        pos_estacao + axis_estacao*3,
+        axis_estacao,
+        4,
+        5,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base2"
+    ));
+    scene->push_shape(new Cylinder(
+        pos_estacao + axis_estacao*(3+5),
+        axis_estacao,
+        2,
+        7,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base3"
+    ));
+    Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
+    estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
+    estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
+    scene->push_shape(estacao_cabine);
     
-    // Sol skybox:
-    // Iluminação direcional
+    // Placas solares
+    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", nullptr, true);
+    estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
+    estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
+    scene->push_shape(estacao_cabine);
 
-    // planeta que tá bem próximo - achar textura
-    
-    // Gargantula:
-    // esfera preta
-    // plano que gira com textura pra fz a iluminação em volta
+    // scene->push_shape(new Cylinder(
+    //     pos_estacao + axis_estacao*(3+5),
+    //     axis_estacao,
+    //     2,
+    //     7,
+    //     debug_temp_material({0.25, 0.25, 0.25}), // TODO
+    //     nullptr,
+    //     "estacao_base3"
+    // ));
+    // scene->push_shape(new Cylinder(
+    //     pos_estacao + axis_estacao*(3+5),
+    //     axis_estacao,
+    //     2,
+    //     7,
+    //     debug_temp_material({0.25, 0.25, 0.25}), // TODO
+    //     nullptr,
+    //     "estacao_base3"
+    // ));
     
     Vector3R axis_foguete(0.5, 0.7, 0.5);
     axis_foguete = axis_foguete.normalize();
@@ -188,7 +223,7 @@ App::App(int win_width_, int win_height_)
 
     // Temporary manual light creation:
     //scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
-    //scene->push_light(new DirectionalLight({0, -1, 0}, {1, 1, 1}));
+    scene->push_light(new DirectionalLight({0, -1, 0}, {1, 1, 1}));
 
     // Window configuration
     SetTargetFPS(60);
