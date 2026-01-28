@@ -57,6 +57,7 @@ class Camera3 {
 
         // HACK: temp
         void set_up(Vector3R up_);
+        void set_forward(Vector3R forw);
         void set_zoom(float amount);
 
     protected:

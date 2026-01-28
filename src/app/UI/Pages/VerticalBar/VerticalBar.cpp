@@ -39,7 +39,7 @@ VerticalBar::VerticalBar(Rectangle bounds_, UI_STATE* ui_state_)
         }
       ),
       ref_entry(
-        {bounds.x + bounds.width/3 - 50, bounds.y + padding + 300, 0, 0}, "Reflection",
+        {bounds.x + bounds.width/3 - 35, bounds.y + padding + 390, 0, 0}, "Reflection",
         [this](Vector3R vec){
             if(ui_state->picked != nullptr){
                 ui_state->picked->transform(get_householder(vec));
@@ -66,7 +66,7 @@ void VerticalBar::render(){
 
     transl_entry.render({0, 0});
     scale_entry.render({0, 0});
-    //rot_entry.render({0, 0});
+    rot_entry.render({0, 0});
     shear_entry.render({0, 0});
     ref_entry.render({0, 0});
 }

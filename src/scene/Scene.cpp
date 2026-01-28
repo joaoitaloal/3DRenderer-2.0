@@ -147,6 +147,10 @@ void Scene::set_up(Vector3R up){
     view->set_up(up);
 }
 
+void Scene::set_forward(Vector3R forw){
+    view->set_forward(forw);
+}
+
 void Scene::set_dimensions(Vector3R dims){
     view->set_dimensions(dims);
 }

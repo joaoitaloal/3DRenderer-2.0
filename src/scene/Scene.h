@@ -24,6 +24,7 @@ class Scene{
         void look_at(Vector3R at);
         void move_to(Vector3R pos);
         void set_up(Vector3R up);
+        void set_forward(Vector3R forw);
         void set_dimensions(Vector3R dims);
         void zoom(float amount);
 

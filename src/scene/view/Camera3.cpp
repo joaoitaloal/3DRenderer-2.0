@@ -84,6 +84,27 @@ void Camera3::set_up(Vector3R up_){
     //up = 
 }
 
+void Camera3::set_forward(Vector3R forw){
+    if(forw.x == 0 && forw.y == 0 && forw.z == 0) return; // TODO: tratamento de erro correto
+
+    forwards = forw.normalize();
+
+    // rotacionar dir 90 graus e fazer y = 0
+    MatrixR rot = {
+        0, 0, 1, 0,
+        0, 1, 0, 0,
+        -1, 0, 0, 0,
+        0, 0, 0, 1
+    };
+    left = normal_transform(rot, forwards);
+    left.y = 0;
+    left = left.normalize();
+
+    up = cross_product(forwards, left).normalize();
+
+    win.update_dimensions(position, left, forwards, up);
+}
+
 void Camera3::set_zoom(float amount){
     win.set_zoom(amount, position, left, forwards, up);
 }
