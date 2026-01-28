@@ -36,18 +36,28 @@ void Camera3::look_at(float x, float y, float z){
 
     forwards = dir.normalize();
 
-    // rotacionar dir 90 graus e fazer y = 0
-    MatrixR rot = {
-        0, 0, 1, 0,
-        0, 1, 0, 0,
-        -1, 0, 0, 0,
-        0, 0, 0, 1
-    };
-    left = normal_transform(rot, forwards);
-    left.y = 0;
-    left = left.normalize();
+    if(forwards.x == 0 && forwards.z == 0){
+        if(forwards.y == -1){
+            left = {1, 0, 0};
+            up = {0, 0, 1};
+        } else{
+            left = {-1, 0, 0};
+            up = {0, 0, -1};
+        }
+    }else{
+        // rotacionar dir 90 graus e fazer y = 0
+        MatrixR rot = {
+            0, 0, 1, 0,
+            0, 1, 0, 0,
+            -1, 0, 0, 0,
+            0, 0, 0, 1
+        };
+        left = normal_transform(rot, forwards);
+        left.y = 0;
+        left = left.normalize();
 
-    up = cross_product(forwards, left).normalize();
+        up = cross_product(forwards, left).normalize();
+    }
 
     win.update_dimensions(position, left, forwards, up);
 }
@@ -82,27 +92,6 @@ void Camera3::set_dimensions(Vector3R dims){
 
 void Camera3::set_up(Vector3R up_){
     //up = 
-}
-
-void Camera3::set_forward(Vector3R forw){
-    if(forw.x == 0 && forw.y == 0 && forw.z == 0) return; // TODO: tratamento de erro correto
-
-    forwards = forw.normalize();
-
-    // rotacionar dir 90 graus e fazer y = 0
-    MatrixR rot = {
-        0, 0, 1, 0,
-        0, 1, 0, 0,
-        -1, 0, 0, 0,
-        0, 0, 0, 1
-    };
-    left = normal_transform(rot, forwards);
-    left.y = 0;
-    left = left.normalize();
-
-    up = cross_product(forwards, left).normalize();
-
-    win.update_dimensions(position, left, forwards, up);
 }
 
 void Camera3::set_zoom(float amount){

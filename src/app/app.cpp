@@ -1,8 +1,7 @@
 #include "app.h"
 
-// Temporario
-Material3 debug_temp_material(Color3 color){
-    return {color, 0.5, 0.5, 0.3, 0.3, 10};
+Material3 planet_material(Color3 color){
+    return {color, 0.5, 0.2, 0.3, 0.3, 10};
 }
 
 App::App(int win_width_, int win_height_)
@@ -13,8 +12,6 @@ App::App(int win_width_, int win_height_)
 {
     win_width = win_width_;
     win_height = win_height_;
-
-    
     
     // Rendered image dimensions
     render_witdh = RENDERER_WIN_WIDTH; render_height = RENDERER_WIN_HEIGHT;
@@ -22,13 +19,14 @@ App::App(int win_width_, int win_height_)
     
     textures.insert({"lua", new Textura("texturas/textura_lua.jpg")});
     textures.insert({"gargantua", new Textura("texturas/textura_gargantua.jpg")});
-    textures.insert({"chao", new Textura("texturas/textura_chao.jpg")});
     textures.insert({"nave", new Textura("texturas/textura_nave.png")});
     textures.insert({"skybox", new Textura("texturas/space_skybox.jpg")});
     textures.insert({"chama", new Textura("texturas/textura_chama.png")});
     textures.insert({"ovni_cima", new Textura("texturas/textura_ovni_cima.png")});
     textures.insert({"ovni_base", new Textura("texturas/textura_ovni_base.png")});
     textures.insert({"sun", new Textura("texturas/sun.jpg")});
+    textures.insert({"placa_solar", new Textura("texturas/textura_placa_solar.png")});
+    textures.insert({"estacao_cabine", new Textura("texturas/textura_cabine.png")});
 
     // Texturas a seguir são do site: https://planetpixelemporium.com
     textures.insert({"earth", new Textura("texturas/earth.jpg")});
@@ -44,153 +42,68 @@ App::App(int win_width_, int win_height_)
 
     scene->set_background_tex(textures.at("skybox"));
 
-    // --- Estacao espacial --- //
-    // Base
-    Vector3R pos_estacao = {0, 0, 0};
-    Vector3R axis_estacao = {0, 1, 0};
-    scene->push_shape(new Cylinder(
-        pos_estacao,
-        axis_estacao,
-        7,
-        3,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
-        nullptr,
-        "estacao_base1"
-    ));
-    scene->push_shape(new Cylinder(
-        pos_estacao + axis_estacao*3,
-        axis_estacao,
-        4,
-        5,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
-        nullptr,
-        "estacao_base2"
-    ));
-    scene->push_shape(new Cylinder(
-        pos_estacao + axis_estacao*(3+5),
-        axis_estacao,
-        2,
-        7,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
-        nullptr,
-        "estacao_base3"
-    ));
-    Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
-    estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
-    estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
-    scene->push_shape(estacao_cabine);
     
-    // Placas solares
-    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", nullptr, true);
-    estacao_cabine->transform(get_translation_matrix({0, 3+5+7+0.5, 0}));
-    estacao_cabine->transform(get_scale_matrix({1, 2, 1}));
-    scene->push_shape(estacao_cabine);
+    Vector3R earth_pos = {500, 300, 700};
 
-    // scene->push_shape(new Cylinder(
-    //     pos_estacao + axis_estacao*(3+5),
-    //     axis_estacao,
-    //     2,
-    //     7,
-    //     debug_temp_material({0.25, 0.25, 0.25}), // TODO
-    //     nullptr,
-    //     "estacao_base3"
-    // ));
-    // scene->push_shape(new Cylinder(
-    //     pos_estacao + axis_estacao*(3+5),
-    //     axis_estacao,
-    //     2,
-    //     7,
-    //     debug_temp_material({0.25, 0.25, 0.25}), // TODO
-    //     nullptr,
-    //     "estacao_base3"
-    // ));
-    
-    Vector3R axis_foguete(0.5, 0.7, 0.5);
-    axis_foguete = axis_foguete.normalize();
-    Vector3R pos_foguete(10, 5, 10);
-    // Foguete
-    scene->push_shape(new Cylinder(
-        pos_foguete,
-        axis_foguete,
-        3,
-        10,
-        debug_temp_material({0.25, 0, 0.25}), // TODO
-        textures.at("nave"),
-        "Fuselagem"
-    ));
-    scene->push_shape(new Cone(
-        (pos_foguete + axis_foguete*10),
-        axis_foguete,
-        3,
-        6,
-        debug_temp_material({0, 0, 0.25}), // TODO
-        nullptr,
-        "Ponta"
-    ));
-    scene->push_shape(new Cone(
-        (pos_foguete - axis_foguete*2),
-        axis_foguete,
-        2.5,
-        4,
-        debug_temp_material({0, 0, 0.25}), // TODO
-        nullptr,
-        "Motor"
-    ));
-    //load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
-
+    create_estacao({500, 500, 500});
+    create_foguete({230, 150, 800}, 5);
+    create_ovni(earth_pos + Vector3R{0, 30 + 60, 0}, 10);
 
     // Planetas
     scene->push_shape(new Sphere(
         {0, 250, 300},
-        60,
-        debug_temp_material({0, 0, 0}),
+        150,
+        planet_material({0, 0, 0}),
         textures.at("jupiter"),
         "jupiter"
     ));
     scene->push_shape(new Sphere(
-        {200, 50, 100},
+        earth_pos,
         60,
-        debug_temp_material({0, 0, 0}),
+        planet_material({0, 0, 0}),
         textures.at("earth"),
         "Terra"
     ));
     scene->push_shape(new Sphere(
-        {60, 60, 60},
-        5,
-        debug_temp_material({0, 0, 0}),
+        earth_pos + Vector3R{60, 60, 60},
+        10,
+        planet_material({0, 0, 0}),
         textures.at("lua"), // TODO
         "lua"
     ));
+    Vector3R saturn_pos = {500, 550, 50};
+    Vector3R saturn_ring_dir = {1, 1, 1};
     scene->push_shape(new Sphere(
-        {500, 550, 300},
+        saturn_pos,
         100,
-        debug_temp_material({0, 0, 0}),
+        planet_material({0, 0, 0}),
         textures.at("saturn"), // TODO
         "Saturno"
     ));
     scene->push_shape(new Ring(
-        {500, 550, 300},
-        {1, 1, 1},
+        saturn_pos,
+        saturn_ring_dir.normalize(),
         200,
         150,
-        debug_temp_material({0, 0, 0}),
+        planet_material({0, 0, 0}),
         textures.at("saturn_ring"), // TODO
         "Anel",
         false
     )); 
 
     // Sol
+    Vector3R sun_pos = {1000, 1000, 1000};
     scene->push_shape(new Sphere(
-        {1000, 1000, 1000},
+        sun_pos,
         250,
-        {{0, 0, 0}, 0, 0, 0.5, 0, 0},
-        textures.at("sun"), // TODO
+        {{0, 0, 0}, 0, 0, 0, 0, 0},
+        textures.at("sun"),
         "sun"
     ));
-    scene->push_light(new PointLight({1000, 1000, 1000}, {1, 1, 1}));
+    scene->push_light(new PointLight(sun_pos, {1, 1, 1}));
 
     // Gargantua
-    Vector3R gargantua_pos = {250, 250, 700};
+    Vector3R gargantua_pos = {250, 250, 1500};
     gargantua_ring = new Ring(
         gargantua_pos,
         {0, 0, -1},
@@ -220,10 +133,9 @@ App::App(int win_width_, int win_height_)
         nullptr,
         "Gargantula"
     ));
-    
 
     // Luzes
-    //scene->push_light(new DirectionalLight({0, -1, 0}, {1, 1, 1}));
+    //scene->push_light(new DirectionalLight({1, 1, 1}, {1, 1, 1}));
 
     // Window configuration
     SetTargetFPS(60);
@@ -236,6 +148,9 @@ App::App(int win_width_, int win_height_)
 
 void App::start()
 {
+
+    scene->move_to({562, 463, 615});
+    scene->look_at({Vector3R{500, 300, 700} + Vector3R{0, 30 + 60, 0}});
 
     while(!WindowShouldClose()){
         process();
@@ -256,7 +171,7 @@ void App::start()
 void App::load_new_mesh(string filename, Color3 color, string name, Textura* tex, bool culled = true){
     try{
         // Material fixo temporário
-        Mesh3* mesh = Mesh3::create_from_obj_file(filename, debug_temp_material(color), name, tex, culled);
+        Mesh3* mesh = Mesh3::create_from_obj_file(filename, planet_material(color), name, tex, culled);
         scene->push_shape(mesh);
     }catch(const int err){
         throw err; // Só pra ficar explicito o erro
@@ -265,7 +180,7 @@ void App::load_new_mesh(string filename, Color3 color, string name, Textura* tex
 
 void App::process(){
     int fps = GetFPS();
-    bool moved = false;
+    bool moved = true;
 
     // Some screen controls, maybe temporary maybe not, definitely needs some work though
     if(IsKeyDown(KEY_W)){
@@ -310,6 +225,22 @@ void App::process(){
         UpdateTexture(viewport->get_texture(), viewport->get_pixels());
 
         time_elapsed = end - start;
+    }
+    if(IsKeyDown(KEY_J)){
+        scene->move_to(Vector3R{0, 8+10+18+15 + 10, -20} + estacao_pos);
+        scene->look_at(Vector3R{0, 1, 0}*(8+10+18+15 + 10) + estacao_pos);
+        scene->move_to(Vector3R{0, 8+10+18+15 + 10, -40} + estacao_pos);
+        moved = true;
+    }
+    else if(IsKeyDown(KEY_K)){
+        scene->move_to(Vector3R{20, 8+10+18+12, 20} + estacao_pos);
+        scene->look_at(Vector3R{0, 1, 0}*(8+10+18+12) + estacao_pos);
+        moved = true;
+    }
+    else if(IsKeyDown(KEY_L)){
+        scene->move_to(Vector3R{-15, 8+10+18+12 + 15, -15} + estacao_pos);
+        scene->look_at(Vector3R{0, 1, 0}*(8+10+18+12) + estacao_pos);
+        moved = true;
     }
 
     if(moved){
@@ -358,7 +289,7 @@ void App::create_estacao(Vector3R pos){
         axis,
         14,
         8,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        planet_material({0.25, 0.25, 0.25}), // TODO
         nullptr,
         "estacao_base1"
     ));
@@ -367,7 +298,7 @@ void App::create_estacao(Vector3R pos){
         axis,
         8,
         10,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        planet_material({0.25, 0.25, 0.25}), // TODO
         nullptr,
         "estacao_base2"
     ));
@@ -376,34 +307,32 @@ void App::create_estacao(Vector3R pos){
         axis,
         4,
         18,
-        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        planet_material({0.25, 0.25, 0.25}), // TODO
         nullptr,
         "estacao_base3"
     ));
-    Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
+    Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", planet_material({0.25, 0, 0}), "estacao_cabine", textures.at("estacao_cabine"), true);
     estacao_cabine->transform(get_scale_matrix({15, 15, 15}));
     estacao_cabine->transform(get_translation_matrix(axis*(8+10+18) + pos));
     scene->push_shape(estacao_cabine);
-
-    //scene->set_forward(cross_product(up, axis).normalize());
     
     // Placas solares
-    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", {{0, 0, 0}, 0.3, 0.7, 0.2, 0, 10}, "placa_solar1", textures.at("placa_solar"), true);
     placa_solar1->transform(get_translation_matrix(Vector3R{0, 8+5, -10} + pos));
     placa_solar1->transform(get_scale_matrix({10, 0.1, 45}));
     scene->push_shape(placa_solar1);
     
-    Mesh3* placa_solar2 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    Mesh3* placa_solar2 = Mesh3::create_from_obj_file("models/Cube.obj", {{0, 0, 0}, 0.3, 0.7, 0.2, 0, 10}, "placa_solar2", textures.at("placa_solar"), true);
     placa_solar2->transform(get_translation_matrix(Vector3R{0, 8+5, 10} + pos));
     placa_solar2->transform(get_scale_matrix({10, 0.1, 45}));
     scene->push_shape(placa_solar2);
     
-    Mesh3* placa_solar3 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    Mesh3* placa_solar3 = Mesh3::create_from_obj_file("models/Cube.obj", {{0, 0, 0}, 0.3, 0.7, 0.2, 0, 10}, "placa_solar3", textures.at("placa_solar"), true);
     placa_solar3->transform(get_translation_matrix(Vector3R{-10, 8+5, 0} + pos));
     placa_solar3->transform(get_scale_matrix({30, 0.1, 5}));
     scene->push_shape(placa_solar3);
     
-    Mesh3* placa_solar4 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    Mesh3* placa_solar4 = Mesh3::create_from_obj_file("models/Cube.obj", {{0, 0, 0}, 0.3, 0.7, 0.2, 0, 10}, "placa_solar4", textures.at("placa_solar"), true);
     placa_solar4->transform(get_translation_matrix(Vector3R{10, 8+5, 0} + pos));
     placa_solar4->transform(get_scale_matrix({30, 0.1, 5}));
     scene->push_shape(placa_solar4);
@@ -418,7 +347,7 @@ void App::create_foguete(Vector3R pos, float scale){
         axis_foguete,
         3*scale,
         10*scale,
-        debug_temp_material({0.25, 0, 0}), // TODO
+        {{0, 0, 0}, 0.6, 0.9, 0.2, 0, 5},
         textures.at("nave"),
         "Fuselagem"
     ));
@@ -427,7 +356,7 @@ void App::create_foguete(Vector3R pos, float scale){
         axis_foguete,
         3*scale,
         6*scale,
-        debug_temp_material({0.25, 0, 0}), // TODO
+        {{0.5, 0, 0}, 0.6, 0.9, 0.2, 0, 5},
         nullptr,
         "Ponta"
     ));
@@ -436,46 +365,39 @@ void App::create_foguete(Vector3R pos, float scale){
         axis_foguete,
         2.5*scale,
         4*scale,
-        debug_temp_material({0.25, 0, 0}), // TODO
+        {{0.5, 0, 0}, 0.6, 0.9, 0.2, 0, 5},
         nullptr,
         "Motor"
     ));
     
-    Mesh3* chama = Mesh3::create_from_obj_file("models/Chama.obj", debug_temp_material({0, 0, 0}), "chama nave", textures.at("chama"), true);
+    Mesh3* chama = Mesh3::create_from_obj_file("models/Chama.obj", {{0, 0, 0}, 0.5, 0.7, 0.3, 0, 10}, "chama nave", textures.at("chama"), true);
     chama->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
     chama->transform(get_x_rotation(-PI/2));
     chama->transform(get_translation_matrix(axis_foguete*((-2-4 + 3)*scale) + pos_foguete));
     scene->push_shape(chama);
 
-    Mesh3* asa1 = Mesh3::create_from_obj_file("models/Triangle.obj", debug_temp_material({0.25, 0, 0}), "chama nave", nullptr, false);
-    asa1->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
-    //asa1->transform(get_y_rotation(PI/2));
+    Mesh3* asa1 = Mesh3::create_from_obj_file("models/Triangle.obj", {{0.5, 0, 0}, 0.6, 0.9, 0.2, 0, 5}, "chama nave", nullptr, false);
+    asa1->transform(get_scale_matrix({scale, scale, scale}));
+    asa1->transform(get_y_rotation(PI));
     //asa1->transform(get_x_rotation(PI/2));
-    asa1->transform(get_translation_matrix(Vector3R{0, 3*scale, 0} + pos_foguete));
+    asa1->transform(get_translation_matrix(Vector3R{0, 2.9f*scale, 1*scale} + pos_foguete));
     scene->push_shape(asa1);
 
-    Mesh3* asa2 = Mesh3::create_from_obj_file("models/Triangle.obj", debug_temp_material({0.25, 0, 0}), "chama nave", nullptr, false);
-    asa2->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
-    asa2->transform(get_x_rotation(PI));
-    asa2->transform(get_translation_matrix(axis_foguete*((-2-4 + 3)*scale) + pos_foguete));
+    Mesh3* asa2 = Mesh3::create_from_obj_file("models/Triangle.obj", {{0.5, 0, 0}, 0.6, 0.9, 0.2, 0, 5}, "chama nave", nullptr, false);
+    asa2->transform(get_scale_matrix({scale, scale, scale}));
+    asa2->transform(get_y_rotation(PI));
+    asa2->transform(get_z_rotation(PI));
+    asa2->transform(get_translation_matrix(Vector3R{0, -2.9f*scale, 1*scale} + pos_foguete));
     scene->push_shape(asa2);
-
-    Mesh3* asa3 = Mesh3::create_from_obj_file("models/Triangle.obj", debug_temp_material({0.25, 0, 0}), "chama nave", nullptr, false);
-    asa3->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
-    asa3->transform(get_x_rotation(PI));
-    asa3->transform(get_translation_matrix(axis_foguete*((-2-4 + 3)*scale) + pos_foguete));
-    scene->push_shape(asa3);
-
-    //load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
 }
 
 void App::create_ovni(Vector3R pos, float scale){
-    Mesh3* cima = Mesh3::create_from_obj_file("models/ovni_cima.obj", debug_temp_material({0, 0, 0}), "ovni_cima", textures.at("ovni_cima"), true);
+    Mesh3* cima = Mesh3::create_from_obj_file("models/ovni_cima.obj", {{0, 0, 0}, 0.5, 0.9, 0.2, 0, 10}, "ovni_cima", textures.at("ovni_cima"), true);
     cima->transform(get_scale_matrix({scale, scale, scale}));
     cima->transform(get_translation_matrix(pos));
     scene->push_shape(cima);
 
-    Mesh3* base = Mesh3::create_from_obj_file("models/ovni_base.obj", debug_temp_material({0, 0, 0}), "ovni_base", textures.at("ovni_base"), true);
+    Mesh3* base = Mesh3::create_from_obj_file("models/ovni_base.obj", {{0, 0, 0}, 0.3, 0.6, 0.2, 0, 20}, "ovni_base", textures.at("ovni_base"), true);
     base->transform(get_scale_matrix({scale, scale, scale}));
     base->transform(get_translation_matrix(pos));
     scene->push_shape(base);

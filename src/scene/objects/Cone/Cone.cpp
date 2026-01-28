@@ -58,13 +58,14 @@ Collision Cone::get_surface_collision(RayR ray) {
     bool hit1 = false;
     bool hit2 = false;
 
-    if(vecH1*axis_dir > 0 && vecH1.length() <= height){
+    if(x1 < 0 && x2 < 0) return col;
+    if(vecH1*axis_dir > 0 && vecH1.length() <= height && x1 > 0){
         col.point = point1;
         col.distance = x1;
         hit1 = true;
     }
-    if(vecH2*axis_dir > 0 && vecH2.length() <= height){
-        if((!hit1 && x2 > 0) || (x1 > x2 && x2 > 0)){
+    if(vecH2*axis_dir > 0 && vecH2.length() <= height&& x2 > 0){
+        if((!hit1) || (x1 > x2)){
             col.point = point2;
             col.distance = x2;
         }

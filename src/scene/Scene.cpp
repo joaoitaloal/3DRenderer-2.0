@@ -2,7 +2,7 @@
 
 Scene::Scene(View* view_)
     : obliq_rot(MatrixR::identity_matrix()),
-    skybox({0, 0, 0}, 1000, {{0, 0, 0}, 0, 0, 0, 0, 0}, nullptr, "skybox")
+    skybox({0, 0, 0}, 3000, {{0, 0, 0}, 0, 0, 0, 0, 0}, nullptr, "skybox")
 {
     view = view_;
     proj_obliq = false;
@@ -145,10 +145,6 @@ void Scene::move_to(Vector3R pos){
 
 void Scene::set_up(Vector3R up){
     view->set_up(up);
-}
-
-void Scene::set_forward(Vector3R forw){
-    view->set_forward(forw);
 }
 
 void Scene::set_dimensions(Vector3R dims){

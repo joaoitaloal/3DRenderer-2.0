@@ -117,10 +117,6 @@ void View::set_up(Vector3R up){
     camera.set_up(up);
 }
 
-void View::set_forward(Vector3R forw){
-    camera.set_forward(forw);
-}
-
 void View::set_zoom(float amount){
     camera.set_zoom(amount);
 }
