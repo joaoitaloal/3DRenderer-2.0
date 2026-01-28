@@ -108,7 +108,7 @@ class App{
 
         void create_foguete(Vector3R pos, float scale);
 
-        void create_ovni(Vector3R pos, Vector3R dir, float scale);
+        void create_ovni(Vector3R pos, float scale);
 
         // Temp, só pro cenário funcionar
         Circle* gargantua_ring; // plano do buraco negro

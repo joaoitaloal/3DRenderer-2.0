@@ -222,9 +222,8 @@ App::App(int win_width_, int win_height_)
     ));
     
 
-    // Temporary manual light creation:
-    //scene->push_light(new PointLight({20, 20, 20}, {1, 1, 1}));
-    scene->push_light(new DirectionalLight({0, -1, 0}, {1, 1, 1}));
+    // Luzes
+    //scene->push_light(new DirectionalLight({0, -1, 0}, {1, 1, 1}));
 
     // Window configuration
     SetTargetFPS(60);
@@ -349,4 +348,135 @@ void App::process(){
     GuiLabel((Rectangle){0 + ui_padding, 0, 32, 16}, to_string(fps).insert(0, "fps: ").c_str());
 
     EndDrawing();
+}
+
+void App::create_estacao(Vector3R pos){
+    estacao_pos = pos;
+    Vector3R axis = {0, 1, 0};
+    scene->push_shape(new Cylinder(
+        pos,
+        axis,
+        14,
+        8,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base1"
+    ));
+    scene->push_shape(new Cylinder(
+        pos + axis*8,
+        axis,
+        8,
+        10,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base2"
+    ));
+    scene->push_shape(new Cylinder(
+        pos + axis*(8+10),
+        axis,
+        4,
+        18,
+        debug_temp_material({0.25, 0.25, 0.25}), // TODO
+        nullptr,
+        "estacao_base3"
+    ));
+    Mesh3* estacao_cabine = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "estacao_cabine", nullptr, true);
+    estacao_cabine->transform(get_scale_matrix({15, 15, 15}));
+    estacao_cabine->transform(get_translation_matrix(axis*(8+10+18) + pos));
+    scene->push_shape(estacao_cabine);
+
+    //scene->set_forward(cross_product(up, axis).normalize());
+    
+    // Placas solares
+    Mesh3* placa_solar1 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar1->transform(get_translation_matrix(Vector3R{0, 8+5, -10} + pos));
+    placa_solar1->transform(get_scale_matrix({10, 0.1, 45}));
+    scene->push_shape(placa_solar1);
+    
+    Mesh3* placa_solar2 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0.25, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar2->transform(get_translation_matrix(Vector3R{0, 8+5, 10} + pos));
+    placa_solar2->transform(get_scale_matrix({10, 0.1, 45}));
+    scene->push_shape(placa_solar2);
+    
+    Mesh3* placa_solar3 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar3->transform(get_translation_matrix(Vector3R{-10, 8+5, 0} + pos));
+    placa_solar3->transform(get_scale_matrix({30, 0.1, 5}));
+    scene->push_shape(placa_solar3);
+    
+    Mesh3* placa_solar4 = Mesh3::create_from_obj_file("models/Cube.obj", debug_temp_material({0, 0, 0}), "placa_solar1", textures.at("tex_placa_solar"), true);
+    placa_solar4->transform(get_translation_matrix(Vector3R{10, 8+5, 0} + pos));
+    placa_solar4->transform(get_scale_matrix({30, 0.1, 5}));
+    scene->push_shape(placa_solar4);
+}
+
+void App::create_foguete(Vector3R pos, float scale){
+    Vector3R axis_foguete = {0, 0, 1};
+    Vector3R pos_foguete = pos;
+
+    scene->push_shape(new Cylinder(
+        pos_foguete,
+        axis_foguete,
+        3*scale,
+        10*scale,
+        debug_temp_material({0.25, 0, 0}), // TODO
+        textures.at("nave"),
+        "Fuselagem"
+    ));
+    scene->push_shape(new Cone(
+        (pos_foguete + axis_foguete*10*scale),
+        axis_foguete,
+        3*scale,
+        6*scale,
+        debug_temp_material({0.25, 0, 0}), // TODO
+        nullptr,
+        "Ponta"
+    ));
+    scene->push_shape(new Cone(
+        (pos_foguete - axis_foguete*2*scale),
+        axis_foguete,
+        2.5*scale,
+        4*scale,
+        debug_temp_material({0.25, 0, 0}), // TODO
+        nullptr,
+        "Motor"
+    ));
+    
+    Mesh3* chama = Mesh3::create_from_obj_file("models/Chama.obj", debug_temp_material({0, 0, 0}), "chama nave", textures.at("chama"), true);
+    chama->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
+    chama->transform(get_x_rotation(-PI/2));
+    chama->transform(get_translation_matrix(axis_foguete*((-2-4 + 3)*scale) + pos_foguete));
+    scene->push_shape(chama);
+
+    Mesh3* asa1 = Mesh3::create_from_obj_file("models/Triangle.obj", debug_temp_material({0.25, 0, 0}), "chama nave", nullptr, false);
+    asa1->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
+    //asa1->transform(get_y_rotation(PI/2));
+    //asa1->transform(get_x_rotation(PI/2));
+    asa1->transform(get_translation_matrix(Vector3R{0, 3*scale, 0} + pos_foguete));
+    scene->push_shape(asa1);
+
+    Mesh3* asa2 = Mesh3::create_from_obj_file("models/Triangle.obj", debug_temp_material({0.25, 0, 0}), "chama nave", nullptr, false);
+    asa2->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
+    asa2->transform(get_x_rotation(PI));
+    asa2->transform(get_translation_matrix(axis_foguete*((-2-4 + 3)*scale) + pos_foguete));
+    scene->push_shape(asa2);
+
+    Mesh3* asa3 = Mesh3::create_from_obj_file("models/Triangle.obj", debug_temp_material({0.25, 0, 0}), "chama nave", nullptr, false);
+    asa3->transform(get_scale_matrix({2.0f*scale, 2.0f*scale, 2.0f*scale}));
+    asa3->transform(get_x_rotation(PI));
+    asa3->transform(get_translation_matrix(axis_foguete*((-2-4 + 3)*scale) + pos_foguete));
+    scene->push_shape(asa3);
+
+    //load_new_mesh("models/Triangle.obj", {0.25, 0.25, 0.25}, "Asa1", nullptr, false);
+}
+
+void App::create_ovni(Vector3R pos, float scale){
+    Mesh3* cima = Mesh3::create_from_obj_file("models/ovni_cima.obj", debug_temp_material({0, 0, 0}), "ovni_cima", textures.at("ovni_cima"), true);
+    cima->transform(get_scale_matrix({scale, scale, scale}));
+    cima->transform(get_translation_matrix(pos));
+    scene->push_shape(cima);
+
+    Mesh3* base = Mesh3::create_from_obj_file("models/ovni_base.obj", debug_temp_material({0, 0, 0}), "ovni_base", textures.at("ovni_base"), true);
+    base->transform(get_scale_matrix({scale, scale, scale}));
+    base->transform(get_translation_matrix(pos));
+    scene->push_shape(base);
 }
